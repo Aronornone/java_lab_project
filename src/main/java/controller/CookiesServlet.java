@@ -1,0 +1,63 @@
+package controller;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+//getMaxAge() always return -1 because of:
+// https://stackoverflow.com/questions/14391749/in-java-servlet-cookie-getmaxage-always-returns-1
+
+/**
+ * Class for example how to write Cookies and Session
+ */
+@WebServlet(urlPatterns = {"/bucket"}, name = "BucketServlet")
+public class CookiesServlet extends HttpServlet {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        doPost(request, response);
+
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+
+        System.out.println(Collections.list(request.getHeaderNames()));
+
+        System.out.println(request.isRequestedSessionIdFromCookie());
+        System.out.println(request.isRequestedSessionIdFromURL());
+        System.out.println(request.isRequestedSessionIdValid());
+
+        HttpSession httpSession = request.getSession(true);
+        System.out.println(httpSession.getLastAccessedTime());
+        System.out.println(httpSession.getMaxInactiveInterval());
+
+        Cookie sessionId = new Cookie("session_id", request.getRemoteAddr() + new Date().toString());
+        Cookie useruserLocale = new Cookie("user_locale", request.getLocale().getDisplayName());
+        sessionId.setMaxAge(900);
+        useruserLocale.setMaxAge(900);
+
+        response.addCookie(sessionId);
+        response.addCookie(useruserLocale);
+
+        List<String> list = new ArrayList<>();
+        list.add("String1");
+        list.add("String2");
+        httpSession.setAttribute("list", list);
+
+        long lastTime = httpSession.getLastAccessedTime();
+        String id = httpSession.getId();
+        httpSession.setAttribute("lastTime", lastTime);
+        httpSession.setAttribute("sessionId", id);
+
+        RequestDispatcher rd = getServletContext().
+                getRequestDispatcher("/WEB-INF/pages/cookies.jsp");
+        rd.forward(request, response);
+    }
+}
+

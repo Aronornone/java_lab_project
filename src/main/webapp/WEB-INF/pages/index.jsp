@@ -3,12 +3,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello World!</title>
+    <title>Index</title>
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
+
 </head>
 <body>
-    <h1>Some text JSP</h1>
+    <h1>Pages:</h1>
+    <form action="bucket" method="post">
+        <input type="submit" value="To Cookie Page">
+    </form>
+
+    <form action="hello" method="post">
+        <input type="submit" value="To Hello Page">
+    </form>
 </body>
 </html>

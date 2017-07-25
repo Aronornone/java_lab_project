@@ -14,6 +14,7 @@ public class Flight {
     private String departureAirport;
     private String arrivalAirport;
     private Double baseCost;
-    private int numberUsedPlaces;
+    private int availablePlacesEconom;
+    private int availablePlacesBusiness;
     private LocalDateTime dateTime;
 }

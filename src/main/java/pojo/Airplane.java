@@ -8,5 +8,6 @@ import lombok.Data;
 public class Airplane {
     private long airplaneId;
     private String name;
-    private int capacity;
+    private int capacityEconom;
+    private int capacityBusiness;
 }

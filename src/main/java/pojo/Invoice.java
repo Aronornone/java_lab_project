@@ -16,6 +16,7 @@ public class Invoice {
 
     enum InvoiceStatus {
         CREATED,
-        PAYED
+        PAYED,
+        CANCELLED
     }
 }

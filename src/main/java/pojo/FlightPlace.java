@@ -10,5 +10,6 @@ import java.util.BitSet;
 public class FlightPlace {
     private long flightPlacesId;
     private Flight flightId;
-    private BitSet bitPlaces;
+    private BitSet bitPlacesEconom;
+    private BitSet bitPlacesBusiness;
 }

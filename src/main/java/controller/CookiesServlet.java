@@ -37,13 +37,19 @@ public class CookiesServlet extends HttpServlet {
         System.out.println(httpSession.getLastAccessedTime());
         System.out.println(httpSession.getMaxInactiveInterval());
 
-        Cookie sessionId = new Cookie("session_id", request.getRemoteAddr() + new Date().toString());
-        Cookie useruserLocale = new Cookie("user_locale", request.getLocale().getDisplayName());
+        String sessionIdPreCookie = (request.getRemoteAddr() + new Date().toString()).replace(' ','_');;
+        String userLocaleIdPreCookie = request.getLocale().getDisplayName().replace(' ','_');
+
+        Cookie sessionId = new Cookie("session_id", sessionIdPreCookie);
+        Cookie userLocale = new Cookie("user_locale", userLocaleIdPreCookie);
+
+        System.out.println(sessionId.getValue());
+        System.out.println(userLocale.getValue());
         sessionId.setMaxAge(900);
-        useruserLocale.setMaxAge(900);
+        userLocale.setMaxAge(900);
 
         response.addCookie(sessionId);
-        response.addCookie(useruserLocale);
+        response.addCookie(userLocale);
 
         List<String> list = new ArrayList<>();
         list.add("String1");

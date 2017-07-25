@@ -14,6 +14,7 @@
 <form action="index" method="post">
     <input type="submit" value="To Index">
 </form>
+On second update here will be cookies, that we sent through first response to client:
 Cookies List:
 <table>
 <c:forEach items="${cookie}" var="cookies">

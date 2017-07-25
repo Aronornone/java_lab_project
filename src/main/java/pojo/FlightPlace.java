@@ -1,33 +1,14 @@
 package pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.BitSet;
 
+@Data
+@AllArgsConstructor
 public class FlightPlace {
     private long flightPlacesId;
     private Flight flightId;
     private BitSet bitPlaces;
-
-    public long getFlightPlacesId() {
-        return flightPlacesId;
-    }
-
-    public void setFlightPlacesId(long flightPlacesId) {
-        this.flightPlacesId = flightPlacesId;
-    }
-
-    public Flight getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(Flight flightId) {
-        this.flightId = flightId;
-    }
-
-    public BitSet getBitPlaces() {
-        return bitPlaces;
-    }
-
-    public void setBitPlaces(BitSet bitPlaces) {
-        this.bitPlaces = bitPlaces;
-    }
 }

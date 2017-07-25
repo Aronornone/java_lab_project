@@ -1,7 +1,12 @@
 package pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
 public class Flight {
     private long flightId;
     private Airplane airplane;
@@ -9,70 +14,6 @@ public class Flight {
     private String departureAirport;
     private String arrivalAirport;
     private Double baseCost;
-    private short numberUsedPlaces;
+    private int numberUsedPlaces;
     private LocalDateTime dateTime;
-
-    public long getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(long flightId) {
-        this.flightId = flightId;
-    }
-
-    public String getFlightNumber() {
-        return flightNumber;
-    }
-
-    public void setFlightNumber(String flightNumber) {
-        this.flightNumber = flightNumber;
-    }
-
-    public String getDepartureAirport() {
-        return departureAirport;
-    }
-
-    public void setDepartureAirport(String departureAirport) {
-        this.departureAirport = departureAirport;
-    }
-
-    public Double getBaseCost() {
-        return baseCost;
-    }
-
-    public void setBaseCost(Double baseCost) {
-        this.baseCost = baseCost;
-    }
-
-    public String getArrivalAirport() {
-        return arrivalAirport;
-    }
-
-    public void setArrivalAirport(String arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
-    }
-
-    public short getNumberUsedPlaces() {
-        return numberUsedPlaces;
-    }
-
-    public void setNumberUsedPlaces(short numberUsedPlaces) {
-        this.numberUsedPlaces = numberUsedPlaces;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public Airplane getAirplane() {
-        return airplane;
-    }
-
-    public void setAirplane(Airplane airplane) {
-        this.airplane = airplane;
-    }
 }

@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// with urlPattern "/" we can't include css through simple waym onl absolute paths:
+// https://stackoverflow.com/questions/4140448/difference-between-and-in-servlet-mapping-url-pattern
+// https://stackoverflow.com/questions/3655316/browser-cant-access-find-relative-resources-like-css-images-and-links-when-cal
 @WebServlet(urlPatterns = {"", "/index"}, name = "RootServlet")
 public class RootServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)

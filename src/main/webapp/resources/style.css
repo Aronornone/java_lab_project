@@ -1,9 +1,88 @@
+.body {
+    font-family: Arial, serif;
+    min-height: calc(100vh - 20px);
+    width: 900px;
+    margin: auto;
+}
+
 h1 {
-    font-family: "Arial Black", serif;
     color: aqua;
 }
 
 h2 {
-    font-family: "Arial Black", serif;
     color: blue;
+}
+
+.buttonLogReg {
+    font-size: 16pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 14px 28px;
+}
+
+div.formLogReg {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -300px 125px 0 -125px;
+    text-align: center;
+    font-size: 13pt;
+}
+
+.fieldLogReg {
+    width: 296px;
+    height: 20px;
+    font-size: 15px;
+    text-align: center;
+}
+
+a:link {
+    color: dodgerblue;
+}
+
+a:visited {
+    color: darkslateblue;
+}
+
+a:hover {
+    color: #4CAF30;
+}
+
+a:active {
+    color: blue;
+}
+.wrapper {
+    min-height: calc(100vh - 110px);
+}
+.logoutBut{
+    font-size: 10pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    clear: both;
+    margin: 10px;
+}
+
+.header{
+    text-align: right;
+}
+
+.footer{
+    text-align: center;
+    height: 30px;
+}
+.logged{
+    display: inline-flex;
+}
+
+.test{
+    font-size:15pt;
+}
+
+.headerLine{
+
 }

@@ -9,6 +9,7 @@
           href="<c:url value='resources/style.css'/>">
 
 </head>
+
 <body>
     <h1>Pages:</h1>
     <form action="bucket" method="post">

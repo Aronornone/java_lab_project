@@ -1,7 +1,7 @@
 .body {
     font-family: Arial, serif;
     min-height: calc(100vh - 20px);
-    width: 900px;
+    max-width: 1200px;
     margin: auto;
 }
 
@@ -39,6 +39,29 @@ div.formLogReg {
     text-align: center;
 }
 
+.fieldFilters {
+    width: 50px;
+    height: 20px;
+    font-size: 15px;
+    text-align: right;
+}
+
+.checkFilter {
+    width: 150px;
+    margin: 5px;
+    height: 26px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.calendar {
+    margin: 5px;
+    width: 150px;
+    height: 22px;
+    font-size: 15px;
+    text-align: center;
+}
+
 a:link {
     color: dodgerblue;
 }
@@ -54,35 +77,160 @@ a:hover {
 a:active {
     color: blue;
 }
+
 .wrapper {
     min-height: calc(100vh - 110px);
+    overflow: hidden;
 }
-.logoutBut{
+
+.logoutBut {
+    font-size: 10pt;
+    background-color: #d56e00;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    clear: both;
+    margin: 10px 0px 10px 10px;
+}
+
+.bucketBut {
     font-size: 10pt;
     background-color: #4CAF30;
     border: none;
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin: 10px;
+    margin:10px 0px 10px 10px;
+}
+.bucketPay {
+    font-size: 14pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    clear: both;
+    margin:10px 0px 10px 10px;
+}
+.searchBut {
+    font-size: 16pt;
+    background-color: #3f669f;
+    border: none;
+    color: white;
+    padding: 10px 20px;
 }
 
-.header{
+.header {
     text-align: right;
 }
 
-.footer{
+.footer {
     text-align: center;
     height: 30px;
 }
-.logged{
+
+.logged {
     display: inline-flex;
 }
 
-.test{
-    font-size:15pt;
+.test {
+    font-size: 15pt;
 }
 
-.headerLine{
+.headerLine {
 
+}
+
+.flightTable {
+}
+
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+
+}
+
+tr {
+    text-align: left;
+}
+
+tr:hover {
+    background-color: rgba(217, 240, 213, 0.31);
+    padding: 5px;
+}
+
+.buckettable tr:hover {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.buckettable th , .bucketTable  td{
+    border-bottom: 0px;
+}
+.search {
+    display: inline-flex;
+    width: 100%;
+}
+
+p.filter {
+    margin: 5px;
+}
+
+.flagesLogged {
+    margin: 13px;
+}
+
+.pairports, .pdates, .fairports, .fdates, .pnumberTickets {
+    display: grid;
+    margin: 0;
+}
+
+.pairports {
+
+}
+
+.psearchBut {
+    margin-left: auto;
+}
+
+.buttonBuy {
+    float: right;
+}
+
+.butPay{
+    float: right;
+    display: inline-flex;
+}
+p.passengerNum{
+    font-size: 15pt;
+}
+
+.checkbox{
+    margin-right: 30px;
+}
+
+.cost {
+    font-weight: bold;
+}
+
+.costTotal{
+    font-weight: bold;
+    font-size: 20pt;
+    margin: 20px 15px auto 10px;
+}
+
+.pCostTotal{
+    margin: 30px auto 0px;
+}
+
+.pasCost{
+    display: inline-flex;
+    float: right;
+    margin: auto 0px auto auto;
+}
+.wrapOptions{
+    display: inline-flex;
+    width: 100%;
 }

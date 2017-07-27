@@ -17,7 +17,7 @@
             <a href="login"><img src="resources/images/flag_ru.png" alt="ru"></a>
         </div>
         <form action="flights" method="post">
-            <p>Логин/Login (email): <input class="fieldLogReg" type="text" name="email"></p>
+            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email"></p>
             <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password"></p>
             <input class="buttonLogReg" type="submit" value="Login/Войти">
             <p><a href="registration">Регистрация\Registration</a></p>

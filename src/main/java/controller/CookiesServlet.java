@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Class for example how to write Cookies and Session
  */
-@WebServlet(urlPatterns = {"/bucket"}, name = "BucketServlet")
+@WebServlet(urlPatterns = {"/cookies"}, name = "CookiesServlet")
 public class CookiesServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {

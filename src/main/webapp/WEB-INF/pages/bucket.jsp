@@ -17,97 +17,67 @@
         <div class="bucket">
             <form name="ticket" action="ticket" method="post">
                 <div class="bucketTable">
-
-                    <div class="passenger">
-                        <p class="passengerNum">Passenger 1</p>
-                        <table class="buckettable">
-                            <tr>
-                                <th>
-                                    First Name
-                                </th>
-                                <th>
-                                    Last Name
-                                </th>
-                                <th>
-                                    Passport
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="wrapOptions">
-                            <div class="options">
-                                <p>
-                                    Бизнес-класс/Business-class <input class="checkbox" type="checkbox" value="0">
-                                    Багаж/Luggage <input class="checkbox" type="checkbox" value="0">
-                                </p>
-                            </div>
-                            <div class="pasCost">
-                                <div class="pcost">Стоимость:</div>
-                                <div class="cost">10000 р.</div>
-                            </div>
-                        </div>
-                        <hr class="headerLine">
+                    <div class="flightInfo">
+                        Рейс/Flight: <b>${flightNumber}</b> из/from: <b>${departureAirport}</b>
+                        в/to: <b>${arrivalAirport}</b>.
+                        Дата и время/ DateTime: <b>${dateTime}</b>
+                        Самолет/Airplane: <b>${airplanename}</b>
                     </div>
 
+                    <c:forEach items="${tickets}" var="tickets">
+                        <div class="passenger">
+                            <p class="passengerNum">Пассажир/Passenger</p>
+                            <table class="buckettable">
+                                <tr>
+                                    <th>
+                                        Фамилия и имя/First and Last Name
+                                    </th>
+                                    <th>
+                                        Паспорт/ID card
+                                    </th>
 
-                    <div class="passenger">
-                        <p class="passengerNum">Passenger 2</p>
-                        <table class="buckettable">
-                            <tr>
-                                <th>
-                                    First Name
-                                </th>
-                                <th>
-                                    Last Name
-                                </th>
-                                <th>
-                                    Passport
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                    <input type="text" value="">
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="wrapOptions">
-                            <div class="options">
-                                <p>
-                                    Бизнес-класс/Business-class <input class="checkbox" type="checkbox" value="0">
-                                    Багаж/Luggage <input class="checkbox" type="checkbox" value="0">
-                                </p>
+                                    <th class="tableButDel">
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="passengerfield" type="text" name="passengerName" value="">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="passport" value="">
+                                    </td>
+
+                                    <td>
+                                        <form name="ticketDelete" action="ticketDelete" method="post">
+                                            <input class="deleteBut" type="submit" value="Удалить/Delete">
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="wrapOptions">
+                                <div>
+                                    <p>
+                                        Бизнес-класс/Business-class <input class="checkbox" name="business"
+                                                                           type="checkbox"
+                                                                           value="0">
+                                        Багаж/Luggage <input class="checkbox" name="luggage" type="checkbox" value="0">
+                                    </p>
+                                </div>
+                                <div class="pasCost">
+                                    <div class="pplace">Ваше место/Your seat:</div>
+                                    <div class="place">${tickets.sittingPlace}</div>
+                                    <div class="pcost">Стоимость/Cost:</div>
+                                    <div class="cost">${tickets.price}</div>
+                                </div>
                             </div>
-                            <div class="pasCost">
-                                <div class="pcost">Стоимость:</div>
-                                <div class="cost">10000 р.</div>
-                            </div>
+                            <hr class="headerLine">
                         </div>
-                        <hr class="headerLine">
-                    </div>
+
+                    </c:forEach>
 
                     <div class="butPay">
                         <div class="pCostTotal">Итого/Total:</div>
-                        <div class="costTotal">20000 р.</div>
+                        <div class="costTotal">${totalSum}</div>
 
                         <input class="bucketPay" type="submit" value="Оплатить/Pay">
                     </div>

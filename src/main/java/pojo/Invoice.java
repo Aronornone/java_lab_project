@@ -14,7 +14,7 @@ public class Invoice {
     private int numberTickets;
     private LocalDateTime timestamp;
 
-    enum InvoiceStatus {
+    public enum InvoiceStatus {
         CREATED,
         PAYED,
         CANCELLED

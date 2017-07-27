@@ -10,6 +10,7 @@ import java.io.IOException;
 @WebServlet(urlPatterns = {"/ticket"})
 public class StubPayedServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request,response);
 
     }

@@ -38,14 +38,15 @@
                     </select>
                 </div>
                 <div class="pnumberTickets">
-                <p class="filter">Количество пассажиров
-                    <input class="fieldFilters" type="number" min="1" max="80" step="1" value="1" name="numberTickets">
-                </p>
-                 </div>
+                    <p class="filter">Количество пассажиров
+                        <input class="fieldFilters" type="number" min="1" max="80" step="1" value="1"
+                               name="numberTickets">
+                    </p>
+                </div>
                 <div class="psearchBut">
-                <p>
-                    <input class="searchBut" type="submit" value="Найти/Search">
-                </p>
+                    <p>
+                        <input class="searchBut" type="submit" value="Найти/Search">
+                    </p>
                 </div>
             </form>
             <hr class="headerLine">
@@ -76,31 +77,33 @@
 
                     </th>
                 </tr>
-                <tr>
-                    <td>
-                        SPB
-                    </td>
-                    <td>
-                        MSK
-                    </td>
-                    <td>
-                        27/07/2017 18:30
-                    </td>
-                    <td>
-                        IGB-10
-                    </td>
-                    <td>
-                        Airbus 320
-                    </td>
-                    <td>
-                        10000 р.
-                    </td>
-                    <td>
-                        <form class="buttonBuy" action="bucket" method="post">
-                            <input class="bucketBut" type="submit" value="Купить/Buy">
-                        </form>
-                    </td>
-                </tr>
+                <c:forEach items="${flights}" var="flights">
+                    <tr>
+                        <td>
+                                ${flights.departureAirport}
+                        </td>
+                        <td>
+                                ${flights.arrivalAirport}
+                        </td>
+                        <td>
+                                ${flights.dateTime}
+                        </td>
+                        <td>
+                                ${flights.flightNumber}
+                        </td>
+                        <td>
+                                ${flights.airplane.name}
+                        </td>
+                        <td>
+                                ${flights.baseCost}
+                        </td>
+                        <td>
+                            <form class="buttonBuy" action="bucket" method="post">
+                                <input class="bucketBut" type="submit" value="Купить/Buy">
+                            </form>
+                        </td>
+                    </tr>
+                </c:forEach>
             </table>
 
 

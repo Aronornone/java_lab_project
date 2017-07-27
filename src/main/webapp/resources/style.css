@@ -5,14 +5,6 @@
     margin: auto;
 }
 
-h1 {
-    color: aqua;
-}
-
-h2 {
-    color: blue;
-}
-
 .buttonLogReg {
     font-size: 16pt;
     background-color: #4CAF30;
@@ -90,7 +82,7 @@ a:active {
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin: 10px 0px 10px 10px;
+    margin: 10px 0 10px 10px;
 }
 
 .bucketBut {
@@ -100,7 +92,7 @@ a:active {
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin:10px 0px 10px 10px;
+    margin:10px 0 10px 10px;
 }
 .bucketPay {
     font-size: 14pt;
@@ -109,7 +101,7 @@ a:active {
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin:10px 0px 10px 10px;
+    margin:10px 0 10px 10px;
 }
 .searchBut {
     font-size: 16pt;
@@ -118,7 +110,16 @@ a:active {
     color: white;
     padding: 10px 20px;
 }
-
+.deleteBut{
+    font-size: 10pt;
+    background-color: #af1300;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    float: right;
+    clear: both;
+    margin:10px 0 10px 10px;
+}
 .header {
     text-align: right;
 }
@@ -150,24 +151,30 @@ table {
 
 th, td {
     border-bottom: 1px solid #ddd;
-
 }
 
 tr {
     text-align: left;
 }
-
+.tableButDel{
+    width:50%;
+}
 tr:hover {
     background-color: rgba(217, 240, 213, 0.31);
     padding: 5px;
 }
-
+.passengerfield{
+    width:350px;
+}
+.buckettable {
+    width: 100%;
+}
 .buckettable tr:hover {
     background-color: rgba(255, 255, 255, 0);
 }
 
 .buckettable th , .bucketTable  td{
-    border-bottom: 0px;
+    border-bottom: 0;
 }
 .search {
     display: inline-flex;
@@ -208,13 +215,16 @@ p.passengerNum{
 }
 
 .checkbox{
-    margin-right: 30px;
 }
 
 .cost {
     font-weight: bold;
 }
 
+.place {
+    font-weight: bold;
+    margin: 0 20px 0 0;
+}
 .costTotal{
     font-weight: bold;
     font-size: 20pt;
@@ -222,14 +232,15 @@ p.passengerNum{
 }
 
 .pCostTotal{
-    margin: 30px auto 0px;
+    margin: 30px auto 0;
 }
 
 .pasCost{
     display: inline-flex;
     float: right;
-    margin: auto 0px auto auto;
+    margin: auto 0 auto auto;
 }
+
 .wrapOptions{
     display: inline-flex;
     width: 100%;

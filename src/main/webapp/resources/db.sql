@@ -1,28 +1,32 @@
 CREATE TABLE Airplane (
-  id       BIGINT AUTO_INCREMENT,
+  id                BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  name     VARCHAR(50) NOT NULL,
-  capacity INT         NOT NULL
+  name              VARCHAR(50) NOT NULL,
+  capacity_econom   INT         NOT NULL,
+  capacity_business INT         NOT NULL
+
 );
 
 CREATE TABLE Flight (
-  id                BIGINT AUTO_INCREMENT,
+  id                        BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  airplane_id       BIGINT      NOT NULL,
-  flight_nunmber    VARCHAR(50) NOT NULL,
-  departure_airport VARCHAR(50) NOT NULL,
-  arrival_airport   VARCHAR(50) NOT NULL,
-  base_cost         DOUBLE      NOT NULL,
-  used_places       INT    DEFAULT 0, #available_places INT?
-  date              DATE        NOT NULL,
+  airplane_id               BIGINT      NOT NULL,
+  flight_nunmber            VARCHAR(50) NOT NULL,
+  departure_airport         VARCHAR(50) NOT NULL,
+  arrival_airport           VARCHAR(50) NOT NULL,
+  base_cost                 DOUBLE      NOT NULL,
+  available_places_econom   INT         NOT NULL,
+  available_places_business INT         NOT NULL,
+  date                      DATE        NOT NULL,
   FOREIGN KEY (airplane_id) REFERENCES Airplane (id)
 );
 
 CREATE TABLE FlightPlace (
-  id        BIGINT AUTO_INCREMENT,
+  id              BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  flight_id BIGINT        NOT NULL,
-  places    VARCHAR(1000) NOT NULL, #bitset
+  flight_id       BIGINT        NOT NULL,
+  places_econom   VARCHAR(1000) NOT NULL,
+  places_business VARCHAR(1000) NOT NULL,
   FOREIGN KEY (flight_id) REFERENCES Flight (id)
 );
 

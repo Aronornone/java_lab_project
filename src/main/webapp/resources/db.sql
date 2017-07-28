@@ -30,6 +30,7 @@ CREATE TABLE User (
   id                BIGINT,
   PRIMARY KEY (id),
   name              VARCHAR(100),
+  email VARCHAR(100),
   password_hash     VARCHAR(1000),
   registration_date DATE
 );

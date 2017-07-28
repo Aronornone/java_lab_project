@@ -1,56 +1,60 @@
 CREATE TABLE Airplane (
-  PRIMARY_KEY BIGINT AUTO_INCREMENT,
-  name        VARCHAR(50) NOT NULL,
-  capacity    INT         NOT NULL
+  id       BIGINT,
+  PRIMARY KEY (id),
+  name     VARCHAR(50) NOT NULL,
+  capacity INT         NOT NULL
 );
 
 CREATE TABLE Flight (
-  PRIMARY_KEY       BIGINT AUTO_INCREMENT,
-  airplane_id       BIGINT       NOT NULL,
-  flight_number     VARCHAR(100) NOT NULL,
-  departure_airport VARCHAR(50)  NOT NULL,
-  arrival_airport   VARCHAR(50)  NOT NULL,
-  base_cost         DOUBLE       NOT NULL,
-  used_places       INT    DEFAULT 0, #available_places INT?
-  date              DATE         NOT NULL,
-  FOREIGN KEY (airplane_id) REFERENCES Airplane (PRIMARY_KEY)
+  id                BIGINT,
+  PRIMARY KEY (id),
+  airplane_id       BIGINT      NOT NULL,
+  flight_nunmber    VARCHAR(50) NOT NULL,
+  departure_airport VARCHAR(50) NOT NULL,
+  arrival_airport   VARCHAR(50) NOT NULL,
+  base_cost         DOUBLE      NOT NULL,
+  used_places       INT DEFAULT 0, #available_places INT?
+  date              DATE        NOT NULL,
+  FOREIGN KEY (airplane_id) REFERENCES Airplane (id)
 );
 
 CREATE TABLE FlightPlace (
-  PRIMARY_KEY BIGINT AUTO_INCREMENT,
-  flight_id   BIGINT NOT NULL,
-  places      VARCHAR(1000), #bitset
-
-  FOREIGN KEY (flight_id) REFERENCES Flight (PRIMARY_KEY)
+  id        BIGINT,
+  PRIMARY KEY (id),
+  flight_id BIGINT        NOT NULL,
+  places    VARCHAR(1000) NOT NULL, #bitset
+  FOREIGN KEY (flight_id) REFERENCES Flight (id)
 );
 
 CREATE TABLE User (
-  PRIMARY_KEY       BIGINT AUTO_INCREMENT,
-  name              VARCHAR(100)  NOT NULL,
-  email             VARCHAR(100)  NOT NULL,
-  password_hash     VARCHAR(1000) NOT NULL,
+  id                BIGINT,
+  PRIMARY KEY (id),
+  name              VARCHAR(100),
+  password_hash     VARCHAR(1000),
   registration_date DATE
 );
 
+CREATE TABLE Invoice (
+  id             BIGINT,
+  PRIMARY KEY (id),
+  user           BIGINT NOT NULL,
+  status         VARCHAR(20),
+  num_of_tickets INT    NOT NULL,
+  timestamp      DATE,
+  FOREIGN KEY (user) REFERENCES User (id)
+);
 CREATE TABLE Ticket (
-  PRIMARY_KEY    BIGINT  AUTO_INCREMENT,
-  invoice_id     BIGINT       NOT NULL,
-  flight_id      BIGINT       NOT NULL,
+  id             BIGINT,
+  PRIMARY KEY (id),
+  invoice        BIGINT       NOT NULL,
+  flight         BIGINT       NOT NULL,
   passenger_name VARCHAR(100) NOT NULL,
-  passport_info  VARCHAR(200) NOT NULL,
+  passport       VARCHAR(100) NOT NULL,
   place          INT          NOT NULL,
   luggage        BOOLEAN DEFAULT FALSE,
   business_class BOOLEAN DEFAULT FALSE,
   price          DOUBLE       NOT NULL,
-  FOREIGN KEY (invoice_id) REFERENCES Invoice (PRIMARY_KEY),
-  FOREIGN KEY (flight_id) REFERENCES Flight (PRIMARY_KEY)
+  FOREIGN KEY (invoice) REFERENCES Invoice (id),
+  FOREIGN KEY (flight) REFERENCES Flight (id)
 );
 
-CREATE TABLE Invoice (
-  PRIMARY_KEY    BIGINT AUTO_INCREMENT,
-  user_id        BIGINT NOT NULL,
-  status         VARCHAR(20),
-  num_of_tickets INT    NOT NULL,
-  timestamp      DATE,
-  FOREIGN KEY (user_id) REFERENCES User (PRIMARY_KEY)
-);

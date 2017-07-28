@@ -15,74 +15,63 @@
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">
         <div class="bucket">
-            <form name="ticket" action="ticket" method="post">
-                <div class="bucketTable">
-                    <div class="flightInfo">
-                        Рейс/Flight: <b>${flightNumber}</b> из/from: <b>${departureAirport}</b>
-                        в/to: <b>${arrivalAirport}</b>.
-                        Дата и время/ DateTime: <b>${dateTime}</b>
-                        Самолет/Airplane: <b>${airplanename}</b>
-                    </div>
 
-                    <c:forEach items="${tickets}" var="tickets">
-                        <div class="passenger">
-                            <p class="passengerNum">Пассажир/Passenger</p>
-                            <table class="buckettable">
-                                <tr>
-                                    <th>
-                                        Фамилия и имя/First and Last Name
-                                    </th>
-                                    <th>
-                                        Паспорт/ID card
-                                    </th>
-
-                                    <th class="tableButDel">
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input class="passengerfield" type="text" name="passengerName" value="">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="passport" value="">
-                                    </td>
-
-                                    <td>
-                                        <form name="ticketDelete" action="ticketDelete" method="post">
-                                            <input class="deleteBut" type="submit" value="Удалить/Delete">
-                                        </form>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="wrapOptions">
-                                <div>
-                                    <p>
-                                        Бизнес-класс/Business-class <input class="checkbox" name="business"
-                                                                           type="checkbox"
-                                                                           value="0">
-                                        Багаж/Luggage <input class="checkbox" name="luggage" type="checkbox" value="0">
-                                    </p>
-                                </div>
-                                <div class="pasCost">
-                                    <div class="pplace">Ваше место/Your seat:</div>
-                                    <div class="place">${tickets.sittingPlace}</div>
-                                    <div class="pcost">Стоимость/Cost:</div>
-                                    <div class="cost">${tickets.price}</div>
-                                </div>
-                            </div>
-                            <hr class="headerLine">
-                        </div>
-
-                    </c:forEach>
-
-                    <div class="butPay">
-                        <div class="pCostTotal">Итого/Total:</div>
-                        <div class="costTotal">${totalSum}</div>
-
-                        <input class="bucketPay" type="submit" value="Оплатить/Pay">
-                    </div>
+            <div class="bucketTable">
+                <div class="flightInfo">
+                    <p class="error"> ${bucketEmpty}</p>
+                    Рейс/Flight: <b>${flightNumber}</b> из/from: <b>${departureAirport}</b> в/to:
+                    <b>${arrivalAirport}</b>.
+                    Дата и время/ DateTime: <b>${dateTime}</b> Cамолет/Airplane: <b>${airplanename}</b>
                 </div>
-            </form>
+
+                <c:forEach items="${tickets}" var="tickets">
+                    <div class="passenger">
+                        <p class="passengerNum">Пассажир/Passenger</p>
+                        <table class="buckettable">
+                            <tr>
+                                <th>Фамилия и имя/First and Last Name</th>
+                                <th>Паспорт/ID card</th>
+                                <th class="tableButDel"></th>
+                            </tr>
+                            <tr>
+                                <td><input class="passengerfield" type="text" name="passengerName" value=""></td>
+                                <td><input type="text" name="passport" value=""></td>
+                                <td>
+                                    <form name="ticketDelete" action="ticketDelete" method="post">
+                                        <input class="deleteBut" type="submit" value="Удалить/Delete">
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="wrapOptions">
+                            <div>
+                                <p>Бизнес-класс/Business-class <input class="checkbox" name="business" type="checkbox"
+                                                                      value="0">
+                                    Багаж/Luggage <input class="checkbox" name="luggage" type="checkbox" value="0"></p>
+                            </div>
+                            <div class="pasCost">
+                                <div class="pplace">Ваше место/Your seat:</div>
+                                <div class="place">${tickets.sittingPlace}</div>
+                                <div class="pcost">Стоимость/Cost:</div>
+                                <div class="cost">${tickets.price}</div>
+                            </div>
+                        </div>
+                        <hr class="headerLine">
+                    </div>
+
+                </c:forEach>
+
+                <div class="butPay">
+                    <div class="pCostTotal">Итого/Total:</div>
+                    <div class="costTotal">${totalSum}</div>
+                    <!--TODO: Добавить логику на кнопку сохранения внесенных в билеты данных-->
+                    <a href="save"><input class="bucketSave" type="submit" value="Сохранить/Save"></a>
+                    <form name="ticket" action="ticketPay" method="post">
+                        <input class="bucketPay" type="submit" value="Оплатить/Pay">
+                    </form>
+                </div>
+
+            </div>
         </div>
     </div>
     <jsp:include page="/WEB-INF/pages/_footer.jsp"/>

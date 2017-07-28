@@ -14,7 +14,7 @@
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">
         <div class="filters">
-            <form class="search" action="search" method="post">
+            <form class="search" action="flights" method="post">
                 <div class="pdates">
                     <p class="filter">Дата с </p>
                     <p class="filter">Дата по </p>
@@ -24,17 +24,22 @@
                     <input class="calendar" type="date" name="dateTo">
                 </div>
                 <div class="pairports">
+
                     <p class="filter">Аэропорт вылета</p>
                     <p class="filter">Аэропорт прилета</p>
                 </div>
                 <div class="fairports">
-                    <select class="checkFilter">
-                        <option>Пункт 1</option>
-                        <option>Пункт 2</option>
+                    <select name="selectedDeparture" class="checkFilter">
+                        <option selected disabled>Выберите/Choose here</option>
+                        <c:forEach items="${departures}" var="departure">
+                            <option>${departure}</option>
+                        </c:forEach>
                     </select>
-                    <select class="checkFilter">
-                        <option>Пункт 1</option>
-                        <option>Пункт 2</option>
+                    <select name="selectedArrival" class="checkFilter">
+                        <option selected disabled>Выберите/Choose</option>
+                        <c:forEach items="${arrivals}" var="arrival">
+                            <option>${arrival}</option>
+                        </c:forEach>
                     </select>
                 </div>
                 <div class="pnumberTickets">
@@ -43,6 +48,8 @@
                                name="numberTickets">
                     </p>
                 </div>
+                <p class="error">${nothingFound}</p>
+                <p class="error">${insertDate}</p>
                 <div class="psearchBut">
                     <p>
                         <input class="searchBut" type="submit" value="Найти/Search">
@@ -55,58 +62,30 @@
 
             <table>
                 <tr>
-                    <th>
-                        From
-                    </th>
-                    <th>
-                        To
-                    </th>
-                    <th>
-                        Date and Time
-                    </th>
-                    <th>
-                        Flight
-                    </th>
-                    <th>
-                        Airplane
-                    </th>
-                    <th>
-                        Cost
-                    </th>
-                    <th>
-
-                    </th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date and Time</th>
+                    <th>Flight</th>
+                    <th>Airplane</th>
+                    <th>Cost</th>
+                    <th></th>
                 </tr>
-                <c:forEach items="${flights}" var="flights">
-                    <tr>
-                        <td>
-                                ${flights.departureAirport}
-                        </td>
-                        <td>
-                                ${flights.arrivalAirport}
-                        </td>
-                        <td>
-                                ${flights.dateTime}
-                        </td>
-                        <td>
-                                ${flights.flightNumber}
-                        </td>
-                        <td>
-                                ${flights.airplane.name}
-                        </td>
-                        <td>
-                                ${flights.baseCost}
-                        </td>
-                        <td>
-                            <form class="buttonBuy" action="bucket" method="post">
-                                <input class="bucketBut" type="submit" value="Купить/Buy">
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
+
+                    <c:forEach items="${flights}" var="flight">
+                        <tr>
+                            <td>${flight.departureAirport} </td>
+                            <td>${flight.arrivalAirport}</td>
+                            <td>${flight.dateTime}</td>
+                            <td>${flight.flightNumber}</td>
+                            <td>${flight.airplane.name}</td>
+                            <td>${flight.baseCost}</td>
+                            <td>
+                                <a href="bucket?flightId=${flight.flightId}"><input class="bucketBut" type="submit" value="Купить/Buy"></a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+
             </table>
-
-
         </div>
 
     </div>

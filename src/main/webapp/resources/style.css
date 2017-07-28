@@ -91,9 +91,21 @@ a:active {
     border: none;
     color: white;
     padding: 7px 14px;
+    float: right;
     clear: both;
     margin:10px 0 10px 10px;
 }
+
+.bucketSave {
+    font-size: 14pt;
+    background-color: #0017af;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    clear: both;
+    margin:10px 0 10px 10px;
+}
+
 .bucketPay {
     font-size: 14pt;
     background-color: #4CAF30;
@@ -244,4 +256,8 @@ p.passengerNum{
 .wrapOptions{
     display: inline-flex;
     width: 100%;
+}
+.error{
+    color: #af1300;
+    font-weight:bold;
 }

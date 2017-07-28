@@ -4,5 +4,5 @@
 
 <div class="footer">
     <hr class="headerLine">
-    <p>Production by: LabOfFour, 2017</p>
+    <p>Production by: LabOfFour, 2017. No rights reserved.</p>
 </div>

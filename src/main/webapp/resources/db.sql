@@ -7,6 +7,13 @@ CREATE TABLE Airplane (
 
 );
 
+CREATE TABLE Airport (
+  id   BIGINT AUTO_INCREMENT,
+  PRIMARY KEY (id),
+  name VARCHAR(100),
+  city VARCHAR(100)
+
+);
 CREATE TABLE Flight (
   id                        BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
@@ -17,7 +24,7 @@ CREATE TABLE Flight (
   base_cost                 DOUBLE      NOT NULL,
   available_places_econom   INT         NOT NULL,
   available_places_business INT         NOT NULL,
-  date                      DATE        NOT NULL,
+  date                      DATETIME    NOT NULL,
   FOREIGN KEY (airplane_id) REFERENCES Airplane (id)
 );
 
@@ -36,7 +43,7 @@ CREATE TABLE User (
   name              VARCHAR(100),
   email             VARCHAR(100),
   password_hash     VARCHAR(1000),
-  registration_date DATE
+  registration_date DATETIME
 );
 
 CREATE TABLE Invoice (
@@ -45,7 +52,7 @@ CREATE TABLE Invoice (
   user           BIGINT NOT NULL,
   status         VARCHAR(20),
   num_of_tickets INT    NOT NULL,
-  timestamp      DATE,
+  timestamp      DATETIME,
   FOREIGN KEY (user) REFERENCES User (id)
 );
 CREATE TABLE Ticket (

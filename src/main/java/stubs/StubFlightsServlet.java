@@ -1,6 +1,7 @@
 package stubs;
 
 import pojo.Airplane;
+import pojo.Airport;
 import pojo.Flight;
 import pojo.User;
 
@@ -29,9 +30,12 @@ public class StubFlightsServlet extends HttpServlet {
         //TODO: Здесь нужен запрос из БД списка рейсов по переданным параметрам!
         //Отсюда и ....
         Airplane airplane = new Airplane(1, "Airbus 320", 202, 23);
-        Flight flight1 = new Flight(1, airplane, "12-D", "SPB", "MSK", 10052.30, 202, 23, LocalDateTime.of(2017, 07, 10, 23, 59));
-        Flight flight2 = new Flight(2, airplane, "15-3", "MSK", "HEL", 11002.30, 202, 23, LocalDateTime.of(2017, 07, 15, 12, 48));
-        Flight flight3 = new Flight(3, airplane, "15-5", "SPB", "HEL", 11002.30, 202, 23, LocalDateTime.of(2017, 07, 26, 12, 48));
+        Airport SPB = new Airport(1,"SPB","Saint-Petersburg");
+        Airport MSK = new Airport(2,"MSK","Moscow");
+        Airport HEL = new Airport(3,"HEL","Helsinki");
+        Flight flight1 = new Flight(1, airplane, "12-D", SPB, MSK, 10052.30, 202, 23, LocalDateTime.of(2017, 7, 10, 23, 59));
+        Flight flight2 = new Flight(2, airplane, "15-3", MSK, HEL, 11002.30, 202, 23, LocalDateTime.of(2017, 7, 15, 12, 48));
+        Flight flight3 = new Flight(3, airplane, "15-5", SPB, HEL, 11002.30, 202, 23, LocalDateTime.of(2017, 7, 26, 12, 48));
         List<Flight> allFlights = new ArrayList<>();
         allFlights.add(flight1);
         allFlights.add(flight2);
@@ -39,8 +43,8 @@ public class StubFlightsServlet extends HttpServlet {
         Set<String> departureAirports = new HashSet<>();
         Set<String> arrivalAirports = new HashSet<>();
         for (Flight flight : allFlights) {
-            departureAirports.add(flight.getDepartureAirport());
-            arrivalAirports.add(flight.getArrivalAirport());
+            departureAirports.add(flight.getDepartureAirport().getName() +" (" + flight.getDepartureAirport().getCity()+ ")");
+            arrivalAirports.add(flight.getArrivalAirport().getName()+" (" + flight.getArrivalAirport().getCity()+ ")");
         }
         //...до этого момента код должен быть для получения списка всех рейсов + списка аэропортов из БД, пока заглушка
 
@@ -68,10 +72,10 @@ public class StubFlightsServlet extends HttpServlet {
         //TODO: Добавить в логгер информацию о поиске
         System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTickets);
 
-        //Формируем список подходящих рейсов
+        //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
         List<Flight> foundFlights = new ArrayList<>();
         for (Flight flight : allFlights) {
-            if ((flight.getArrivalAirport().equals(arrival)) && (flight.getDepartureAirport().equals(departure)) &&
+            if ((flight.getArrivalAirport().getName().equals(arrival.substring(0,3))) && (flight.getDepartureAirport().getName().equals(departure.substring(0,3))) &&
                     ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTickets) &&
                     ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) && flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
                 foundFlights.add(flight);

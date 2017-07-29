@@ -7,6 +7,7 @@
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
+
 </head>
 <body>
 
@@ -29,18 +30,18 @@
                     <p class="filter">Аэропорт прилета</p>
                 </div>
                 <div class="fairports">
-                    <select name="selectedDeparture" class="checkFilter">
-                        <option selected disabled>Выберите/Choose here</option>
+                    <input name="selectedDeparture" list="DA-filter" class="checkFilter">
+                    <datalist id="DA-filter">
                         <c:forEach items="${departures}" var="departure">
                             <option>${departure}</option>
                         </c:forEach>
-                    </select>
-                    <select name="selectedArrival" class="checkFilter">
-                        <option selected disabled>Выберите/Choose</option>
+                    </datalist>
+                    <input name="selectedArrival" list="AA-filter" class="checkFilter">
+                    <datalist id="AA-filter">
                         <c:forEach items="${arrivals}" var="arrival">
                             <option>${arrival}</option>
                         </c:forEach>
-                    </select>
+                    </datalist>
                 </div>
                 <div class="pnumberTickets">
                     <p class="filter">Количество пассажиров
@@ -71,19 +72,20 @@
                     <th></th>
                 </tr>
 
-                    <c:forEach items="${flights}" var="flight">
-                        <tr>
-                            <td>${flight.departureAirport} </td>
-                            <td>${flight.arrivalAirport}</td>
-                            <td>${flight.dateTime}</td>
-                            <td>${flight.flightNumber}</td>
-                            <td>${flight.airplane.name}</td>
-                            <td>${flight.baseCost}</td>
-                            <td>
-                                <a href="bucket?flightId=${flight.flightId}"><input class="bucketBut" type="submit" value="Купить/Buy"></a>
-                            </td>
-                        </tr>
-                    </c:forEach>
+                <c:forEach items="${flights}" var="flight">
+                    <tr>
+                        <td>${flight.departureAirport.name} (${flight.departureAirport.city}) </td>
+                        <td>${flight.arrivalAirport.name} (${flight.arrivalAirport.city})</td>
+                        <td>${flight.dateTime}</td>
+                        <td>${flight.flightNumber}</td>
+                        <td>${flight.airplane.name}</td>
+                        <td>${flight.baseCost}</td>
+                        <td>
+                            <a href="bucket?flightId=${flight.flightId}"><input class="bucketBut" type="submit"
+                                                                                value="Купить/Buy"></a>
+                        </td>
+                    </tr>
+                </c:forEach>
 
             </table>
         </div>

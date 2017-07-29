@@ -1,5 +1,7 @@
 package stubs;
 
+import utils.SessionUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +14,7 @@ import java.io.IOException;
 public class StubLogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
-        httpSession.invalidate();
+        SessionUtils.invalidateSession(httpSession);
 
         request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request,response);
 

@@ -11,8 +11,8 @@ public class Flight {
     private long flightId;
     private Airplane airplane;
     private String flightNumber;
-    private String departureAirport;
-    private String arrivalAirport;
+    private Airport departureAirport;
+    private Airport arrivalAirport;
     private Double baseCost;
     private int availablePlacesEconom;
     private int availablePlacesBusiness;

@@ -41,9 +41,9 @@ div.formLogReg {
 .checkFilter {
     width: 150px;
     margin: 5px;
-    height: 26px;
+    height: 20px;
     font-size: 15px;
-    text-align: center;
+    text-align: left;
 }
 
 .calendar {

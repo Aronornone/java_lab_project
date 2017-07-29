@@ -1,6 +1,7 @@
 package stubs;
 
 import pojo.*;
+import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +22,6 @@ public class StubBucketServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
         Integer numberTickets = (Integer) httpSession.getAttribute("numberTickets");
-        Long flightIdSession = (Long) httpSession.getAttribute("flightId");
 
         if (numberTickets == null) {
             numberTickets = 0;
@@ -29,21 +29,22 @@ public class StubBucketServlet extends HttpServlet {
             request.setAttribute("bucketEmpty", bucketEmpty);
         }
 
+        //Должно быть создание нового заказа
         Invoice invoice = new Invoice(1, user, Invoice.InvoiceStatus.CREATED, 2, LocalDateTime.now());
         Airplane airplane = new Airplane(1, "Airbus 320", 202, 23);
 
-        String flightIdString;
-        if(flightIdSession==null) {
-            flightIdString = request.getParameter("flightId");
-        } else flightIdString = flightIdSession.toString();
+        String flightIdString = SessionUtils.checkFlightSession(httpSession,request);
 
         if (flightIdString != null) {
             Long flightId = Long.parseLong(flightIdString);
             httpSession.setAttribute("flightId", flightId);
             //Здесь будет из БД запрос по Id
-            Flight flight1 = new Flight(1, airplane, "12-D", "SPB", "MSK", 10052.30, 202, 23, LocalDateTime.of(2017, 07, 10, 23, 59));
-            Flight flight2 = new Flight(2, airplane, "15-3", "MSK", "HEL", 11002.30, 202, 23, LocalDateTime.of(2017, 07, 15, 12, 48));
-            Flight flight3 = new Flight(3, airplane, "15-5", "SPB", "HEL", 11002.30, 202, 23, LocalDateTime.of(2017, 07, 26, 12, 48));
+            Airport SPB = new Airport(1, "SPB", "Saint-Petersburg");
+            Airport MSK = new Airport(2, "MSK", "Saint-Petersburg");
+            Airport HEL = new Airport(3, "HEL", "Saint-Petersburg");
+            Flight flight1 = new Flight(1, airplane, "12-D", SPB, MSK, 10052.30, 202, 23, LocalDateTime.of(2017, 07, 10, 23, 59));
+            Flight flight2 = new Flight(2, airplane, "15-3", MSK, HEL, 11002.30, 202, 23, LocalDateTime.of(2017, 07, 15, 12, 48));
+            Flight flight3 = new Flight(3, airplane, "15-5", SPB, HEL, 11002.30, 202, 23, LocalDateTime.of(2017, 07, 26, 12, 48));
             List<Flight> allFlights = new ArrayList<>();
             allFlights.add(flight1);
             allFlights.add(flight2);
@@ -60,10 +61,13 @@ public class StubBucketServlet extends HttpServlet {
                 }
             }
         }
+
         List<Ticket> tickets = new ArrayList<>();
         double sumTotal = 0;
 
-        if (numberTickets != 0) {
+        if (numberTickets != 0)
+
+        {
             //Здесь нужно добавление tickets в базу
             for (int i = 0; i < numberTickets; i++) {
                 tickets.add(new Ticket());

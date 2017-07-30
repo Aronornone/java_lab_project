@@ -38,7 +38,7 @@
                                 <td><input type="text" name="passport" value=""></td>
                                 <td>
                                     <form name="ticketDelete" action="ticketDelete" method="post">
-                                        <input class="deleteBut" type="submit" value="Удалить/Delete">
+                                        <input class="buttonDelete" type="submit" value="Удалить/Delete">
                                     </form>
                                 </td>
                             </tr>
@@ -65,9 +65,9 @@
                     <div class="pCostTotal">Итого/Total:</div>
                     <div class="costTotal">${totalSum}</div>
                     <!--TODO: Добавить логику на кнопку сохранения внесенных в билеты данных-->
-                    <a href="save"><input class="bucketSave" type="submit" value="Сохранить/Save"></a>
+                    <a href="save"><input class="buttonBucketSave" type="submit" value="Сохранить/Save"></a>
                     <form name="ticket" action="ticketPay" method="post">
-                        <input class="bucketPay" type="submit" value="Оплатить/Pay">
+                        <input class="buttonBucketPay" type="submit" value="Оплатить/Pay">
                     </form>
                 </div>
 

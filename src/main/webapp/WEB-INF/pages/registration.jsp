@@ -15,12 +15,17 @@
             <a href="registration"><img src="resources/images/flag_en.png" alt="en"></a>
             <a href="registration"><img src="resources/images/flag_ru.png" alt="ru"></a>
         </div>
-        <form action="registration" method="post">
-            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email"></p>
-            <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password"></p>
-            <p>Повторите пароль/Repeat password: <input class="fieldLogReg" type="password" name="password"></p>
+        <p class="error">${passwordsNotEqual}</p>
+        <p class="error">${passwordsEmpty}</p>
+        <p class="error">${userAlreadyExist}</p>
+
+        <form action="doReg" method="post">
+            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${email}"></p>
+            <p>Отображаемое Имя/Displayed Name: <input class="fieldLogReg" type="text" name="username" value="${username}"></p>
+            <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password1"></p>
+            <p>Повторите пароль/Repeat password: <input class="fieldLogReg" type="password" name="password2"></p>
             <input class="buttonLogReg" type="submit" value="Register/Регистрация">
-            <p><a href="login">Вход\Login</a></p>
+            <p><a href="loginPage">Вход\Login</a></p>
         </form>
     </div>
 </div>

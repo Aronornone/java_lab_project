@@ -5,13 +5,6 @@
     margin: auto;
 }
 
-.buttonLogReg {
-    font-size: 16pt;
-    background-color: #4CAF30;
-    border: none;
-    color: white;
-    padding: 14px 28px;
-}
 
 div.formLogReg {
     width: 300px;
@@ -75,7 +68,15 @@ a:active {
     overflow: hidden;
 }
 
-.logoutBut {
+.buttonLogReg {
+    font-size: 16pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 14px 28px;
+}
+
+.buttonLogout {
     font-size: 10pt;
     background-color: #d56e00;
     border: none;
@@ -85,7 +86,17 @@ a:active {
     margin: 10px 0 10px 10px;
 }
 
-.bucketBut {
+.buttonLogin {
+    font-size: 10pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    clear: both;
+    margin: 10px 0 10px 10px;
+}
+
+.buttonBucket {
     font-size: 10pt;
     background-color: #4CAF30;
     border: none;
@@ -96,7 +107,7 @@ a:active {
     margin:10px 0 10px 10px;
 }
 
-.bucketSave {
+.buttonBucketSave {
     font-size: 14pt;
     background-color: #0017af;
     border: none;
@@ -106,7 +117,7 @@ a:active {
     margin:10px 0 10px 10px;
 }
 
-.bucketPay {
+.buttonBucketPay {
     font-size: 14pt;
     background-color: #4CAF30;
     border: none;
@@ -115,14 +126,14 @@ a:active {
     clear: both;
     margin:10px 0 10px 10px;
 }
-.searchBut {
+.buttonSearch {
     font-size: 16pt;
     background-color: #3f669f;
     border: none;
     color: white;
     padding: 10px 20px;
 }
-.deleteBut{
+.buttonDelete{
     font-size: 10pt;
     background-color: #af1300;
     border: none;
@@ -132,6 +143,11 @@ a:active {
     clear: both;
     margin:10px 0 10px 10px;
 }
+
+.buttonBuy {
+    float: right;
+}
+
 .header {
     text-align: right;
 }
@@ -149,13 +165,6 @@ a:active {
     font-size: 15pt;
 }
 
-.headerLine {
-
-}
-
-.flightTable {
-}
-
 table {
     width: 100%;
     border-spacing: 0;
@@ -171,6 +180,7 @@ tr {
 .tableButDel{
     width:50%;
 }
+
 tr:hover {
     background-color: rgba(217, 240, 213, 0.31);
     padding: 5px;
@@ -206,16 +216,8 @@ p.filter {
     margin: 0;
 }
 
-.pairports {
-
-}
-
 .psearchBut {
     margin-left: auto;
-}
-
-.buttonBuy {
-    float: right;
 }
 
 .butPay{
@@ -224,9 +226,6 @@ p.filter {
 }
 p.passengerNum{
     font-size: 15pt;
-}
-
-.checkbox{
 }
 
 .cost {

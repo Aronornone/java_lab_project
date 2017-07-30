@@ -7,7 +7,6 @@
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
-
 </head>
 <body>
 
@@ -15,7 +14,7 @@
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">
         <div class="filters">
-            <form class="search" action="flights" method="post">
+            <form class="search" action="doSearch" method="post">
                 <div class="pdates">
                     <p class="filter">Дата с </p>
                     <p class="filter">Дата по </p>
@@ -33,13 +32,13 @@
                     <input name="selectedDeparture" list="DA-filter" class="checkFilter">
                     <datalist id="DA-filter">
                         <c:forEach items="${departures}" var="departure">
-                            <option>${departure}</option>
+                            <option value="${departure.name}">${departure.name} (${departure.city})</option>
                         </c:forEach>
                     </datalist>
                     <input name="selectedArrival" list="AA-filter" class="checkFilter">
                     <datalist id="AA-filter">
                         <c:forEach items="${arrivals}" var="arrival">
-                            <option>${arrival}</option>
+                            <option value="${arrival.name}">${arrival.name} (${arrival.city})</option>
                         </c:forEach>
                     </datalist>
                 </div>
@@ -50,10 +49,10 @@
                     </p>
                 </div>
                 <p class="error">${nothingFound}</p>
-                <p class="error">${insertDate}</p>
+                <p class="error">${insertFilters}</p>
                 <div class="psearchBut">
                     <p>
-                        <input class="searchBut" type="submit" value="Найти/Search">
+                        <input class="buttonSearch" type="submit" value="Найти/Search">
                     </p>
                 </div>
             </form>
@@ -81,7 +80,7 @@
                         <td>${flight.airplane.name}</td>
                         <td>${flight.baseCost}</td>
                         <td>
-                            <a href="bucket?flightId=${flight.flightId}"><input class="bucketBut" type="submit"
+                            <a href="bucket?flightId=${flight.flightId}"><input class="buttonBucket" type="submit"
                                                                                 value="Купить/Buy"></a>
                         </td>
                     </tr>

@@ -26,6 +26,12 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
+    public User(String name, String email, String nonHashedPassword, LocalDateTime registrationDate) {
+        this.name = name;
+        this.email = email;
+        this.passwordHash = DigestUtils.md5Hex(nonHashedPassword);
+        this.registrationDate = registrationDate;
+    }
     public void setPassword(String nonHashedPassword) {
         this.passwordHash = DigestUtils.md5Hex(nonHashedPassword);
     }

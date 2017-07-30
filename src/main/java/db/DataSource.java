@@ -24,9 +24,9 @@ public class DataSource {
     static {
         Properties properties = new Properties();
 
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(
-                    new FileInputStream("src/webapp/resources/db.properties")))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("db.properties")))) {
             properties.load(br);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,7 +39,7 @@ public class DataSource {
         CONN_POOL_SIZE = Integer.parseInt(properties.getProperty("connection_pool_size"));
         MIN_IDLE_CONNECTIONS = Integer.parseInt(properties.getProperty("min_idle_connections"));
         MAX_IDLE_CONNECTIONS = Integer.parseInt(properties.getProperty("max_idle_connections"));
-        MAX_OPENED_PREP_STMTS = Integer.parseInt(properties.getProperty("max_opend_prepared_stmts"));
+        MAX_OPENED_PREP_STMTS = Integer.parseInt(properties.getProperty("max_opened_prepared_stmts"));
     }
 
     private static BasicDataSource getDataSource() {

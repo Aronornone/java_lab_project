@@ -4,7 +4,6 @@ CREATE TABLE Airplane (
   name              VARCHAR(50) NOT NULL,
   capacity_econom   INT         NOT NULL,
   capacity_business INT         NOT NULL
-
 );
 
 CREATE TABLE Airport (
@@ -12,20 +11,22 @@ CREATE TABLE Airport (
   PRIMARY KEY (id),
   name VARCHAR(100),
   city VARCHAR(100)
-
 );
+
 CREATE TABLE Flight (
   id                        BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
   airplane_id               BIGINT      NOT NULL,
-  flight_nunmber            VARCHAR(50) NOT NULL,
-  departure_airport         VARCHAR(50) NOT NULL,
-  arrival_airport           VARCHAR(50) NOT NULL,
+  flight_number             VARCHAR(50) NOT NULL,
+  departure_airport_id      BIGINT		NOT NULL,
+  arrival_airport_id        BIGINT		NOT NULL,
   base_cost                 DOUBLE      NOT NULL,
   available_places_econom   INT         NOT NULL,
   available_places_business INT         NOT NULL,
   date                      DATETIME    NOT NULL,
-  FOREIGN KEY (airplane_id) REFERENCES Airplane (id)
+  FOREIGN KEY (airplane_id)             REFERENCES Airplane (id),
+  FOREIGN KEY (departure_airport_id)    REFERENCES Airport (id),
+  FOREIGN KEY (arrival_airport_id)      REFERENCES Airport (id)
 );
 
 CREATE TABLE FlightPlace (
@@ -55,6 +56,7 @@ CREATE TABLE Invoice (
   timestamp      DATETIME,
   FOREIGN KEY (user) REFERENCES User (id)
 );
+
 CREATE TABLE Ticket (
   id             BIGINT  AUTO_INCREMENT,
   PRIMARY KEY (id),
@@ -67,6 +69,6 @@ CREATE TABLE Ticket (
   business_class BOOLEAN DEFAULT FALSE,
   price          DOUBLE       NOT NULL,
   FOREIGN KEY (invoice) REFERENCES Invoice (id),
-  FOREIGN KEY (flight) REFERENCES Flight (id)
+  FOREIGN KEY (flight)  REFERENCES Flight (id)
 );
 

@@ -35,12 +35,23 @@ public class StubDoSearchServlet extends HttpServlet {
         String dateToString = request.getParameter("dateTo");
         String departure = request.getParameter("selectedDeparture");
         String arrival = request.getParameter("selectedArrival");
-        int numberTickets = Integer.parseInt(request.getParameter("numberTickets"));
+        String numberTicketsFilterString = request.getParameter("numberTicketsFilter");
 
-        //проверяем дату перед парсингом
-        if ((dateFromString.length() == 0) || (dateToString.length() == 0) || departure.isEmpty() || arrival.isEmpty() || numberTickets == 0) {
+        //Сохраняем фильтры для следующих запросов в рамках этой же сессии
+        httpSession.setAttribute("numberTicketsFilter", numberTicketsFilterString);
+        httpSession.setAttribute("dateFrom", dateFromString);
+        httpSession.setAttribute("dateTo", dateToString);
+        httpSession.setAttribute("departureF", departure);
+        httpSession.setAttribute("arrivalF", arrival);
+
+        //проверяем фильтры перед парсингом
+        if ((dateFromString.isEmpty()) ||
+                (dateToString.isEmpty()) ||
+                departure.isEmpty() ||
+                arrival.isEmpty() ||
+                numberTicketsFilterString==null) {
             //TODO: в Локализацию
-            String insertFilters = "Insert Date and Airports. Please try again.";
+            String insertFilters = "Insert Date and Airports.</br> Please try again.";
             request.setAttribute("insertFilters", insertFilters);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
@@ -48,15 +59,16 @@ public class StubDoSearchServlet extends HttpServlet {
             LocalDate dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
+            int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
 
             //TODO: Добавить в логгер информацию о поиске
-            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTickets);
+            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTicketsFilter);
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             List<Flight> foundFlights = new ArrayList<>();
             for (Flight flight : flights) {
                 if ((flight.getArrivalAirport().getName().equals(arrival)) && (flight.getDepartureAirport().getName().equals(departure)) &&
-                        ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTickets) &&
+                        ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTicketsFilter) &&
                         ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) && flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
                     foundFlights.add(flight);
                 }
@@ -65,12 +77,9 @@ public class StubDoSearchServlet extends HttpServlet {
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {
                 //TODO: в Локализацию
-                String nothingFound = "Nothing found. Please try again.";
+                String nothingFound = "Nothing found. </br>Please try again.";
                 request.setAttribute("nothingFound", nothingFound);
             } else request.setAttribute("flights", foundFlights);
-
-            //Сохраняем для следующего запроса количество билетов
-            httpSession.setAttribute("numberTickets", numberTickets);
 
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }

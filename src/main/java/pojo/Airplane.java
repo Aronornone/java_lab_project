@@ -12,4 +12,10 @@ public class Airplane {
     private String name;
     private int capacityEconom;
     private int capacityBusiness;
+
+    public Airplane(String name, int capacityEconom, int capacityBusiness) {
+        this.name = name;
+        this.capacityEconom = capacityEconom;
+        this.capacityBusiness = capacityBusiness;
+    }
 }

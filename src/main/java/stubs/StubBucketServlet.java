@@ -21,22 +21,48 @@ public class StubBucketServlet extends HttpServlet {
 
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
-        if (user==null) {
+        Long invoiceIdSession = (Long) httpSession.getAttribute("invoiceId");
+        if (user == null) {
             //заглушка, будет еще предупреждение, что нужно сначала войти + сохранение выбранных фильтров
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
-        Integer numberTickets = (Integer) httpSession.getAttribute("numberTickets");
-
-        if (numberTickets == null) {
-            numberTickets = 0;
+        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+        int numberTicketsFilter;
+        if (numberTicketsFilterString == null) {
+            numberTicketsFilter = 0;
             String bucketEmpty = "Bucket empty.";
             request.setAttribute("bucketEmpty", bucketEmpty);
         }
+        else {
+            numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
+        }
+        Invoice invoice;
+        String invoiceIdRequest = (String) request.getAttribute("invoiceId");
+        if ((invoiceIdRequest == null)&&(invoiceIdSession == null)) {
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
+            //TODO: заказ в базе тоже должен создаться
+            invoice.setInvoiceId(1); //временно
+        }
+        //TODO: прописать логику создания заказа, если уже есть в сессии, причем не менялся то не нужно создавать
+        // и если нет - нужно
+        else if(invoiceIdRequest == null){
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
+        }
+        else if(invoiceIdSession == null) {
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
+        }
+        else if (!invoiceIdRequest.equals(invoiceIdSession.toString())) {
+            //должен прошлый заказ устанавливаться в CANCELLED и создаваться новый
+            //TODO: добавить установку прошлого в CANCELLED
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
+            invoice.setInvoiceId(2); //временно
+        }
+        else {
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
+        }
+        httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
 
-        //TODO: Должно быть создание нового заказа
-        Invoice invoice = new Invoice(1, user, Invoice.InvoiceStatus.CREATED, 2, LocalDateTime.now());
-
-        String flightIdString = SessionUtils.checkFlightSession(httpSession,request);
+        String flightIdString = SessionUtils.checkFlightSession(httpSession, request);
 
         if (flightIdString != null) {
             Long flightId = Long.parseLong(flightIdString);
@@ -44,7 +70,7 @@ public class StubBucketServlet extends HttpServlet {
             //TODO: Упростить когда будет DAO
             List<Airport> airports = StubUtils.getAirports();
             List<Airplane> airplanes = StubUtils.getAirplanes();
-            List<Flight> flights = StubUtils.getFlights(airports,airplanes);
+            List<Flight> flights = StubUtils.getFlights(airports, airplanes);
 
             for (Flight flight : flights) {
                 if (flight.getFlightId() == flightId) {
@@ -61,11 +87,11 @@ public class StubBucketServlet extends HttpServlet {
         List<Ticket> tickets = new ArrayList<>();
         double sumTotal = 0;
 
-        if (numberTickets != 0)
+        if (numberTicketsFilter != 0)
 
         {
             //Здесь нужно добавление tickets в базу
-            for (int i = 0; i < numberTickets; i++) {
+            for (int i = 0; i < numberTicketsFilter; i++) {
                 tickets.add(new Ticket());
             }
             //Для проверки сумм, нужно добавить логику расчета цены

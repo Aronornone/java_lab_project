@@ -12,4 +12,10 @@ public class FlightPlace {
     private Flight flightId;
     private BitSet bitPlacesEconom;
     private BitSet bitPlacesBusiness;
+
+    public FlightPlace(Flight flightId, BitSet bitPlacesEconom, BitSet bitPlacesBusiness) {
+        this.flightId = flightId;
+        this.bitPlacesEconom = bitPlacesEconom;
+        this.bitPlacesBusiness = bitPlacesBusiness;
+    }
 }

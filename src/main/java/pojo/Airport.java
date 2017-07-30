@@ -11,4 +11,9 @@ public class Airport {
     private long airportId;
     private String name;
     private String city;
+
+    public Airport(String name, String city) {
+        this.name = name;
+        this.city = city;
+    }
 }

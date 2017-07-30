@@ -9,53 +9,65 @@
           href="<c:url value='resources/style.css'/>">
 </head>
 <body>
-
 <div class="body">
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">
         <div class="filters">
-            <form class="search" action="doSearch" method="post">
+            <form name="form1" class="search" action="doSearch" method="post">
+
                 <div class="pdates">
                     <p class="filter">Дата с </p>
                     <p class="filter">Дата по </p>
                 </div>
                 <div class="fdates">
-                    <input class="calendar" type="date" name="dateFrom">
-                    <input class="calendar" type="date" name="dateTo">
+                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}">
+                    <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}">
                 </div>
-                <div class="pairports">
 
+                <div class="pairports">
                     <p class="filter">Аэропорт вылета</p>
                     <p class="filter">Аэропорт прилета</p>
                 </div>
                 <div class="fairports">
-                    <input name="selectedDeparture" list="DA-filter" class="checkFilter">
+                    <input name="selectedDeparture" list="DA-filter" class="checkFilter" value="${sessionScope.departureF}">
                     <datalist id="DA-filter">
                         <c:forEach items="${departures}" var="departure">
-                            <option value="${departure.name}">${departure.name} (${departure.city})</option>
+                            <option value="${departure.name}">${departure.name} (${departure.city})
+                            </option>
                         </c:forEach>
                     </datalist>
-                    <input name="selectedArrival" list="AA-filter" class="checkFilter">
+
+                    <input name="selectedArrival" list="AA-filter" class="checkFilter"  value="${sessionScope.arrivalF}">
                     <datalist id="AA-filter">
                         <c:forEach items="${arrivals}" var="arrival">
                             <option value="${arrival.name}">${arrival.name} (${arrival.city})</option>
                         </c:forEach>
                     </datalist>
                 </div>
+
                 <div class="pnumberTickets">
                     <p class="filter">Количество пассажиров
-                        <input class="fieldFilters" type="number" min="1" max="80" step="1" value="1"
-                               name="numberTickets">
+                        <c:if test="${sessionScope.numberTicketsFilter == null}">
+                            <input class="fieldFilters" type="number" min="1" max="80" step="1"
+                                   value="0" name="numberTicketsFilter">
+                        </c:if>
+                        <c:if test="${sessionScope.numberTicketsFilter != null}">
+                            <input class="fieldFilters" type="number" min="1" max="80" step="1"
+                                   value="${sessionScope.numberTicketsFilter}"
+                                   name="numberTicketsFilter">
+                        </c:if>
                     </p>
                 </div>
-                <p class="error">${nothingFound}</p>
-                <p class="error">${insertFilters}</p>
+
+                <p class="error">${requestScope.nothingFound}</p>
+                <p class="error">${requestScope.insertFilters}</p>
                 <div class="psearchBut">
                     <p>
                         <input class="buttonSearch" type="submit" value="Найти/Search">
                     </p>
                 </div>
             </form>
+
             <hr class="headerLine">
         </div>
         <div class="flightTable">
@@ -73,7 +85,7 @@
 
                 <c:forEach items="${flights}" var="flight">
                     <tr>
-                        <td>${flight.departureAirport.name} (${flight.departureAirport.city}) </td>
+                        <td>${flight.departureAirport.name} (${flight.departureAirport.city})</td>
                         <td>${flight.arrivalAirport.name} (${flight.arrivalAirport.city})</td>
                         <td>${flight.dateTime}</td>
                         <td>${flight.flightNumber}</td>

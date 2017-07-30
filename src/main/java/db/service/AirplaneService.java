@@ -4,6 +4,7 @@ import db.DataSource;
 import db.dao.AirplaneDAO;
 import lombok.SneakyThrows;
 import pojo.Airplane;
+import pojo.Flight;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,15 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirplaneService implements AirplaneDAO {
-    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM airplane";
+    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane";
 
     @Override
     @SneakyThrows
     public long add(Airplane airplane) {
-        String query = "INSERT INTO airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
-        try (Connection conn = DataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(query)) {
 
             ps.setString(1, airplane.getName());
             ps.setInt(2, airplane.getCapacityEconom());
@@ -38,8 +39,8 @@ public class AirplaneService implements AirplaneDAO {
     }
 
     public boolean add(String query) {
-        try (Connection conn = DataSource.getConnection();
-             Statement stmt = conn.prepareStatement(query)) {
+        try (Connection connection = DataSource.getConnection();
+             Statement stmt = connection.prepareStatement(query)) {
             stmt.executeUpdate(query);
             return true;
         } catch (SQLException e) {
@@ -50,10 +51,10 @@ public class AirplaneService implements AirplaneDAO {
     @Override
     @SneakyThrows
     public Optional<Airplane> get(int id) {
-        String query = "SELECT name, capacity_econom, capacity_business FROM airplane WHERE id = ?";
+        String sql = "SELECT name, capacity_econom, capacity_business FROM Airplane WHERE id = ?";
 
-        try (Connection conn = DataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -67,14 +68,21 @@ public class AirplaneService implements AirplaneDAO {
     }
 
     public static void main(String[] args) {
-        AirplaneService as = new AirplaneService();
-        Optional<Airplane> airplane = as.get(55);
+        /*AirplaneService as = new AirplaneService();
+        Optional<Airplane> airplane = as.get(1);
         airplane.ifPresent(System.out::println);
 
         System.out.println();
         List<Airplane> list = as.getAll();
         for (Airplane ap: list) {
             System.out.println(ap.toString());
+        }*/
+
+        System.out.println("--Flight--");
+        FlightService fs = new FlightService();
+        List<Flight> flights = fs.getAll();
+        for (Flight flight: flights) {
+            System.out.println(flight);
         }
     }
 
@@ -89,21 +97,22 @@ public class AirplaneService implements AirplaneDAO {
     }
 
     @Override
-    @SneakyThrows
     public List<Airplane> getAll() {
-        List<Airplane> airplanes = new ArrayList<>();
+        String sql = "SELECT * FROM airplane";
 
-        try (Connection conn = DataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SELECT_ALL)) {
-            while (rs.next()) {
+        List<Airplane> airplanes = new ArrayList<>();
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
                 airplanes.add(new Airplane(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getInt("capacity_econom"),
-                        rs.getInt("capacity_business")
-                ));
+                        result.getLong("id"),
+                        result.getString("name"),
+                        result.getInt("capacity_econom"),
+                        result.getInt("capacity_business")));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return airplanes;

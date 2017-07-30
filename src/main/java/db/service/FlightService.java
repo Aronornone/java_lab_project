@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FlightService implements FlightDAO {
-    private static final String SELECT_ALL = "SELECT airplaneId, name, capacity_econom, capacity_business FROM Airplane";   //TODO needs to be changed later
+    private static final String SELECT_ALL = "SELECT * FROM Flight";
 
     @Override
     public long create(Flight flight) {
@@ -27,16 +27,20 @@ public class FlightService implements FlightDAO {
     @Override
     @SneakyThrows
     public Optional<Flight> get(int id) {
-        //String query = "SELECT id, aplane.name, aplane.capacity_econom, aplane.capacity_business, flight_number, aport1.airport_id, aport1.name, aport1.city, aport2.airport_id, aport2.name, aport2.city, base_cost, available_places_econom, available_places_business, date FROM Flight, Airplane aplane, Airport aport1, Airport aport2 WHERE id = ?";
-        String query = "SELECT * FROM Flight WHERE id = ?";
+        /*String sql = "SELECT id, airplane_id, aplane.name, aplane.capacity_econom, aplane.capacity_business, flight_number, " +
+        "departure_airport_id, aport1.name, aport1.city, "+
+        "arrival_airport_id, aport2.name, aport2.city, " +
+        "base_cost, available_places_econom, available_places_business, DATE_FORMAT(date, '%a-%b-%d'))" +
+        "FROM Flight, Airplane aplane, Airport aport1, Airport aport2 WHERE id = ?";*/
+        String sql = "SELECT * FROM Flight";
 
-        try (Connection conn = DataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             Flight flight = null;
-            if (rs != null) {
+            while (rs.next()) {
                 flight = new Flight(
                         rs.getLong("id"),
                         new Airplane(
@@ -83,10 +87,9 @@ public class FlightService implements FlightDAO {
     @SneakyThrows
     public List<Flight> getAll() {
         List<Flight> flights = new ArrayList<>();
-
-        /*try (Connection conn = DataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SELECT_ALL)) {
+        try(Connection connection = DataSource.getConnection();
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(SELECT_ALL)) {
             while (rs.next()) {
                 flights.add(new Flight(
                         rs.getLong("id"),
@@ -96,7 +99,7 @@ public class FlightService implements FlightDAO {
                             rs.getInt("capacity_econom"),
                             rs.getInt("capacity_business")
                         ),
-                        rs.getString("flight_number"),
+                        rs.getString("number"),
                         new Airport(
                             rs.getLong("id"),
                             rs.getString("name"),
@@ -107,13 +110,15 @@ public class FlightService implements FlightDAO {
                             rs.getString("name"),
                             rs.getString("city")
                         ),
-                        rs.getDouble("baseCost"),
-                        rs.getInt("availablePlacesEconom"),
-                        rs.getInt("availablePlacesBusiness"),
-                        rs.getDate("dateTime").toLocalDate()    //TODO convert to LocalDateTime
+                        rs.getDouble("base_cost"),
+                        rs.getInt("available_places_econom"),
+                        rs.getInt("available_places_business"),
+                        LocalDateTime.of(
+                                rs.getDate("date").toLocalDate(), rs.getTime("date").toLocalTime()
+                        )
                 ));
             }
-        }*/
+        }
 
         return flights;
     }

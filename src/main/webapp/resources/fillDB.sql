@@ -10,6 +10,21 @@ VALUES
   ('Boeing-737-900',192,36),
   ('Boeing-747-200',298,66);
 
+INSERT INTO user(name, email, password_hash, registration_date)
+VALUES
+('Polina', 'polina@mail.ru', '827ccb0eea8a706c4c34a16891f84e7b', '2017-07-31 06:07:11'),
+('TestUser', 'testuser@test.ru', '5d9c68c6c50ed3d02a2fcf54f63993b6', '2017-07-31 09:11:35'),
+
+INSERT INTO flight (airplane_id,flight_number,departure_airport_id,arrival_airport_id,
+base_cost,available_places_econom,available_places_business,date)
+VALUES
+(2,'RTY-56',687 ,327,6000.00,152,24,'2017-07-25 06:07:00'),
+(2,'RRY-78',687 ,327,6500.00,152,24,'2017-07-26 09:30:00'),
+(3,'YTR-26',687 ,327,5500.00,183,12,'2017-07-25 12:10:00'),
+(3,'NMR-91',687 ,327,5800.00,183,12,'2017-07-27 18:07:00'),
+(4,'VPO-13',687 ,327,6000.00,149,12,'2017-07-28 15:30:00');
+
+
 INSERT INTO airport (name, city)
 VALUES ('AAE', 'Annaba'),('AAL', 'Aalborg'),('AAR', 'Aarhus'),('ABE', 'Lehigh Valley'),('ABJ', 'Abidjan'),('ABQ', 'Albuquerque'),
   ('ABZ', 'Aberdeen'),('ACA', 'Acapulco'),('ACC', 'Kotoka'),('ACE', 'Lanzarote'),('ACH', 'Altenrhein'),('ACI', 'Alderney'),('ACI', 'Channel s'),

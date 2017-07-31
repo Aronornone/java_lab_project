@@ -23,7 +23,7 @@ CREATE TABLE Flight (
   base_cost                 DOUBLE      NOT NULL,
   available_places_econom   INT         NOT NULL,
   available_places_business INT         NOT NULL,
-  date                      DATETIME    NOT NULL,
+  flight_datetime           DATETIME    NOT NULL,
   FOREIGN KEY (airplane_id)             REFERENCES Airplane (id),
   FOREIGN KEY (departure_airport_id)    REFERENCES Airport (id),
   FOREIGN KEY (arrival_airport_id)      REFERENCES Airport (id)
@@ -48,12 +48,12 @@ CREATE TABLE User (
 );
 
 CREATE TABLE Invoice (
-  id             BIGINT AUTO_INCREMENT,
+  id                BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  user           BIGINT NOT NULL,
-  status         VARCHAR(20),
-  num_of_tickets INT    NOT NULL,
-  timestamp      DATETIME,
+  user              BIGINT NOT NULL,
+  status            VARCHAR(20),
+  num_of_tickets    INT    NOT NULL,
+  invoice_datetime  DATETIME,
   FOREIGN KEY (user) REFERENCES User (id)
 );
 

@@ -6,8 +6,8 @@
 
     <div class="logged">
         <div class="flagesLogged">
-            <a href="login"><img src="resources/images/flag_en_small.png" alt="en"></a>
-            <a href="login"><img src="resources/images/flag_ru_small.png" alt="ru"></a>
+            <a href="loginPage"><img src="resources/images/flag_en_small.png" alt="en"></a>
+            <a href="loginPage"><img src="resources/images/flag_ru_small.png" alt="ru"></a>
         </div>
         <c:if test="${user != null}">
             <p>Вы/You: ${user.name}</p>

@@ -25,6 +25,7 @@ public class SessionUtils {
 
     public static void invalidateSession(HttpSession httpSession) {
         //TODO: добавить код для отмены неоплаченных заказов клиента, удаления билетов и возвращения числа забронированных мест
+        // HttpSessionListener, HttpSessionEvent
 
         httpSession.invalidate();
 

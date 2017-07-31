@@ -13,8 +13,8 @@
 <div class="body">
     <div class="formLogReg">
         <div class="flagesLogReg">
-            <a href="login"><img src="resources/images/flag_en.png" alt="en"></a>
-            <a href="login"><img src="resources/images/flag_ru.png" alt="ru"></a>
+            <a href="loginPage"><img src="resources/images/flag_en.png" alt="en"></a>
+            <a href="loginPage"><img src="resources/images/flag_ru.png" alt="ru"></a>
         </div>
         <p class="error">${unexistingLogin}</p>
         <p class="error">${regSuccess}</p>

@@ -7,10 +7,7 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +15,12 @@ import java.util.Optional;
 
 public class FlightService implements FlightDAO {
     private static final String SELECT_ALL = "SELECT * FROM Flight";
+    /*private static final String SELECT_ALL = "SELECT id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
+            "departure_airport_id, d.name, d.city, "+
+            "arrival_airport_id, a.name, a.city, " +
+            "base_cost, available_places_econom, available_places_business, TO_CHAR(date, 'DD-MM-YYYY hh:mm') date" +
+            "FROM Flight, Airplane p, Airport d, Airport a" +
+            "ORDER BY date";*/
 
     @Override
     public long create(Flight flight) {
@@ -94,19 +97,19 @@ public class FlightService implements FlightDAO {
                 flights.add(new Flight(
                         rs.getLong("id"),
                         new Airplane(
-                            rs.getLong("id"),
+                            rs.getLong("airplane_id"),
                             rs.getString("name"),
                             rs.getInt("capacity_econom"),
                             rs.getInt("capacity_business")
                         ),
                         rs.getString("number"),
                         new Airport(
-                            rs.getLong("id"),
+                            rs.getLong("airport_id"),
                             rs.getString("name"),
                             rs.getString("city")
                         ),
                         new Airport(
-                            rs.getLong("id"),
+                            rs.getLong("airport_id"),
                             rs.getString("name"),
                             rs.getString("city")
                         ),

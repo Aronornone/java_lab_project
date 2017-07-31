@@ -1,4 +1,6 @@
-package utils;
+package listeners;
+
+import utils.SessionUtils;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;

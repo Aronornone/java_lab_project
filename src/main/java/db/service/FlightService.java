@@ -10,7 +10,6 @@ import pojo.Flight;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public class FlightService implements FlightDAO {
         "departure_airport_id, d.name, d.city, arrival_airport_id, a.name, a.city, " +
         "base_cost, available_places_econom, available_places_business, flight_datetime " +
         "FROM Flight f, Airplane p, Airport d, Airport a ";
-    private static final String ORDER_BY_DATETIME = "ORDER BY flight_datetime";
+    private static final String ORDER_BY_DATETIME = "ORDER BY flight_datetime ";
 
     @Override
     @SneakyThrows
@@ -27,8 +26,8 @@ public class FlightService implements FlightDAO {
         String sql = "INSERT INTO Flight (airplane_id, flight_number, departure_airport_id, arrival_airport_id, " +
             "base_cost, available_places_econom, available_places_business, flight_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong      (1, flight.getAirplane().getAirplaneId());
             ps.setString    (2, flight.getFlightNumber());
             ps.setLong      (3, flight.getDepartureAirport().getAirportId());
@@ -44,7 +43,11 @@ public class FlightService implements FlightDAO {
                 if (generetedKeys.next()) {
                     flight.setFlightId(generetedKeys.getInt(1));
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return flight.getFlightId();
@@ -53,10 +56,10 @@ public class FlightService implements FlightDAO {
     @Override
     @SneakyThrows
     public Optional<Flight> get(int id) {
-        String sql = SELECT_ALL + " WHERE f.id = ?";
+        String sql = SELECT_ALL + "WHERE f.id = ? " + ORDER_BY_DATETIME;
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -71,10 +74,10 @@ public class FlightService implements FlightDAO {
     }
 
     @SneakyThrows
-    public Optional<Flight> get(Airport departureCity, Airport arrivalCity, LocalDateTime dateTime, int availablePlaces, boolean econom) {
+    public Optional<Flight> get(Airport departureCity, Airport arrivalCity, LocalDateTime dateTime, int availablePlaces, boolean business) {
         String sql = SELECT_ALL + " WHERE d.city = ?, a.city = ?, flight_datetime = ?, ";
-        if (econom) sql += "available_places_econom - ? >= 0";
-        else        sql += "available_places_business - ? >= 0";
+        if (business) sql += "available_places_business - ? >= 0" + ORDER_BY_DATETIME;
+        else          sql += "available_places_econom - ? >= 0" + ORDER_BY_DATETIME;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -100,8 +103,8 @@ public class FlightService implements FlightDAO {
         String sql = "UPDATE Flight SET airplane_id = ?, flight_number = ?, departure_airport_id = ?, arrival_airport_id =?, " +
                 "base_cost = ?, available_places_econom = ?, available_places_business = ?, flight_datetime = ? WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong      (1, flight.getAirplane().getAirplaneId());
             ps.setString    (2, flight.getFlightNumber());
             ps.setLong      (3, flight.getDepartureAirport().getAirportId());
@@ -113,6 +116,8 @@ public class FlightService implements FlightDAO {
             ps.setLong      (9, flight.getFlightId());
 
             ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -121,11 +126,13 @@ public class FlightService implements FlightDAO {
     public void remove(Flight flight) {
         String sql = "DELETE FROM Flight WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, flight.getFlightId());
 
             ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -146,28 +153,29 @@ public class FlightService implements FlightDAO {
 
     @SneakyThrows
     private Flight createNewFlight(ResultSet rs) {
-        return new Flight(rs.getLong("id"),
+        return new Flight(
+                rs.getLong("id"),
                 new Airplane(
-                        rs.getLong("airplane_id"),
+                        rs.getLong  ("airplane_id"),
                         rs.getString("name"),
-                        rs.getInt("capacity_econom"),
-                        rs.getInt("capacity_business")
+                        rs.getInt   ("capacity_econom"),
+                        rs.getInt   ("capacity_business")
                 ),
                 rs.getString("flight_nunmber"),
                 new Airport(
-                        rs.getLong("airport_id"),
+                        rs.getLong  ("airport_id"),
                         rs.getString("name"),
                         rs.getString("city")
                 ),
                 new Airport(
-                        rs.getLong("airport_id"),
+                        rs.getLong  ("airport_id"),
                         rs.getString("name"),
                         rs.getString("city")
                 ),
-                rs.getDouble("base_cost"),
-                rs.getInt("available_places_econom"),
-                rs.getInt(" available_places_business"),
-                rs.getTimestamp("flight_datetime").toLocalDateTime()
+                rs.getDouble    ("base_cost"),
+                rs.getInt       ("available_places_econom"),
+                rs.getInt       (" available_places_business"),
+                rs.getTimestamp ("flight_datetime").toLocalDateTime()
         );
     }
 }

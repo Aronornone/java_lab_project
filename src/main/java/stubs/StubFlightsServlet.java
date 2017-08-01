@@ -33,6 +33,8 @@ public class StubFlightsServlet extends HttpServlet {
         System.setProperty("pathServ",pathForLog+"serv.log");
         System.setProperty("pathDB",pathForLog+"db.log");
         // Инициализируем логгеры
+        // Надо разобраться почему он записывает несколько раз в этой части
+        // Если просто вызывать в других сервлетах, то все нормально
         Logger logDB = ServletLog.getLgDB();
         logDB.error("Log DB load");
         Logger logServ = ServletLog.getLgServ();

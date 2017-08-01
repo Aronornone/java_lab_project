@@ -21,10 +21,10 @@ public class StubBucketServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
-
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
-        Long invoiceIdSession = (Long) httpSession.getAttribute("invoiceId");
+
+        // Long invoiceIdSession = (Long) httpSession.getAttribute("invoiceId");
         if (user == null) {
             //заглушка, будет еще предупреждение, что нужно сначала войти + сохранение выбранных фильтров
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -37,6 +37,7 @@ public class StubBucketServlet extends HttpServlet {
         } else {
             numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
         }
+        /*
         Invoice invoice;
         String invoiceIdRequest = (String) request.getAttribute("invoiceId");
         if ((invoiceIdRequest == null) && (invoiceIdSession == null)) {
@@ -58,17 +59,19 @@ public class StubBucketServlet extends HttpServlet {
         } else {
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
         }
+
         httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
+        */
 
         String flightIdString = SessionUtils.checkFlightSession(httpSession, request);
 
         if (flightIdString != null) {
             Long flightId = Long.parseLong(flightIdString);
             httpSession.setAttribute("flightId", flightId);
-            //TODO: Упростить когда будет DAO
-            List<Airport> airports = StubUtils.getAirports();
+
             List<Airplane> airplanes = StubUtils.getAirplanes();
-            List<Flight> flights = StubUtils.getFlights(airports, airplanes);
+            List<Airport> airports = StubUtils.getAirports();
+            List<Flight> flights = StubUtils.getFlights(airports,airplanes);
 
             for (Flight flight : flights) {
                 if (flight.getFlightId() == flightId) {

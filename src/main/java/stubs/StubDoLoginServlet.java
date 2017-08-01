@@ -7,10 +7,7 @@ import pojo.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,6 +60,12 @@ public class StubDoLoginServlet extends HttpServlet {
         if (passwordHashDB.equals(passwordHashReq)) {
             HttpSession httpSession = request.getSession();
             httpSession.setAttribute("user", user);
+
+            Cookie cookieUserId;
+            cookieUserId = new Cookie("userId",String.valueOf(user.getUserId()));
+            cookieUserId.setMaxAge(60*60*24*7); //one week
+            response.addCookie(cookieUserId);
+
             List<Airport> airports = StubUtils.getAirports();
             request.setAttribute("departures", airports);
             request.setAttribute("arrivals", airports);

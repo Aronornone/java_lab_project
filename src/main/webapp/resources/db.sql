@@ -38,7 +38,7 @@ CREATE TABLE FlightPlace (
   FOREIGN KEY (flight_id) REFERENCES Flight (id)
 );
 
-CREATE TABLE User (
+CREATE TABLE Account (
   id                BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
   name              VARCHAR(100),
@@ -53,7 +53,7 @@ CREATE TABLE Invoice (
   user              BIGINT NOT NULL,
   status            VARCHAR(20),
   invoice_datetime  DATETIME,
-  FOREIGN KEY (user) REFERENCES User (id)
+  FOREIGN KEY (user) REFERENCES Account (id)
 );
 
 CREATE TABLE Ticket (

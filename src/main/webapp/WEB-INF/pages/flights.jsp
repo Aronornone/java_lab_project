@@ -13,7 +13,7 @@
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">
         <div class="filters">
-            <form name="form1" class="search" action="doSearch" method="post">
+            <form name="form1" class="search" action="doSearch" method="get">
 
                 <div class="pdates">
                     <p class="filter">Дата с </p>
@@ -82,6 +82,7 @@
                     <th>Airplane</th>
                     <th>Cost</th>
                     <th></th>
+                    <th></th>
                 </tr>
 
                 <c:forEach items="${flights}" var="flight">
@@ -92,10 +93,16 @@
                         <td>${flight.flightNumber}</td>
                         <td>${flight.airplane.name}</td>
                         <td>${flight.baseCost}</td>
+                        <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
                         <td>
-                            <a href="bucket?flightId=${flight.flightId}"><input class="buttonBucket" type="submit"
-                                                                                value="Купить/Buy"></a>
+                            <input class="fieldFilters" type="number" min="1" max="80" step="1"
+                         value="0" name="numberTicketsFlight">
+                         </td>
+                        <td>
+                            <!--<a href="addFlightToInvoice?flightId=${flight.flightId}">-->
+                            <input class="buttonBucket" type="submit" value="Купить/Buy"></a>
                         </td>
+                        </form>
                     </tr>
                 </c:forEach>
 

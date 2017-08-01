@@ -1,7 +1,12 @@
 package utils;
 
+import db.service.UserService;
+import pojo.User;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 public class SessionUtils {
 
@@ -28,6 +33,28 @@ public class SessionUtils {
         // HttpSessionListener, HttpSessionEvent
 
         httpSession.invalidate();
+
+    }
+
+    public static void checkCookie(Cookie[] cookies, HttpServletRequest request,
+                                   HttpSession httpSession) {
+        User user;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("userId")) {
+                    UserService userService = new UserService();
+                    Optional<User> userOptional = userService.get(Integer.parseInt(cookie.getValue()));
+                    if (userOptional.isPresent()) {
+                        user = userOptional.get();
+                        httpSession.setAttribute("user", user);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void checkInvoice(){
 
     }
 }

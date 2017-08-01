@@ -1,8 +1,8 @@
 package stubs;
 
-import db.service.UserService;
+import org.apache.log4j.Logger;
 import pojo.Airport;
-import pojo.User;
+import utils.ServletLog;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -11,7 +11,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 //Заглушка для страницы поиска
@@ -22,6 +21,41 @@ public class StubFlightsServlet extends HttpServlet {
 
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
+
+
+
+
+        // Получаем путь до папки для логов
+        String pathForLog=getServletContext().getRealPath("/");
+        pathForLog=pathForLog.substring(0,pathForLog.lastIndexOf("target"))+"src/main/webapp/WEB-INF/classes/";
+        // Устанавливаем динамические значения для log4j.properties
+        System.setProperty("pathReg",pathForLog+"reg.log");
+        System.setProperty("pathServ",pathForLog+"serv.log");
+        System.setProperty("pathDB",pathForLog+"db.log");
+        // Инициализируем логгеры
+        Logger logDB = ServletLog.getLgDB();
+        logDB.error("Log DB load");
+        Logger logServ = ServletLog.getLgServ();
+        logServ.error("Log Serv load");
+        logServ.fatal("we do it");
+        Logger logREG = ServletLog.getLgReg();
+        logREG.error("Log REG load");
+
+        // Устанавливаем логгеры для всех сервлетов
+        getServletContext().setAttribute("logREG", logREG);
+        getServletContext().setAttribute("logServ", logServ);
+        getServletContext().setAttribute("logDB", logDB);
+//        Для вызова из других сервлетов:
+//        Logger log=(Logger)getServletContext().getAttribute("logREG");
+//        log.error("Registration failed");
+//        Logger log=(Logger)getServletContext().getAttribute("logDB");
+//        log.info("DB started");
+
+
+
+
+
+
 
         httpSession.setAttribute("currentLocale", Locale.getDefault());
         getServletContext().setAttribute("errors", ResourceBundle.

@@ -161,7 +161,7 @@ public class FlightService implements FlightDAO {
                         rs.getInt   ("capacity_econom"),
                         rs.getInt   ("capacity_business")
                 ),
-                rs.getString("flight_nunmber"),
+                rs.getString("flight_number"),
                 new Airport(
                         rs.getLong  ("airport_id"),
                         rs.getString("code"),

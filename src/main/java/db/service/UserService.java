@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class UserService implements UserDAO {
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
-    private static final String ORDER_BY_DATE = "ORDER BY registration_date";
+    private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
 
     @Override
     @SneakyThrows
@@ -46,8 +46,8 @@ public class UserService implements UserDAO {
     public Optional<User> get(int id) {
         String sql = "SELECT name, email, password_hash, registration_date FROM Account WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -99,10 +99,9 @@ public class UserService implements UserDAO {
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
         try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_DATE);
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_REG_DATE);
             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                //name, email, password_hash, registration_date
                 users.add(new User(
                         rs.getLong      ("id"),
                         rs.getString    ("name"),

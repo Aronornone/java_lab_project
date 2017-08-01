@@ -129,7 +129,7 @@ public class FlightPlaceService implements FlightPlaceDAO {
                                 rs.getInt("capacity_econom"),
                                 rs.getInt("capacity_business")
                                 ),
-                        rs.getString("flight_nunmber"),
+                        rs.getString("flight_number"),
                         new Airport(
                                 rs.getLong("airport_id"),
                                 rs.getString("code"),

@@ -16,15 +16,14 @@ public class AirplaneService implements AirplaneDAO {
 
     @Override
     @SneakyThrows
-    public long add(Airplane airplane) {
+    public long create(Airplane airplane) {
         String query = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
-        try (Connection connection = DataSource.getConnection();
+        try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(query)) {
-
             ps.setString(1, airplane.getName());
-            ps.setInt(2, airplane.getCapacityEconom());
-            ps.setInt(3, airplane.getCapacityBusiness());
+            ps.setInt   (2, airplane.getCapacityEconom());
+            ps.setInt   (3, airplane.getCapacityBusiness());
 
             ps.executeUpdate();
 
@@ -32,20 +31,14 @@ public class AirplaneService implements AirplaneDAO {
                 if (generetedKeys.next()) {
                     airplane.setAirplaneId(generetedKeys.getInt(1));
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return airplane.getAirplaneId();
-    }
-
-    public boolean add(String query) {
-        try (Connection connection = DataSource.getConnection();
-             Statement stmt = connection.prepareStatement(query)) {
-            stmt.executeUpdate(query);
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
     }
 
     @Override
@@ -53,9 +46,10 @@ public class AirplaneService implements AirplaneDAO {
     public Optional<Airplane> get(int id) {
         String sql = "SELECT name, capacity_econom, capacity_business FROM Airplane WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
+
             ResultSet rs = ps.executeQuery();
 
             Airplane airplane = null;
@@ -67,42 +61,44 @@ public class AirplaneService implements AirplaneDAO {
         }
     }
 
-    public static void main(String[] args) {
-        /*AirplaneService as = new AirplaneService();
-        Optional<Airplane> airplane = as.get(1);
-        airplane.ifPresent(System.out::println);
+    @Override
+    @SneakyThrows
+    public void update(Airplane airplane) {
+        String sql = "UPDATE Airplane SET name = ?, capacity_econom = ?, capacity_business = ? WHERE id = ?";
 
-        System.out.println();
-        List<Airplane> list = as.getAll();
-        for (Airplane ap: list) {
-            System.out.println(ap.toString());
-        }*/
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, airplane.getName());
+            ps.setInt   (2, airplane.getCapacityEconom());
+            ps.setInt   (3, airplane.getCapacityBusiness());
+            ps.setLong  (4, airplane.getAirplaneId());
 
-        System.out.println("--Flight--");
-        FlightService fs = new FlightService();
-        List<Flight> flights = fs.getAll();
-        for (Flight flight: flights) {
-            System.out.println(flight);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void update(Airplane airplane) {
-
-    }
-
-    @Override
+    @SneakyThrows
     public void remove(Airplane airplane) {
+        String sql = "DELETE FROM Airplane WHERE id = ?";
 
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, airplane.getAirplaneId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<Airplane> getAll() {
-        String sql = "SELECT * FROM airplane";
-
         List<Airplane> airplanes = new ArrayList<>();
         try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
             ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 airplanes.add(new Airplane(

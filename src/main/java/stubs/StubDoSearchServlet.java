@@ -29,8 +29,8 @@ public class StubDoSearchServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
-        List<Airport> airports = StubUtils.getAirports();
         List<Airplane> airplanes = StubUtils.getAirplanes();
+        List<Airport> airports = StubUtils.getAirports();
         List<Flight> flights = StubUtils.getFlights(airports, airplanes);
 
         request.setAttribute("departures", airports);
@@ -55,8 +55,6 @@ public class StubDoSearchServlet extends HttpServlet {
                 departure.isEmpty() ||
                 arrival.isEmpty() ||
                 numberTicketsFilterString == null) {
-            //TODO: в Локализацию
-//            String insertFilters = "Insert Date and Airports.</br> Please try again.";
             request.setAttribute("setFilters", encode(err.getString("setFilters")));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
@@ -80,7 +78,6 @@ public class StubDoSearchServlet extends HttpServlet {
 
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {
-                //TODO: в Локализацию
                 request.setAttribute("nothingFound", encode(err.getString("nothingFound")));
             } else request.setAttribute("flights", foundFlights);
 

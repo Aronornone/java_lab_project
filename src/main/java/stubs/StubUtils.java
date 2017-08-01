@@ -1,6 +1,8 @@
 package stubs;
 
 import db.DataSource;
+import db.service.AirplaneService;
+import db.service.AirportService;
 import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
@@ -17,36 +19,14 @@ public class StubUtils {
     //TODO: этот кусок вынести в DAOimpl можно!
 
     public static List<Airport> getAirports() {
-        Connection connection = DataSource.getConnection();
-
-        List<Airport> airports = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM airport";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                airports.add(new Airport(result.getLong("id"), result.getString("name"), result.getString("city")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AirportService airportService = new AirportService();
+        List<Airport> airports = airportService.getAll();
         return airports;
     }
 
     public static List<Airplane> getAirplanes() {
-        Connection connection = DataSource.getConnection();
-
-        List<Airplane> airplanes = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM airplane";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                airplanes.add(new Airplane(result.getLong("id"), result.getString("name"), result.getInt("capacity_econom"), result.getInt("capacity_business")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        AirplaneService airplaneService = new AirplaneService();
+        List<Airplane> airplanes = airplaneService.getAll();
         return airplanes;
     }
 
@@ -81,7 +61,7 @@ public class StubUtils {
                     }
                 }
                 Double baseCost = result.getDouble("base_cost");
-                LocalDateTime dateTime = result.getTimestamp("datetime").toLocalDateTime();
+                LocalDateTime dateTime = result.getTimestamp("flight_datetime").toLocalDateTime();
                 flights.add(new Flight(id, airplaneFlight, flightNumber, departureAirport, arrivalAirport, baseCost, availableEconom, availableBusiness, dateTime));
             }
         } catch (SQLException e) {

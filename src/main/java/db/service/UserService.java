@@ -5,23 +5,46 @@ import db.dao.UserDAO;
 import lombok.SneakyThrows;
 import pojo.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class UserService implements UserDAO {
+    private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
+    private static final String ORDER_BY_DATE = "ORDER BY registration_date";
+
     @Override
+    @SneakyThrows
     public long create(User user) {
-        return 0;
+        String sql = "INSERT INTO Account (name, email, password_hash, registration_date) VALUES (?, ?, ?, ?)";
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString    (1, user.getName());
+            ps.setString    (2, user.getEmail());
+            ps.setString    (3, user.getPasswordHash());
+            ps.setTimestamp (4, Timestamp.valueOf(user.getRegistrationDate()));
+
+            ps.executeUpdate();
+
+            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
+                if (generetedKeys.next()) {
+                    user.setUserId(generetedKeys.getInt(1));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user.getUserId();
     }
 
     @Override
     @SneakyThrows
-
     public Optional<User> get(int id) {
-        String sql = "SELECT name, email, password_hash, registration_date FROM user WHERE id =   ?";
+        String sql = "SELECT name, email, password_hash, registration_date FROM Account WHERE id = ?";
 
         try (Connection connection = DataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -39,17 +62,59 @@ public class UserService implements UserDAO {
     }
 
     @Override
+    @SneakyThrows
     public void update(User user) {
+        String sql = "UPDATE Account SET name = ?, email = ?, password_hash = ?, registration_date = ? WHERE id = ?";
 
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPasswordHash());
+            ps.setLong  (4, user.getUserId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
+    @SneakyThrows
     public void remove(User user) {
+        String sql = "DELETE FROM Account WHERE id = ?";
 
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, user.getUserId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
+    @SneakyThrows
     public List<User> getAll() {
-        return null;
+        List<User> users = new ArrayList<>();
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_DATE);
+            ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                //name, email, password_hash, registration_date
+                users.add(new User(
+                        rs.getLong      ("id"),
+                        rs.getString    ("name"),
+                        rs.getString    ("email"),
+                        rs.getString    ("password_hash"),
+                        rs.getTimestamp ("registration_date").toLocalDateTime()
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
     }
 }

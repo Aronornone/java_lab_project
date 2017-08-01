@@ -99,13 +99,13 @@ public class AirplaneService implements AirplaneDAO {
         List<Airplane> airplanes = new ArrayList<>();
         try(Connection connection = DataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
-            ResultSet result = statement.executeQuery()) {
-            while (result.next()) {
+            ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
                 airplanes.add(new Airplane(
-                        result.getLong("id"),
-                        result.getString("name"),
-                        result.getInt("capacity_econom"),
-                        result.getInt("capacity_business")));
+                        rs.getLong  ("id"),
+                        rs.getString("name"),
+                        rs.getInt   ("capacity_econom"),
+                        rs.getInt   ("capacity_business")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

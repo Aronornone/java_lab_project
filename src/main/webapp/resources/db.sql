@@ -52,7 +52,6 @@ CREATE TABLE Invoice (
   PRIMARY KEY (id),
   user              BIGINT NOT NULL,
   status            VARCHAR(20),
-  num_of_tickets    INT    NOT NULL,
   invoice_datetime  DATETIME,
   FOREIGN KEY (user) REFERENCES User (id)
 );

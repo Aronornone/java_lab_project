@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
 //Заглушка для страницы логаута
 @WebServlet(urlPatterns = "/logout")
 public class StubLogoutServlet extends HttpServlet {
@@ -16,10 +17,11 @@ public class StubLogoutServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         SessionUtils.invalidateSession(httpSession);
 
-        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request,response);
+        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
 
     }
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request,response);
+        doGet(request, response);
     }
 }

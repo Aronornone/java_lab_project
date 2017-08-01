@@ -18,7 +18,7 @@
 
             <div class="bucketTable">
                 <div class="flightInfo">
-                    <p class="error"> ${bucketEmpty}</p>
+                    <p class="error"> ${cartEmpty}</p>
                     Рейс/Flight: <b>${flightNumber}</b> из/from: <b>${departureAirport.name}</b> в/to:
                     <b>${arrivalAirport.name}</b>.
                     Дата и время/ DateTime: <b>${dateTime}</b> Cамолет/Airplane: <b>${airplanename}</b>

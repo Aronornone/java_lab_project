@@ -16,17 +16,22 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import static utils.EncodingUtil.encode;
 
 //Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
 public class StubDoSearchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
+
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
         List<Airport> airports = StubUtils.getAirports();
         List<Airplane> airplanes = StubUtils.getAirplanes();
-        List<Flight> flights = StubUtils.getFlights(airports,airplanes);
+        List<Flight> flights = StubUtils.getFlights(airports, airplanes);
 
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
@@ -49,13 +54,12 @@ public class StubDoSearchServlet extends HttpServlet {
                 (dateToString.isEmpty()) ||
                 departure.isEmpty() ||
                 arrival.isEmpty() ||
-                numberTicketsFilterString==null) {
+                numberTicketsFilterString == null) {
             //TODO: в Локализацию
-            String insertFilters = "Insert Date and Airports.</br> Please try again.";
-            request.setAttribute("insertFilters", insertFilters);
+//            String insertFilters = "Insert Date and Airports.</br> Please try again.";
+            request.setAttribute("setFilters", encode(err.getString("setFilters")));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
-        }
-        else {
+        } else {
             LocalDate dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
@@ -77,8 +81,7 @@ public class StubDoSearchServlet extends HttpServlet {
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {
                 //TODO: в Локализацию
-                String nothingFound = "Nothing found. </br>Please try again.";
-                request.setAttribute("nothingFound", nothingFound);
+                request.setAttribute("nothingFound", encode(err.getString("nothingFound")));
             } else request.setAttribute("flights", foundFlights);
 
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);

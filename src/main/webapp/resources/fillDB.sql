@@ -1,3 +1,6 @@
+/* If you want to reset autoincrement counter in table:*/
+ALTER TABLE table_name AUTO_INCREMENT = 1;
+
 INSERT INTO airplane (name, capacity_econom, capacity_business)
 VALUES
   ('TU-134',80,8),
@@ -13,10 +16,10 @@ VALUES
 INSERT INTO user(name, email, password_hash, registration_date)
 VALUES
 ('Polina', 'polina@mail.ru', '827ccb0eea8a706c4c34a16891f84e7b', '2017-07-31 06:07:11'),
-('TestUser', 'testuser@test.ru', '5d9c68c6c50ed3d02a2fcf54f63993b6', '2017-07-31 09:11:35'),
+('TestUser', 'testuser@test.ru', '5d9c68c6c50ed3d02a2fcf54f63993b6', '2017-07-31 09:11:35');
 
 INSERT INTO flight (airplane_id,flight_number,departure_airport_id,arrival_airport_id,
-base_cost,available_places_econom,available_places_business,date)
+base_cost,available_places_econom,available_places_business,datetime)
 VALUES
 (2,'RTY-56',687 ,327,6000.00,152,24,'2017-07-25 06:07:00'),
 (2,'RRY-78',687 ,327,6500.00,152,24,'2017-07-26 09:30:00'),

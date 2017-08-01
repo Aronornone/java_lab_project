@@ -7,9 +7,11 @@
 
     <div class="logged">
         <div class="flagesLogged">
-            <%String path=new URL(request.getRequestURL().toString()).getPath();%>
-            <a href="language?locale=${"enLocale"}&backPage=<%=path%>"><img src="resources/images/flag_en_small.png" alt="en"></a>
-            <a href="language?locale=${"ruLocale"}&backPage=<%=path%>"><img src="resources/images/flag_ru_small.png" alt="ru"></a>
+            <%String path = new URL(request.getRequestURL().toString()).getPath();%>
+            <a href="language?locale=${"enLocale"}&backPage=<%=path%>"><img src="resources/images/flag_en_small.png"
+                                                                            alt="en"></a>
+            <a href="language?locale=${"ruLocale"}&backPage=<%=path%>"><img src="resources/images/flag_ru_small.png"
+                                                                            alt="ru"></a>
         </div>
         <c:if test="${user != null}">
             <p>Вы/You: ${user.name}</p>

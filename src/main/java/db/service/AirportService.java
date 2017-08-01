@@ -14,17 +14,20 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirportService implements AirportDAO {
-    private static final String SELECT_ALL = "SELECT id, name, city FROM Airport";
+    private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport";
 
     @Override
     @SneakyThrows
     public long create(Airport airport) {
-        String query = "INSERT INTO Airport (name, city) VALUES (?, ?)";
+        String query = "INSERT INTO Airport (code, city,airport_name, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, airport.getName());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, airport.getCode());
             ps.setString(2, airport.getCity());
+            ps.setString(3, airport.getAirportName());
+            ps.setDouble(4, airport.getLatitude());
+            ps.setDouble(5, airport.getLongitude());
 
             ps.executeUpdate();
 
@@ -43,17 +46,17 @@ public class AirportService implements AirportDAO {
     @Override
     @SneakyThrows
     public Optional<Airport> get(int id) {
-        String sql = "SELECT name, city FROM Airport WHERE id = ?";
+        String sql = "SELECT code, city, airport_name, latitude, longitude FROM Airport WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
             Airport airport = null;
             while (rs.next()) {
-                airport = new Airport(id, rs.getString(1), rs.getString(2));
+                airport = new Airport(id, rs.getString(1), rs.getString(2),rs.getString(3),rs.getDouble(4),rs.getDouble(5));
             }
 
             return Optional.ofNullable(airport);
@@ -63,13 +66,16 @@ public class AirportService implements AirportDAO {
     @Override
     @SneakyThrows
     public void update(Airport airport) {
-        String sql = "UPDATE Airport SET name = ?, city = ? WHERE id = ?";
+        String sql = "UPDATE Airport SET code = ?, city = ?, airport_name = ?, latitude = ?, longitude = ? WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, airport.getName());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, airport.getCode());
             ps.setString(2, airport.getCity());
-            ps.setLong  (3, airport.getAirportId());
+            ps.setString(3, airport.getAirportName());
+            ps.setDouble(4, airport.getLatitude());
+            ps.setDouble(5, airport.getLongitude());
+            ps.setLong(6, airport.getAirportId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -96,14 +102,17 @@ public class AirportService implements AirportDAO {
     @SneakyThrows
     public List<Airport> getAll() {
         List<Airport> airports = new ArrayList<>();
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
-            ResultSet result = statement.executeQuery()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
+             ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 airports.add(new Airport(
-                        result.getLong  ("id"),
-                        result.getString("name"),
-                        result.getString("city")));
+                        result.getLong("id"),
+                        result.getString("code"),
+                        result.getString("city"),
+                        result.getString("airport_name"),
+                        result.getDouble("latitude"),
+                        result.getDouble("longitude")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

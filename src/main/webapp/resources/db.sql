@@ -9,8 +9,11 @@ CREATE TABLE Airplane (
 CREATE TABLE Airport (
   id   BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  name VARCHAR(100),
-  city VARCHAR(100)
+  code VARCHAR(100),
+  city VARCHAR(100),
+  airport_name VARCHAR(100),
+  latitude DOUBLE NOT NULL,
+  longitude DOUBLE NOT NULL
 );
 
 CREATE TABLE Flight (

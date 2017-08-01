@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class FlightPlaceService implements FlightPlaceDAO {
     private static final String SELECT_ALL = "SELECT fp.id, f.airplane_id, p.name, p.capacity_econom, p.capacity_business, f.flight_number, " +
-            "f.departure_airport_id, d.name, d.city, f.arrival_airport_id, a.name, a.city, " +
+            "f.departure_airport_id, d.code, d.city, f.arrival_airport_id, a.code, a.city, " +
             "f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime " +
             "places_econom, places_business " +
             "FROM FlightPlace fp, Flight f, Airplane p, Airport d, Airport a ";
@@ -132,13 +132,19 @@ public class FlightPlaceService implements FlightPlaceDAO {
                         rs.getString("flight_nunmber"),
                         new Airport(
                                 rs.getLong("airport_id"),
-                                rs.getString("name"),
-                                rs.getString("city")
+                                rs.getString("code"),
+                                rs.getString("city"),
+                                rs.getString("airport_name"),
+                                rs.getDouble("latitude"),
+                                rs.getDouble("longitude")
                                 ),
                         new Airport(
                                 rs.getLong("airport_id"),
-                                rs.getString("name"),
-                                rs.getString("city")
+                                rs.getString("code"),
+                                rs.getString("city"),
+                                rs.getString("airport_name"),
+                                rs.getDouble("latitude"),
+                                rs.getDouble("longitude")
                                 ),
                         rs.getDouble("base_cost"),
                         rs.getInt("available_places_econom"),

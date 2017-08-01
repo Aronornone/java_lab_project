@@ -33,7 +33,7 @@
                            value="${sessionScope.departureF}">
                     <datalist id="DA-filter">
                         <c:forEach items="${departures}" var="departure">
-                            <option value="${departure.name}">${departure.name} (${departure.city})
+                            <option value="${departure.code}">${departure.city} (${departure.airportName})
                             </option>
                         </c:forEach>
                     </datalist>
@@ -41,7 +41,7 @@
                     <input name="selectedArrival" pattern="[A-Z]{3}" list="AA-filter" class="checkFilter" value="${sessionScope.arrivalF}">
                     <datalist id="AA-filter">
                         <c:forEach items="${arrivals}" var="arrival">
-                            <option value="${arrival.name}">${arrival.name} (${arrival.city})</option>
+                            <option value="${arrival.code}">${arrival.city} (${arrival.airportName})</option>
                         </c:forEach>
                     </datalist>
                 </div>
@@ -87,8 +87,8 @@
 
                 <c:forEach items="${flights}" var="flight">
                     <tr>
-                        <td>${flight.departureAirport.name} (${flight.departureAirport.city})</td>
-                        <td>${flight.arrivalAirport.name} (${flight.arrivalAirport.city})</td>
+                        <td>${flight.departureAirport.code} (${flight.departureAirport.city})</td>
+                        <td>${flight.arrivalAirport.code} (${flight.arrivalAirport.city})</td>
                         <td>${flight.dateTime}</td>
                         <td>${flight.flightNumber}</td>
                         <td>${flight.airplane.name}</td>
@@ -99,7 +99,7 @@
                          value="0" name="numberTicketsFlight">
                          </td>
                         <td>
-                            <!--<a href="addFlightToInvoice?flightId=${flight.flightId}">-->
+                            <!--<a href="addFlightToInvoice?flightId=//${flight.flightId}">-->
                             <input class="buttonBucket" type="submit" value="Купить/Buy"></a>
                         </td>
                         </form>

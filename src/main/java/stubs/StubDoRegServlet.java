@@ -43,7 +43,7 @@ public class StubDoRegServlet extends HttpServlet {
             //TODO: этот кусок вынести в DAOimpl, кроме установки attribute и dispatcher
             Connection connection = DataSource.getConnection();
             try {
-                String sql = "SELECT user.name,user.email,user.password_hash FROM user WHERE user.email=?";
+                String sql = "SELECT account.name,account.email,account.password_hash FROM account WHERE account.email=?";
                 PreparedStatement statementSelect = connection.prepareStatement(sql);
                 statementSelect.setString(1, email);
                 ResultSet result = statementSelect.executeQuery();
@@ -53,7 +53,7 @@ public class StubDoRegServlet extends HttpServlet {
                 } else {
                     User user = new User(username, email, password1HashReq, registrationDate);
                     try {
-                        String sqlInsert = "INSERT INTO user (name, email, password_hash, registration_date) VALUES(?,?,?,?)";
+                        String sqlInsert = "INSERT INTO account (name, email, password_hash, registration_date) VALUES(?,?,?,?)";
                         PreparedStatement statementInsert = connection.prepareStatement(sqlInsert);
                         statementInsert.setString(1, username);
                         statementInsert.setString(2, email);

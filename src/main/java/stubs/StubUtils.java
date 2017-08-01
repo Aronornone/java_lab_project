@@ -3,17 +3,18 @@ package stubs;
 import db.DataSource;
 import db.service.AirplaneService;
 import db.service.AirportService;
+import db.service.FlightPlaceService;
 import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
+import pojo.FlightPlace;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class StubUtils {
     //TODO: этот кусок вынести в DAOimpl можно!
@@ -68,5 +69,28 @@ public class StubUtils {
             e.printStackTrace();
         }
         return flights;
+    }
+
+    public static int randomSittingPlaceEconom(Flight flight) {
+        int place = 0;
+        FlightPlace flightPlace = null;
+        FlightPlaceService flightPlaceService = new FlightPlaceService();
+        Optional<FlightPlace> flightPlaceOptional = flightPlaceService.get((int)flight.getFlightId());
+        if (flightPlaceOptional.isPresent()) {
+            flightPlace = flightPlaceOptional.get();
+            BitSet places = flightPlace.getBitPlacesEconom();
+            int length = places.length();
+            Random random = new Random(47);
+            for (int i=0; i < length; i++) {
+                place = random.nextInt(length);
+                while (places.get(place)) {
+                    if (places.get(place)) {
+                        place = random.nextInt(length);
+                    } else break;
+                }
+            }
+        }
+        System.out.println(place);
+        return place;
     }
 }

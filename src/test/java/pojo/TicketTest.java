@@ -10,7 +10,7 @@ public class TicketTest {
     @Test
     public void testTicket() {
         User user = new User(1,"Name","@mail.ru","123452Afr3", LocalDateTime.now());
-        Invoice invoice = new Invoice(1,user, Invoice.InvoiceStatus.CREATED,2,LocalDateTime.now());
+        Invoice invoice = new Invoice(1,user, Invoice.InvoiceStatus.CREATED,LocalDateTime.now());
         Airplane airplane = new Airplane(1,"Airbus",202,23);
         Airport SPB = new Airport(1,"SPB","Saint-Petersburg");
         Airport MSK = new Airport(2,"MSK","Saint-Petersburg");

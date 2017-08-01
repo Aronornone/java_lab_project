@@ -29,7 +29,7 @@
                     <p class="filter">Аэропорт прилета</p>
                 </div>
                 <div class="fairports">
-                    <input name="selectedDeparture" list="DA-filter" class="checkFilter"
+                    <input name="selectedDeparture" pattern="[A-Z]{3}" list="DA-filter" class="checkFilter"
                            value="${sessionScope.departureF}">
                     <datalist id="DA-filter">
                         <c:forEach items="${departures}" var="departure">
@@ -38,7 +38,7 @@
                         </c:forEach>
                     </datalist>
 
-                    <input name="selectedArrival" list="AA-filter" class="checkFilter" value="${sessionScope.arrivalF}">
+                    <input name="selectedArrival" pattern="[A-Z]{3}" list="AA-filter" class="checkFilter" value="${sessionScope.arrivalF}">
                     <datalist id="AA-filter">
                         <c:forEach items="${arrivals}" var="arrival">
                             <option value="${arrival.name}">${arrival.name} (${arrival.city})</option>
@@ -59,9 +59,9 @@
                         </c:if>
                     </p>
                 </div>
-
                 <p class="error">${requestScope.nothingFound}</p>
                 <p class="error">${requestScope.setFilters}</p>
+                <p class="error">${requestScope.notEnoughPlaces}</p>
                 <div class="psearchBut">
                     <p>
                         <input class="buttonSearch" type="submit" value="Найти/Search">

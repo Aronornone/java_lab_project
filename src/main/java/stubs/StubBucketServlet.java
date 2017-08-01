@@ -1,16 +1,13 @@
 package stubs;
 
+import db.service.TicketService;
 import pojo.*;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -22,46 +19,9 @@ public class StubBucketServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
+        Cookie[] cookies = request.getCookies();
+        SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
-
-        // Long invoiceIdSession = (Long) httpSession.getAttribute("invoiceId");
-        if (user == null) {
-            //заглушка, будет еще предупреждение, что нужно сначала войти + сохранение выбранных фильтров
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
-        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-        int numberTicketsFilter;
-        if (numberTicketsFilterString == null) {
-            numberTicketsFilter = 0;
-            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
-        } else {
-            numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
-        }
-        /*
-        Invoice invoice;
-        String invoiceIdRequest = (String) request.getAttribute("invoiceId");
-        if ((invoiceIdRequest == null) && (invoiceIdSession == null)) {
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-            //TODO: заказ в базе тоже должен создаться
-            invoice.setInvoiceId(1); //временно
-        }
-        //TODO: прописать логику создания заказа, если уже есть в сессии, причем не менялся то не нужно создавать
-        // и если нет - нужно
-        else if (invoiceIdRequest == null) {
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-        } else if (invoiceIdSession == null) {
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-        } else if (!invoiceIdRequest.equals(invoiceIdSession.toString())) {
-            //должен прошлый заказ устанавливаться в CANCELLED и создаваться новый
-            //TODO: добавить установку прошлого в CANCELLED
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-            invoice.setInvoiceId(2); //временно
-        } else {
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-        }
-
-        httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
-        */
 
         String flightIdString = SessionUtils.checkFlightSession(httpSession, request);
 
@@ -71,7 +31,7 @@ public class StubBucketServlet extends HttpServlet {
 
             List<Airplane> airplanes = StubUtils.getAirplanes();
             List<Airport> airports = StubUtils.getAirports();
-            List<Flight> flights = StubUtils.getFlights(airports,airplanes);
+            List<Flight> flights = StubUtils.getFlights(airports, airplanes);
 
             for (Flight flight : flights) {
                 if (flight.getFlightId() == flightId) {
@@ -85,27 +45,29 @@ public class StubBucketServlet extends HttpServlet {
             }
         }
 
-        List<Ticket> tickets = new ArrayList<>();
+        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+        int numberTicketsFilter;
+        if (numberTicketsFilterString == null) {
+            numberTicketsFilter = 0;
+            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+        } else {
+            numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
+        }
+
         double sumTotal = 0;
-
-        if (numberTicketsFilter != 0)
-
-        {
-            //Здесь нужно добавление tickets в базу
-            for (int i = 0; i < numberTicketsFilter; i++) {
-                tickets.add(new Ticket());
-            }
-            //Для проверки сумм, нужно добавить логику расчета цены
-            tickets.get(0).setPrice(10.3);
-            for (Ticket ticket : tickets) {
-                sumTotal = sumTotal + ticket.getPrice();
-            }
+        TicketService ticketService = new TicketService();
+//        List<Ticket> tickets = ticketService.getFlightTickets(invoice,flight);
+        List<Ticket> tickets = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            sumTotal = sumTotal + ticket.getPrice();
         }
 
         request.setAttribute("tickets", tickets);
         request.setAttribute("totalSum", sumTotal);
 
-        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").
+
+                forward(request, response);
 
     }
 

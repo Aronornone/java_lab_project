@@ -3,6 +3,7 @@ package stubs;
 import db.service.UserService;
 import pojo.Airport;
 import pojo.User;
+import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,21 +19,10 @@ import java.util.ResourceBundle;
 public class StubFlightsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
-        User user;
 
         Cookie[] cookies = request.getCookies();
-        if (cookies!=null) {
-            for(Cookie cookie:cookies) {
-                if (cookie.getName().equals("userId")) {
-                    UserService userService = new UserService();
-                    Optional<User> userOptional = userService.get(Integer.parseInt(cookie.getValue()));
-                    if (userOptional.isPresent()) {
-                        user = userOptional.get();
-                        httpSession.setAttribute("user",user);
-                    }
-                }
-            }
-        }
+        SessionUtils.checkCookie(cookies, request, httpSession);
+
         httpSession.setAttribute("currentLocale", Locale.getDefault());
         getServletContext().setAttribute("errors", ResourceBundle.
                 getBundle("ErrorsBundle", Locale.getDefault()));

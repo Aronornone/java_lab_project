@@ -172,15 +172,15 @@ public class TicketService implements TicketDao {
                     ),
                     rs.getDouble    ("base_cost"),
                     rs.getInt       ("available_places_econom"),
-                    rs.getInt       (" available_places_business"),
+                    rs.getInt       ("available_places_business"),
                     rs.getTimestamp ("flight_datetime").toLocalDateTime()
                 ),
-                rs.getString("passenger_name"),
-                rs.getString("passport"),
-                rs.getInt("place"),
+                rs.getString ("passenger_name"),
+                rs.getString ("passport"),
+                rs.getInt    ("place"),
                 rs.getBoolean("luggage"),
                 rs.getBoolean("business_class"),
-                rs.getDouble("price")
+                rs.getDouble ("price")
             );
     }
 }

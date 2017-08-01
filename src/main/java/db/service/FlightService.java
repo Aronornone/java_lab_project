@@ -18,7 +18,7 @@ public class FlightService implements FlightDAO {
         "departure_airport_id, d.name, d.city, arrival_airport_id, a.name, a.city, " +
         "base_cost, available_places_econom, available_places_business, flight_datetime " +
         "FROM Flight f, Airplane p, Airport d, Airport a ";
-    private static final String ORDER_BY_DATETIME = "ORDER BY flight_datetime ";
+    private static final String ORDER_BY_DATETIME_AND_BASECOST = "ORDER BY flight_datetime, base_cost";
 
     @Override
     @SneakyThrows
@@ -56,7 +56,7 @@ public class FlightService implements FlightDAO {
     @Override
     @SneakyThrows
     public Optional<Flight> get(int id) {
-        String sql = SELECT_ALL + "WHERE f.id = ? " + ORDER_BY_DATETIME;
+        String sql = SELECT_ALL + "WHERE f.id = ? " + ORDER_BY_DATETIME_AND_BASECOST;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -76,8 +76,8 @@ public class FlightService implements FlightDAO {
     @SneakyThrows
     public Optional<Flight> get(Airport departureCity, Airport arrivalCity, LocalDateTime dateTime, int availablePlaces, boolean business) {
         String sql = SELECT_ALL + " WHERE d.city = ?, a.city = ?, flight_datetime = ?, ";
-        if (business) sql += "available_places_business - ? >= 0" + ORDER_BY_DATETIME;
-        else          sql += "available_places_econom - ? >= 0" + ORDER_BY_DATETIME;
+        if (business) sql += "available_places_business - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
+        else          sql += "available_places_econom - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -142,7 +142,7 @@ public class FlightService implements FlightDAO {
         List<Flight> flights = new ArrayList<>();
         try(Connection connection = DataSource.getConnection();
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(SELECT_ALL + ORDER_BY_DATETIME)) {
+            ResultSet rs = stmt.executeQuery(SELECT_ALL + ORDER_BY_DATETIME_AND_BASECOST)) {
             while (rs.next()) {
                 flights.add(createNewFlight(rs));
             }

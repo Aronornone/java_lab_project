@@ -53,24 +53,24 @@ CREATE TABLE Account (
 CREATE TABLE Invoice (
   id                BIGINT AUTO_INCREMENT,
   PRIMARY KEY (id),
-  user              BIGINT NOT NULL,
+  account_id        BIGINT NOT NULL,
   status            VARCHAR(20),
   invoice_datetime  DATETIME,
-  FOREIGN KEY (user) REFERENCES Account (id)
+  FOREIGN KEY (account_id) REFERENCES Account (id)
 );
 
 CREATE TABLE Ticket (
   id             BIGINT  AUTO_INCREMENT,
   PRIMARY KEY (id),
-  invoice        BIGINT       NOT NULL,
-  flight         BIGINT       NOT NULL,
+  invoice_id     BIGINT       NOT NULL,
+  flight_id      BIGINT       NOT NULL,
   passenger_name VARCHAR(100) NOT NULL,
   passport       VARCHAR(100) NOT NULL,
   place          INT          NOT NULL,
   luggage        BOOLEAN DEFAULT FALSE,
   business_class BOOLEAN DEFAULT FALSE,
   price          DOUBLE       NOT NULL,
-  FOREIGN KEY (invoice) REFERENCES Invoice (id),
-  FOREIGN KEY (flight)  REFERENCES Flight (id)
+  FOREIGN KEY (invoice_id)    REFERENCES Invoice (id),
+  FOREIGN KEY (flight_id)     REFERENCES Flight (id)
 );
 

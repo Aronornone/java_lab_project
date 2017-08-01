@@ -7,7 +7,6 @@ import java.util.Properties;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-
 public class DataSource {
     private static String DRIVER_CLASS_NAME;
     private static String DB_URL;
@@ -24,9 +23,10 @@ public class DataSource {
     static {
         Properties properties = new Properties();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("db.properties")))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                    Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("db.properties")))) {
             properties.load(br);
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,26 +42,23 @@ public class DataSource {
         MAX_OPENED_PREP_STMTS = Integer.parseInt(properties.getProperty("max_opened_prepared_stmts"));
     }
 
-    private static BasicDataSource getDataSource() {
-        if (dataSource == null) {
-            BasicDataSource ds = new BasicDataSource();
-            ds.setDriverClassName(DRIVER_CLASS_NAME);
-            ds.setUrl(DB_URL);
-            ds.setUsername(DB_USER);
-            ds.setPassword(DB_PASSWORD);
-            ds.setInitialSize(CONN_POOL_SIZE);
-            ds.setMinIdle(MIN_IDLE_CONNECTIONS);
-            ds.setMaxIdle(MAX_IDLE_CONNECTIONS);
-            ds.setMaxOpenPreparedStatements(MAX_OPENED_PREP_STMTS);
-            dataSource = ds;
-        }
-        return dataSource;
+    private static void getDataSource() {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName(DRIVER_CLASS_NAME);
+        bds.setUrl(DB_URL);
+        bds.setUsername(DB_USER);
+        bds.setPassword(DB_PASSWORD);
+        bds.setInitialSize(CONN_POOL_SIZE);
+        bds.setMinIdle(MIN_IDLE_CONNECTIONS);
+        bds.setMaxIdle(MAX_IDLE_CONNECTIONS);
+        bds.setMaxOpenPreparedStatements(MAX_OPENED_PREP_STMTS);
+        dataSource = bds;
     }
 
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                dataSource = DataSource.getDataSource();
+                if (dataSource == null) DataSource.getDataSource();
                 connection = dataSource.getConnection();
             }
         } catch(SQLException e) {

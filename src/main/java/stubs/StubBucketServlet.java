@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/bucket"})
 public class StubBucketServlet extends HttpServlet {
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
@@ -30,34 +33,29 @@ public class StubBucketServlet extends HttpServlet {
         int numberTicketsFilter;
         if (numberTicketsFilterString == null) {
             numberTicketsFilter = 0;
-            String bucketEmpty = "Bucket empty.";
-            request.setAttribute("bucketEmpty", bucketEmpty);
-        }
-        else {
+            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+        } else {
             numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
         }
         Invoice invoice;
         String invoiceIdRequest = (String) request.getAttribute("invoiceId");
-        if ((invoiceIdRequest == null)&&(invoiceIdSession == null)) {
+        if ((invoiceIdRequest == null) && (invoiceIdSession == null)) {
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
             //TODO: заказ в базе тоже должен создаться
             invoice.setInvoiceId(1); //временно
         }
         //TODO: прописать логику создания заказа, если уже есть в сессии, причем не менялся то не нужно создавать
         // и если нет - нужно
-        else if(invoiceIdRequest == null){
+        else if (invoiceIdRequest == null) {
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-        }
-        else if(invoiceIdSession == null) {
+        } else if (invoiceIdSession == null) {
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
-        }
-        else if (!invoiceIdRequest.equals(invoiceIdSession.toString())) {
+        } else if (!invoiceIdRequest.equals(invoiceIdSession.toString())) {
             //должен прошлый заказ устанавливаться в CANCELLED и создаваться новый
             //TODO: добавить установку прошлого в CANCELLED
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
             invoice.setInvoiceId(2); //временно
-        }
-        else {
+        } else {
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, numberTicketsFilter, LocalDateTime.now());
         }
         httpSession.setAttribute("invoiceId", invoice.getInvoiceId());

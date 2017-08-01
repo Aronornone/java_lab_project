@@ -75,8 +75,8 @@ public class StubUtils {
                         arrivalAirport = airport;
                 }
                 Airplane airplaneFlight = new Airplane();
-                for(Airplane airplane : airplanes) {
-                    if(airplaneId.equals(airplane.getAirplaneId())){
+                for (Airplane airplane : airplanes) {
+                    if (airplaneId.equals(airplane.getAirplaneId())) {
                         airplaneFlight = airplane;
                     }
                 }

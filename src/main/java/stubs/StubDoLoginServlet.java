@@ -18,11 +18,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import static utils.EncodingUtil.encode;
 
 //Заглушка для страницы логина
 @WebServlet(urlPatterns = {"/doLogin"})
 public class StubDoLoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
+
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
         String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
@@ -47,8 +52,8 @@ public class StubDoLoginServlet extends HttpServlet {
                 registrationDate = result.getTimestamp("registration_date").toLocalDateTime();
                 user = new User(userId, usernameDB, email, passwordHashReq, registrationDate);
             } else {
-                request.setAttribute("unexistingLogin", "Incorrect login name! Please, check or register.");
-                request.setAttribute("email",email);
+                request.setAttribute("nonexistentLogin", encode(err.getString("nonexistentLogin")));
+                request.setAttribute("email", email);
                 request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
@@ -63,7 +68,7 @@ public class StubDoLoginServlet extends HttpServlet {
             request.setAttribute("arrivals", airports);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
-            request.setAttribute("errorLogin", "Login error, incorrect password or name!");
+            request.setAttribute("loginFailed", encode(err.getString("loginFailed")));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }

@@ -9,6 +9,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Flight {
     private long flightId;
+    private Airplane airplane;
+    private String flightNumber;
+    private Airport departureAirport;
+    private Airport arrivalAirport;
+    private Double baseCost;
+    private int availablePlacesEconom;
+    private int availablePlacesBusiness;
+    private LocalDateTime dateTime;
+
 
     public Flight(Airplane airplane, String flightNumber, Airport departureAirport,
                   Airport arrivalAirport, Double baseCost, int availablePlacesEconom,
@@ -22,13 +31,4 @@ public class Flight {
         this.availablePlacesBusiness = availablePlacesBusiness;
         this.dateTime = dateTime;
     }
-
-    private Airplane airplane;
-    private String flightNumber;
-    private Airport departureAirport;
-    private Airport arrivalAirport;
-    private Double baseCost;
-    private int availablePlacesEconom;
-    private int availablePlacesBusiness;
-    private LocalDateTime dateTime;
 }

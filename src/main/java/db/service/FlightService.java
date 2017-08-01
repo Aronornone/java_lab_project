@@ -24,7 +24,7 @@ public class FlightService implements FlightDAO {
     @SneakyThrows
     public long create(Flight flight) {
         String sql = "INSERT INTO Flight (airplane_id, flight_number, departure_airport_id, arrival_airport_id, " +
-            "base_cost, available_places_econom, available_places_business, flight_datetime) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            "base_cost, available_places_econom, available_places_business, flight_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -164,13 +164,19 @@ public class FlightService implements FlightDAO {
                 rs.getString("flight_nunmber"),
                 new Airport(
                         rs.getLong  ("airport_id"),
-                        rs.getString("name"),
-                        rs.getString("city")
+                        rs.getString("code"),
+                        rs.getString("city"),
+                        rs.getString("airport_name"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                 ),
                 new Airport(
                         rs.getLong  ("airport_id"),
-                        rs.getString("name"),
-                        rs.getString("city")
+                        rs.getString("code"),
+                        rs.getString("city"),
+                        rs.getString("airport_name"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                 ),
                 rs.getDouble    ("base_cost"),
                 rs.getInt       ("available_places_econom"),

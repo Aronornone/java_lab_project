@@ -38,7 +38,7 @@ public class StubDoLoginServlet extends HttpServlet {
 
         //TODO: этот кусок вынести в DAOimpl, кроме установки attribute и dispatcher
         try {
-            String sql = "SELECT * FROM user WHERE user.email=?";
+            String sql = "SELECT * FROM account WHERE account.email=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, email);
             ResultSet result = statement.executeQuery();

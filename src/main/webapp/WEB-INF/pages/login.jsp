@@ -22,7 +22,7 @@
         <p class="error">${regSuccess}</p>
         <p class="error">${loginFailed}</p>
         <form action="doLogin" method="post">
-            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${email}"></p>
+            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${requestScope.email}"></p>
             <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password"></p>
             <input class="buttonLogReg" type="submit" value="Login/Войти">
             <p><a href="regPage">Регистрация\Registration</a></p>

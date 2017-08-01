@@ -1,6 +1,6 @@
 package stubs;
 
-import db.DataSource;
+import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.User;
 
@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static utils.EncodingUtil.encode;
@@ -40,40 +40,19 @@ public class StubDoRegServlet extends HttpServlet {
             request.setAttribute("username", username);
             request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
         } else {
-            //TODO: этот кусок вынести в DAOimpl, кроме установки attribute и dispatcher
-            Connection connection = DataSource.getConnection();
-            try {
-                String sql = "SELECT account.name,account.email,account.password_hash FROM account WHERE account.email=?";
-                PreparedStatement statementSelect = connection.prepareStatement(sql);
-                statementSelect.setString(1, email);
-                ResultSet result = statementSelect.executeQuery();
-                if (result.next()) {
-                    request.setAttribute("userAlreadyExists", encode(err.getString("userAlreadyExists")));
-                    request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
-                } else {
-                    User user = new User(username, email, password1HashReq, registrationDate);
-                    try {
-                        String sqlInsert = "INSERT INTO account (name, email, password_hash, registration_date) VALUES(?,?,?,?)";
-                        PreparedStatement statementInsert = connection.prepareStatement(sqlInsert);
-                        statementInsert.setString(1, username);
-                        statementInsert.setString(2, email);
-                        statementInsert.setString(3, password1HashReq);
-                        statementInsert.setTimestamp(4, Timestamp.valueOf(registrationDate));
-
-                        statementInsert.executeUpdate();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    request.setAttribute("regSuccess", encode(err.getString("regSuccess")));
-                    request.setAttribute("email", email);
-                    request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            UserService userService = new UserService();
+            Optional<User> userOptional = userService.get(email);
+            if (userOptional.isPresent()) {
+                request.setAttribute("userAlreadyExists", encode(err.getString("userAlreadyExists")));
+                request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            } else {
+                User user = new User(username, email, password1HashReq, registrationDate);
+                userService.create(user);
+                request.setAttribute("regSuccess", encode(err.getString("regSuccess")));
+                request.setAttribute("email", email);
+                request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
             }
         }
-
-
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

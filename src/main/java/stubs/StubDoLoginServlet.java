@@ -1,6 +1,6 @@
 package stubs;
 
-import db.DataSource;
+import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
@@ -9,12 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static utils.EncodingUtil.encode;
@@ -28,33 +24,18 @@ public class StubDoLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
         String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
-
-        Connection connection = DataSource.getConnection();
-        String usernameDB = "";
         String passwordHashDB = "";
-        Long userId;
-        LocalDateTime registrationDate;
         User user = null;
 
-        //TODO: этот кусок вынести в DAOimpl, кроме установки attribute и dispatcher
-        try {
-            String sql = "SELECT * FROM account WHERE account.email=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, email);
-            ResultSet result = statement.executeQuery();
-            if (result.next()) {
-                userId = Long.parseLong(result.getString("id"));
-                usernameDB = result.getString("name");
-                passwordHashDB = result.getString("password_hash");
-                registrationDate = result.getTimestamp("registration_date").toLocalDateTime();
-                user = new User(userId, usernameDB, email, passwordHashReq, registrationDate);
-            } else {
-                request.setAttribute("nonexistentLogin", encode(err.getString("nonexistentLogin")));
-                request.setAttribute("email", email);
-                request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        UserService userService = new UserService();
+        Optional<User> userOptional = userService.get(email);
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+            passwordHashDB = user.getPasswordHash();
+        } else {
+            request.setAttribute("nonexistentLogin", encode(err.getString("nonexistentLogin")));
+            request.setAttribute("email", email);
+            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
 
         if (passwordHashDB.equals(passwordHashReq)) {
@@ -62,8 +43,8 @@ public class StubDoLoginServlet extends HttpServlet {
             httpSession.setAttribute("user", user);
 
             Cookie cookieUserId;
-            cookieUserId = new Cookie("userId",String.valueOf(user.getUserId()));
-            cookieUserId.setMaxAge(60*60*24*7); //one week
+            cookieUserId = new Cookie("userId", String.valueOf(user.getUserId()));
+            cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
             response.addCookie(cookieUserId);
 
             List<Airport> airports = StubUtils.getAirports();

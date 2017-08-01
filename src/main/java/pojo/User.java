@@ -18,18 +18,18 @@ public class User {
     private String passwordHash;
     private LocalDateTime registrationDate;
 
-    public User(long userId, String name, String email, String nonHashedPassword, LocalDateTime registrationDate) {
+    public User(long userId, String name, String email, String hashPassword, LocalDateTime registrationDate) {
         this.userId = userId;
         this.name = name;
         this.email = email;
-        this.passwordHash = DigestUtils.md5Hex(nonHashedPassword);
+        this.passwordHash = hashPassword;
         this.registrationDate = registrationDate;
     }
 
-    public User(String name, String email, String nonHashedPassword, LocalDateTime registrationDate) {
+    public User(String name, String email, String hashPassword, LocalDateTime registrationDate) {
         this.name = name;
         this.email = email;
-        this.passwordHash = DigestUtils.md5Hex(nonHashedPassword);
+        this.passwordHash = hashPassword;
         this.registrationDate = registrationDate;
     }
     public void setPassword(String nonHashedPassword) {

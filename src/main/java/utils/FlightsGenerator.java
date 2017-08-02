@@ -19,7 +19,7 @@ public class FlightsGenerator {
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
-        fillFlightsTable(50); //put number of flights you want to insert into table
+        fillFlightsTable(40); //put number of flights you want to insert into table
     }
 
     @SneakyThrows
@@ -51,9 +51,7 @@ public class FlightsGenerator {
         params.add(airplaneId);
         params.add(createRandomSequence(3) + "-" + createNumber(2));
         params.add(depAirportId);
-        System.out.println(depAirportId);
         params.add(arrAirportId);
-        System.out.println(arrAirportId);
         params.add(countBaseCost(getDistance(depAirportId, arrAirportId)));
         params.add(as.get(airplaneId).get().getCapacityEconom());
         params.add(as.get(airplaneId).get().getCapacityBusiness());
@@ -105,4 +103,6 @@ public class FlightsGenerator {
             return sin(phi / 2) * sin(phi / 2) + cos(phi1) * cos(phi2) * sin(lambda / 2) * sin(lambda / 2);
         }
     }
+
+
 }

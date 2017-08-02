@@ -9,13 +9,17 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 import pojo.FlightPlace;
+import utils.OurBitSet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class StubUtils {
 
@@ -87,7 +91,7 @@ public class StubUtils {
 
         if (flightPlaceOptional.isPresent()) {
             flightPlace = flightPlaceOptional.get();
-            BitSet places;
+            OurBitSet places;
             if (business) {
                 places = flightPlace.getBitPlacesBusiness();
             }
@@ -125,9 +129,8 @@ public class StubUtils {
         return reservedPlace;
     }
 
-    public static BitSet bitSetConversionFromString(String string) {
-        BitSet bitSet = new BitSet(string.length());
-        bitSet.set(0, bitSet.length(), false);
+    public static OurBitSet bitSetConversionFromString(String string) {
+        OurBitSet bitSet = new OurBitSet(string.length());
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '1') {
                 bitSet.set(i);
@@ -136,9 +139,9 @@ public class StubUtils {
         return bitSet;
     }
 
-    public static String stringConversionToBitSet(BitSet bitSet) {
+    public static String stringConversionFromBitSet(OurBitSet bitSet) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < bitSet.size(); i++) {
+        for (int i = 0; i < bitSet.length(); i++) {
             if (bitSet.get(i)) {
                 stringBuilder.append('1');
             } else stringBuilder.append('0');

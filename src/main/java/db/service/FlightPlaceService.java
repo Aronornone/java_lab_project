@@ -20,13 +20,13 @@ public class FlightPlaceService implements FlightPlaceDAO {
             "  fp.id, f.airplane_id, p.name, p.capacity_econom, p.capacity_business, f.flight_number,\n" +
             "  f.departure_airport_id, d.code, d.city, d.airport_name,d.latitude,d.longitude, f.arrival_airport_id, a.code, a.city, a.airport_name, a.latitude, a.longitude, \n" +
             "  f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime,\n" +
-            "  places_econom, places_business\n" +
-            "FROM FlightPlace fp\n" +
+            "  places_econom, places_business\n " +
+            " FROM FlightPlace fp\n" +
             "  JOIN Flight   f ON f.id = fp.flight_id\n" +
             "  JOIN Airplane p ON p.id = f.airplane_id\n" +
             "  JOIN Airport  d ON d.id = f.departure_airport_id\n" +
             "  JOIN Airport  a ON a.id = f.arrival_airport_id\n";
-    private static final String ORDER_BY_DATETIME = "ORDER BY f.flight_datetime ";
+    private static final String ORDER_BY_DATETIME = " ORDER BY f.flight_datetime ";
 
     @Override
     @SneakyThrows
@@ -101,8 +101,8 @@ public class FlightPlaceService implements FlightPlaceDAO {
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong  (1, flightPlaces.getFlightPlacesId());
-            ps.setString(2, StubUtils.stringConversionToBitSet(flightPlaces.getBitPlacesEconom()));
-            ps.setString(3, StubUtils.stringConversionToBitSet(flightPlaces.getBitPlacesBusiness()));
+            ps.setString(2, StubUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesEconom()));
+            ps.setString(3, StubUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesBusiness()));
             ps.setLong  (4, flightPlaces.getFlightPlacesId());
 
             ps.executeUpdate();

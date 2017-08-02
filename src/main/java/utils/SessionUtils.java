@@ -32,6 +32,7 @@ public class SessionUtils {
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
 
             for (Ticket ticket : tickets) {
+                //need to add repair of flightplace bitset
                 if (ticket.isBusinessClass()) {
                     ticket.getFlight().setAvailablePlacesBusiness(ticket.getFlight().getAvailablePlacesBusiness() + 1);
                 } else

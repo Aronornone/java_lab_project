@@ -32,11 +32,11 @@ public class InvoiceService implements InvoiceDAO {
 
             ps.executeUpdate();
 
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    invoice.setInvoiceId(generetedKeys.getInt(1));
-                }
-            }
+            //try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
+            //    if (generetedKeys.next()) {
+            //        invoice.setInvoiceId(generetedKeys.getInt(1));
+            //    }
+            //}
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,6 +95,7 @@ public class InvoiceService implements InvoiceDAO {
             ps.setLong      (1, invoice.getUser().getUserId());
             ps.setString    (2, String.valueOf(invoice.getInvoiceStatus()));
             ps.setTimestamp (3, Timestamp.valueOf(invoice.getTimestamp()));
+            ps.setLong (4, invoice.getInvoiceId());
 
             ps.executeUpdate();
         } catch (SQLException e) {

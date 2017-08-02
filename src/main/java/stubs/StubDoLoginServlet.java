@@ -24,7 +24,7 @@ public class StubDoLoginServlet extends HttpServlet {
         if (nonHashedPasswordReq != null) {
             passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
         } else {
-            request.setAttribute("fieldEmpty", encode(err.getString("fieldEmpty")));
+            request.setAttribute("fieldEmpty",err.getString("fieldEmpty"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }

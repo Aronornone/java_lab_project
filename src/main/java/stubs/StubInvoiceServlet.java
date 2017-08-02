@@ -60,7 +60,7 @@ public class StubInvoiceServlet extends HttpServlet {
         InvoiceService invoiceService = new InvoiceService();
 
         if (numberTicketsFlight > (flight.getAvailablePlacesBusiness() + flight.getAvailablePlacesEconom())) {
-            request.setAttribute("notEnoughPlaces", encode(err.getString("notEnoughPlaces")));
+            request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
             Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),

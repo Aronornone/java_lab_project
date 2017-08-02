@@ -94,7 +94,8 @@ public class StubUtils {
             else {
                 places = flightPlace.getBitPlacesEconom();
             }
-
+            System.out.println(places);
+            System.out.println(places.length());
             int length = places.length();
             Random random = new Random(47);
             for (int i = 0; i < places.length(); i++) {

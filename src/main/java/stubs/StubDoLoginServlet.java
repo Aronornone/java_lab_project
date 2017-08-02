@@ -4,6 +4,7 @@ import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -55,7 +56,27 @@ public class StubDoLoginServlet extends HttpServlet {
             List<Airport> airports = StubUtils.getAirports();
             request.setAttribute("departures", airports);
             request.setAttribute("arrivals", airports);
-            request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
+
+            String dateFromString = (String) httpSession.getAttribute("dateFrom");
+            String dateToString = (String) httpSession.getAttribute("dateTo");
+            String departure = (String) httpSession.getAttribute("departureF");
+            String arrival = (String) httpSession.getAttribute("arrivalF");
+            String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+            if ((dateFromString ==null) ||
+                    (dateToString == null) ||
+                    (departure==null)||
+                    (arrival==null) ||
+                    (numberTicketsFilterString == null)) {
+                response.sendRedirect("/");
+            }
+               else {
+                String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
+                        "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
+                        "&numberTicketsFilter=" + numberTicketsFilterString;
+
+                response.sendRedirect(redirectBackString);
+            }
+            //request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
             request.setAttribute("loginFailed", err.getString("loginFailed"));
             request.setAttribute("email", email);

@@ -67,9 +67,11 @@ public class StubDoSearchServlet extends HttpServlet {
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             List<Flight> foundFlights = new ArrayList<>();
             for (Flight flight : flights) {
-                if ((flight.getArrivalAirport().getCode().equals(arrival)) && (flight.getDepartureAirport().getCode().equals(departure)) &&
+                if ((flight.getArrivalAirport().getCode().equals(arrival)) &&
+                        (flight.getDepartureAirport().getCode().equals(departure)) &&
                         ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTicketsFilter) &&
-                        ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) && flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
+                        ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) &&
+                                flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
                     foundFlights.add(flight);
                 }
             }

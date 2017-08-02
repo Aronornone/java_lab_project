@@ -18,6 +18,7 @@ VALUES
 ('Polina', 'polina@mail.ru', '827ccb0eea8a706c4c34a16891f84e7b', '2017-07-31 06:07:11'),
 ('TestUser', 'testuser@test.ru', '5d9c68c6c50ed3d02a2fcf54f63993b6', '2017-07-31 09:11:35');
 
+.
 INSERT INTO flight (airplane_id,flight_number,departure_airport_id,arrival_airport_id,
 base_cost,available_places_econom,available_places_business,flight_datetime)
 VALUES

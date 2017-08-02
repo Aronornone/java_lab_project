@@ -14,8 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -80,7 +78,6 @@ public class StubInvoiceServlet extends HttpServlet {
 
             TicketService ticketService = new TicketService();
 
-            List<Ticket> tickets = new ArrayList<>();
             if (numberTicketsFlight != 0) {
                 System.out.println("number of tickets to buy: " + numberTicketsFlight);
                 for (int i = 0; i < numberTicketsFlight; i++) {
@@ -90,12 +87,16 @@ public class StubInvoiceServlet extends HttpServlet {
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, false, flight.getBaseCost());
                     ticketService.create(ticket);
-                    // Info about number of tickets in bucket
-                    httpSession.setAttribute("ticketsInBucket", tickets.size() + ticketsInBucket);
                 }
+                // Info about number of tickets in bucket
+                ticketsInBucket = ticketsInBucket + numberTicketsFlight;
+                httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
+                System.out.println("Tickets:" + ticketsInBucket);
             }
-            request.getRequestDispatcher("/WEB-INF/pages/doSearch.jsp").forward(request, response);
         }
+        response.sendRedirect(redirectBackString);
+        //request.getRequestDispatcher("/WEB-INF/pages/doSearch.jsp").forward(request, response);
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

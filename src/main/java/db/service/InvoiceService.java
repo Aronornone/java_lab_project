@@ -14,7 +14,7 @@ import java.util.Optional;
 public class InvoiceService implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
-            "  i.id, account_id, a.name, a.email, a.password_hash, status, invoice_datetime\n" +
+            "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +
             "FROM Invoice i\n" +
             "  JOIN Account a ON a.id = i.account_id\n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";

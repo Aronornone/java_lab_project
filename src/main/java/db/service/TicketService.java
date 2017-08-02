@@ -16,21 +16,20 @@ import java.util.Optional;
 public class TicketService implements TicketDao {
     private static final String SELECT_ALL =
             "SELECT\n" +
-            "  t.id, invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
-            "  i.status, i.invoice_datetime, flight_id, f.airplane_id, ap.name, ap.capacity_econom, ap.capacity_business, f.flight_number,\n" +
-            "  f.departure_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
-            "  f.arrival_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
-            "  f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime,\n" +
-            "  passenger_name, passport, place, luggage, business_class, price\n" +
-            "FROM Ticket t\n" +
-            "  JOIN Invoice i   ON i.id = t.invoice_id\n" +
-            "  JOIN Account a   ON a.id = i.account_id\n" +
-            "  JOIN Flight  f   ON f.id = t.flight_id\n" +
-            "  JOIN Airplane ap ON ap.id = f.airplane_id\n" +
-            "  JOIN Airport dep ON dep.id = f.departure_airport_id\n" +
-            "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
+                    "  t.id, invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
+                    "  i.status, i.invoice_datetime, flight_id, f.airplane_id, ap.name, ap.capacity_econom, ap.capacity_business, f.flight_number,\n" +
+                    "  f.departure_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
+                    "  f.arrival_airport_id, arr.code, arr.city, arr.airport_name, arr.latitude, arr.longitude,\n" +
+                    "  f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime,\n" +
+                    "  passenger_name, passport, place, luggage, business_class, price\n" +
+                    "FROM Ticket t\n" +
+                    "  JOIN Invoice i   ON i.id = t.invoice_id\n" +
+                    "  JOIN Account a   ON a.id = i.account_id\n" +
+                    "  JOIN Flight  f   ON f.id = t.flight_id\n" +
+                    "  JOIN Airplane ap ON ap.id = f.airplane_id\n" +
+                    "  JOIN Airport dep ON dep.id = f.departure_airport_id\n" +
+                    "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_FLIGHT_DATETIME = "ORDER BY f.flight_datetime";
-
 
 
     @SneakyThrows
@@ -38,15 +37,15 @@ public class TicketService implements TicketDao {
         List<Ticket> tickets = new ArrayList<>();
         String sql = SELECT_ALL + " WHERE invoice_id =? "
                 + ORDER_BY_FLIGHT_DATETIME;
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);) {
             ps.setLong(1, invoiceId);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 tickets.add(createNewTicket(rs));
             }
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -59,24 +58,24 @@ public class TicketService implements TicketDao {
         String sql = "INSERT INTO Ticket (invoice_id, flight_id, passenger_name, passport, place, luggage, business_class, price) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setLong   (1, ticket.getInvoice().getInvoiceId());
-            ps.setLong   (2, ticket.getFlight().getFlightId());
-            ps.setString (3, ticket.getPassengerName());
-            ps.setString (4, ticket.getPassport());
-            ps.setInt    (5, ticket.getSittingPlace());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, ticket.getInvoice().getInvoiceId());
+            ps.setLong(2, ticket.getFlight().getFlightId());
+            ps.setString(3, ticket.getPassengerName());
+            ps.setString(4, ticket.getPassport());
+            ps.setInt(5, ticket.getSittingPlace());
             ps.setBoolean(6, ticket.isLuggage());
             ps.setBoolean(7, ticket.isBusinessClass());
-            ps.setDouble (8, ticket.getPrice());
+            ps.setDouble(8, ticket.getPrice());
 
             ps.executeUpdate();
-
+/*
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
                     ticket.setTicketId(generetedKeys.getInt(1));
                 }
-            }
+            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,8 +88,8 @@ public class TicketService implements TicketDao {
     public Optional<Ticket> get(int id) {
         String sql = SELECT_ALL + "WHERE t.id = ?\n" + ORDER_BY_FLIGHT_DATETIME;
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -108,19 +107,19 @@ public class TicketService implements TicketDao {
     @SneakyThrows
     public void update(Ticket ticket) {
         String sql = "UPDATE Ticket SET invoice_id = ?, flight_id = ?, passenger_name = ?, passport = ?, place = ?, " +
-            "luggage = ?, business_class = ?, price = ? WHERE id = ?";
+                "luggage = ?, business_class = ?, price = ? WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setLong   (1, ticket.getInvoice().getInvoiceId());
-            ps.setLong   (2, ticket.getFlight().getFlightId());
-            ps.setString (3, ticket.getPassengerName());
-            ps.setString (4, ticket.getPassport());
-            ps.setInt    (5, ticket.getSittingPlace());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, ticket.getInvoice().getInvoiceId());
+            ps.setLong(2, ticket.getFlight().getFlightId());
+            ps.setString(3, ticket.getPassengerName());
+            ps.setString(4, ticket.getPassport());
+            ps.setInt(5, ticket.getSittingPlace());
             ps.setBoolean(6, ticket.isLuggage());
             ps.setBoolean(7, ticket.isBusinessClass());
-            ps.setDouble (8, ticket.getPrice());
-            ps.setLong   (9, ticket.getTicketId());
+            ps.setDouble(8, ticket.getPrice());
+            ps.setLong(9, ticket.getTicketId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -133,8 +132,8 @@ public class TicketService implements TicketDao {
     public void remove(Ticket ticket) {
         String sql = "DELETE FROM Ticket WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, ticket.getTicketId());
 
             ps.executeUpdate();
@@ -147,13 +146,13 @@ public class TicketService implements TicketDao {
     @SneakyThrows
     public List<Ticket> getAll() {
         List<Ticket> invoices = new ArrayList<>();
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_FLIGHT_DATETIME);
-            ResultSet rs = statement.executeQuery()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_FLIGHT_DATETIME);
+             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 invoices.add(createNewTicket(rs));
             }
-        } catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -167,51 +166,51 @@ public class TicketService implements TicketDao {
                 new Invoice(
                         rs.getLong("id"),
                         new User(
-                                rs.getLong      ("account_id"),
-                                rs.getString    ("name"),
-                                rs.getString    ("email"),
-                                rs.getString    ("password_hash"),
-                                rs.getTimestamp ("registration_date").toLocalDateTime()
+                                rs.getLong("account_id"),
+                                rs.getString("name"),
+                                rs.getString("email"),
+                                rs.getString("password_hash"),
+                                rs.getTimestamp("registration_date").toLocalDateTime()
                         ),
                         Invoice.InvoiceStatus.valueOf(rs.getString("status")),
                         rs.getTimestamp("invoice_datetime").toLocalDateTime()
                 ),
                 new Flight(
-                    rs.getLong("id"),
-                    new Airplane(
-                            rs.getLong  ("airplane_id"),
-                            rs.getString("name"),
-                            rs.getInt   ("capacity_econom"),
-                            rs.getInt   ("capacity_business")
-                    ),
-                    rs.getString("flight_number"),
-                    new Airport(
-                            rs.getLong  ("departure_airport_id"),
-                            rs.getString("code"),
-                            rs.getString("city"),
-                            rs.getString("airport_name"),
-                            rs.getDouble("latitude"),
-                            rs.getDouble("longitude")
-                    ),
-                    new Airport(
-                            rs.getLong  ("arrival_airport_id"),
-                            rs.getString("code"),
-                            rs.getString("city"),
-                            rs.getString("airport_name"),
-                            rs.getDouble("latitude"),
-                            rs.getDouble("longitude")
-                    ),
-                    rs.getDouble    ("base_cost"),
-                    rs.getInt       ("available_places_econom"),
-                    rs.getInt       ("available_places_business"),
-                    rs.getTimestamp ("flight_datetime").toLocalDateTime()
+                        rs.getLong("id"),
+                        new Airplane(
+                                rs.getLong("airplane_id"),
+                                rs.getString("name"),
+                                rs.getInt("capacity_econom"),
+                                rs.getInt("capacity_business")
+                        ),
+                        rs.getString("flight_number"),
+                        new Airport(
+                                rs.getLong("departure_airport_id"),
+                                rs.getString("code"),
+                                rs.getString("city"),
+                                rs.getString("airport_name"),
+                                rs.getDouble("latitude"),
+                                rs.getDouble("longitude")
+                        ),
+                        new Airport(
+                                rs.getLong("arrival_airport_id"),
+                                rs.getString("code"),
+                                rs.getString("city"),
+                                rs.getString("airport_name"),
+                                rs.getDouble("latitude"),
+                                rs.getDouble("longitude")
+                        ),
+                        rs.getDouble("base_cost"),
+                        rs.getInt("available_places_econom"),
+                        rs.getInt("available_places_business"),
+                        rs.getTimestamp("flight_datetime").toLocalDateTime()
                 ),
-                rs.getString ("passenger_name"),
-                rs.getString ("passport"),
-                rs.getInt    ("place"),
+                rs.getString("passenger_name"),
+                rs.getString("passport"),
+                rs.getInt("place"),
                 rs.getBoolean("luggage"),
                 rs.getBoolean("business_class"),
-                rs.getDouble ("price")
-            );
+                rs.getDouble("price")
+        );
     }
 }

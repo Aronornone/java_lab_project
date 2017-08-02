@@ -17,6 +17,9 @@
         <c:if test="${user != null}">
             <p><fmt:message key="welcomeMessage1"/> ${user.name}</p>
             <a href="bucket"><input class="buttonBucket" type="submit" value="<fmt:message key="cartButton"/>"/></a>
+            <p>Вы/You: ${user.name}</p>
+            <p class="error">Tickets in bucket: ${sessionScope.ticketsInBucket}</p>
+            <a href="bucket"><input class="buttonBucket" type="submit" value="Корзина/Bucket"></a>
             <form action="logout" method="post">
                 <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">
             </form>

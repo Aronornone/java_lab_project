@@ -16,9 +16,9 @@
 <body>
 <div class="body">
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
+    <p class="error"> ${cartEmpty}</p>
     <div class="wrapper">
         <div class="bucket">
-
             <div class="bucketTable">
                 <div class="flightInfo">
                     <p class="error"> ${cartEmpty}</p>
@@ -63,6 +63,56 @@
                     </div>
 
                 </c:forEach>
+                <div>
+                    <c:forEach items="${requestScope.flights}" var="flight">
+                        <div class="flightInfo">
+                            Рейс/Flight: <b>${flight.flightNumber}</b> из/from: <b>${flight.departureAirport.name}</b>
+                            в/to:
+                            <b>${flight.arrivalAirport.name}</b>.
+                            Дата и время/ DateTime: <b>${flight.dateTime}</b> Cамолет/Airplane:
+                            <b>${flight.airplanename}</b>
+                        </div>
+                        <c:forEach items="${flightTickets}" var="tickets">
+                            <div class="passenger">
+                                <p class="passengerNum">Пассажир/Passenger</p>
+                                <table class="buckettable">
+                                    <tr>
+                                        <th>Фамилия и имя/First and Last Name</th>
+                                        <th>Паспорт/ID card</th>
+                                        <th class="tableButDel"></th>
+                                    </tr>
+                                    <tr>
+                                        <td><input class="passengerfield" type="text" name="passengerName" value="">
+                                        </td>
+                                        <td><input type="text" name="passport" value=""></td>
+                                        <td>
+                                            <form name="ticketDelete" action="ticketDelete" method="post">
+                                                <input class="buttonDelete" type="submit" value="Удалить/Delete">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="wrapOptions">
+                                    <div>
+                                        <p>Бизнес-класс/Business-class <input class="checkbox" name="business"
+                                                                              type="checkbox"
+                                                                              value="0">
+                                            Багаж/Luggage <input class="checkbox" name="luggage" type="checkbox"
+                                                                 value="0">
+                                        </p>
+                                    </div>
+                                    <div class="pasCost">
+                                        <div class="pplace">Ваше место/Your seat:</div>
+                                        <div class="place">${tickets.sittingPlace}</div>
+                                        <div class="pcost">Стоимость/Cost:</div>
+                                        <div class="cost">${tickets.price}</div>
+                                    </div>
+                                </div>
+                                <hr class="headerLine">
+                            </div>
+                        </c:forEach>
+                    </c:forEach>
+                </div>
 
                 <div class="butPay">
                     <div class="pCostTotal"><fmt:message key="total"/> :</div>

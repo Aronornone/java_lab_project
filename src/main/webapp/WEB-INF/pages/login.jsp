@@ -24,6 +24,7 @@
         <p class="error">${nonexistentLogin}</p>
         <p class="error">${regSuccess}</p>
         <p class="error">${loginFailed}</p>
+        <p class="error">${fieldEmpty}</p>
         <form action="doLogin" method="post">
             <p><fmt:message key="loginLable"/> <input class="fieldLogReg" type="email" name="email" value="${requestScope.email}"></p>
             <p><fmt:message key="passLable"/> <input class="fieldLogReg" type="password" name="password"></p>

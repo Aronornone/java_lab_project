@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirplaneService implements AirplaneDAO {
-    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane";
+    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
 
     @Override
     @SneakyThrows
@@ -31,8 +31,6 @@ public class AirplaneService implements AirplaneDAO {
                 if (generetedKeys.next()) {
                     airplane.setAirplaneId(generetedKeys.getInt(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,7 +42,7 @@ public class AirplaneService implements AirplaneDAO {
     @Override
     @SneakyThrows
     public Optional<Airplane> get(int id) {
-        String sql = "SELECT name, capacity_econom, capacity_business FROM Airplane WHERE id = ?";
+        String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {

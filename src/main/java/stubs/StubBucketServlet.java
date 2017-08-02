@@ -1,16 +1,19 @@
 package stubs;
 
+import db.service.FlightService;
+import db.service.InvoiceService;
 import db.service.TicketService;
-import pojo.*;
+import pojo.Flight;
+import pojo.Invoice;
+import pojo.Ticket;
+import pojo.User;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/bucket"})
@@ -23,52 +26,48 @@ public class StubBucketServlet extends HttpServlet {
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
 
-        String flightIdString = SessionUtils.checkFlightSession(httpSession, request);
-
-        if (flightIdString != null) {
-            Long flightId = Long.parseLong(flightIdString);
-            httpSession.setAttribute("flightId", flightId);
-
-            List<Airplane> airplanes = StubUtils.getAirplanes();
-            List<Airport> airports = StubUtils.getAirports();
-            List<Flight> flights = StubUtils.getFlights(airports, airplanes);
-
-            for (Flight flight : flights) {
-                if (flight.getFlightId() == flightId) {
-                    Flight ticketFlight = flight;
-                    request.setAttribute("flightNumber", ticketFlight.getFlightNumber());
-                    request.setAttribute("departureAirport", ticketFlight.getDepartureAirport());
-                    request.setAttribute("arrivalAirport", ticketFlight.getArrivalAirport());
-                    request.setAttribute("dateTime", ticketFlight.getDateTime());
-                    request.setAttribute("airplanename", ticketFlight.getAirplane().getName());
-                }
-            }
-        }
-
-        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-        int numberTicketsFilter;
-        if (numberTicketsFilterString == null) {
-            numberTicketsFilter = 0;
-            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
-        } else {
-            numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
-        }
-
-        double sumTotal = 0;
+        InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
-//        List<Ticket> tickets = ticketService.getFlightTickets(invoice,flight);
-        List<Ticket> tickets = new ArrayList<>();
-        for (Ticket ticket : tickets) {
-            sumTotal = sumTotal + ticket.getPrice();
+        FlightService flightService = new FlightService();
+
+        //TODO: сделать запрос Invoice для текущего юзера в состоянии Created
+        //get only invoice in status Created
+        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+                Invoice.InvoiceStatus.CREATED);
+
+        if (invoiceOptional.isPresent()) {
+            Invoice invoice = invoiceOptional.get();
+            //Для этого заказа найти все билеты, вытащить из них рейсы и сгруппировать билеты
+            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+            Set<Flight> flights = new HashSet<>();
+            for(Ticket ticket : tickets) {
+                flights.add(ticket.getFlight());
+            }
+
+            for(Flight flight: flights) {
+
+            }
+
+
+            String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+
+            //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
+            //boolean business = (boolean) request.getAttribute("business");
+            //boolean luggage = (boolean) request.getAttribute("luggage");
+
+            request.setAttribute("flights", flights);
+
+            double sumTotal = 0;
+            // calc total Sum of all tickets in invoice
+            for(Ticket ticket: tickets) {
+                sumTotal = sumTotal + ticket.getPrice();
+            }
+
+            request.setAttribute("totalSum", sumTotal);
+        } else {
+            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
-
-        request.setAttribute("tickets", tickets);
-        request.setAttribute("totalSum", sumTotal);
-
-        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").
-
-                forward(request, response);
-
+        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

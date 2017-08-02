@@ -12,8 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class InvoiceService implements InvoiceDAO {
-    private static final String SELECT_ALL = "SELECT i.id, account_id, a.name, a.email, a.password_hash" +
-            "status, invoice_datetime FROM Invoice i, Account a ";
+    private static final String SELECT_ALL =
+            "SELECT\n" +
+            "  i.id, account_id, a.name, a.email, a.password_hash, status, invoice_datetime\n" +
+            "FROM Invoice i\n" +
+            "  JOIN Account a ON a.id = i.account_id\n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
 
     @Override
@@ -33,8 +36,6 @@ public class InvoiceService implements InvoiceDAO {
                 if (generetedKeys.next()) {
                     invoice.setInvoiceId(generetedKeys.getInt(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -46,7 +47,7 @@ public class InvoiceService implements InvoiceDAO {
     @Override
     @SneakyThrows
     public Optional<Invoice> get(int id) {
-        String sql = SELECT_ALL + "WHERE i.id = ? " + ORDER_BY_DATETIME;
+        String sql = SELECT_ALL + "WHERE i.id = ?\n" + ORDER_BY_DATETIME;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -62,6 +63,27 @@ public class InvoiceService implements InvoiceDAO {
             return Optional.ofNullable(invoice);
         }
     }
+
+    @SneakyThrows
+    public Optional<Invoice> getInvoiceByUser(long userId, Invoice.InvoiceStatus status) {
+        String sql = SELECT_ALL + "WHERE i.account_id = ? and i.status = ?" + ORDER_BY_DATETIME;
+
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, userId);
+            ps.setString(2, status.name());
+
+            ResultSet rs = ps.executeQuery();
+
+            Invoice invoice = null;
+            while (rs.next()) {
+                invoice = createNewInvoce(rs);
+            }
+
+            return Optional.ofNullable(invoice);
+        }
+    }
+
 
     @Override
     @SneakyThrows
@@ -117,7 +139,7 @@ public class InvoiceService implements InvoiceDAO {
        return new Invoice(
                rs.getLong("id"),
                new User(
-                       rs.getLong      ("user_id"),
+                       rs.getLong      ("account_id"),
                        rs.getString    ("name"),
                        rs.getString    ("email"),
                        rs.getString    ("password_hash"),

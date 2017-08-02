@@ -31,10 +31,7 @@ public class UserService implements UserDAO {
                 if (generetedKeys.next()) {
                     user.setUserId(generetedKeys.getInt(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -65,10 +62,10 @@ public class UserService implements UserDAO {
     @Override
     @SneakyThrows
     public Optional<User> get(String email) {
-        String sql = "SELECT id, name, password_hash, registration_date FROM Account WHERE email = ?";
+        String sql = SELECT_ALL + "WHERE email = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();

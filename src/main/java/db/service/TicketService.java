@@ -11,13 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class TicketService implements TicketDao {
-    private static final String SELECT_ALL = "SELECT t.id, invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date, " +
-            "i.status, i.invoice_datetime, flight_id, f.airplane_id, ap.name, ap.capacity_econom, ap.capacity_business, f.flight_number, " +
-            "f.departure_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude, " +
-            "f.arrival_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude, " +
-            "f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime, " +
-            "passenger_name, passport, place, luggage, business_class, price " +
-            "FROM Ticket t, Invoice i, Account a, Flight f, Airplane ap, Airport dep, Airport arr ";
+    private static final String SELECT_ALL =
+            "SELECT\n" +
+            "  t.id, invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
+            "  i.status, i.invoice_datetime, flight_id, f.airplane_id, ap.name, ap.capacity_econom, ap.capacity_business, f.flight_number,\n" +
+            "  f.departure_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
+            "  f.arrival_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
+            "  f.base_cost, f.available_places_econom, f.available_places_business, f.flight_datetime,\n" +
+            "  passenger_name, passport, place, luggage, business_class, price\n" +
+            "FROM Ticket t\n" +
+            "  JOIN Invoice i   ON i.id = t.invoice_id\n" +
+            "  JOIN Account a   ON a.id = i.account_id\n" +
+            "  JOIN Flight  f   ON f.id = t.flight_id\n" +
+            "  JOIN Airplane ap ON ap.id = f.airplane_id\n" +
+            "  JOIN Airport dep ON dep.id = f.departure_airport_id\n" +
+            "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_FLIGHT_DATETIME = "ORDER BY f.flight_datetime";
 
     @Override
@@ -43,8 +51,6 @@ public class TicketService implements TicketDao {
                 if (generetedKeys.next()) {
                     ticket.setTicketId(generetedKeys.getInt(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,7 +62,7 @@ public class TicketService implements TicketDao {
     @Override
     @SneakyThrows
     public Optional<Ticket> get(int id) {
-        String sql = SELECT_ALL + "WHERE t.id = ? " + ORDER_BY_FLIGHT_DATETIME;
+        String sql = SELECT_ALL + "WHERE t.id = ?\n" + ORDER_BY_FLIGHT_DATETIME;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {

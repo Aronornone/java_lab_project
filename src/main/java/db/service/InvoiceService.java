@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class InvoiceService implements InvoiceDAO {
-    private static final String SELECT_ALL = "SELECT i.id, account_id, a.name, a.email, a.password_hash" +
+    private static final String SELECT_ALL = "SELECT i.id, account_id, a.name, a.email, a.password_hash, " +
             "status, invoice_datetime FROM Invoice i, Account a ";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
 

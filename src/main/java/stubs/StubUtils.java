@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class StubUtils {
-    //TODO: этот кусок вынести в DAOimpl можно!
 
     public static List<Airport> getAirports() {
         AirportService airportService = new AirportService();
@@ -32,8 +31,9 @@ public class StubUtils {
     }
 
     public static List<Flight> getFlights(List<Airport> airports, List<Airplane> airplanes) {
-        Connection connection = DataSource.getConnection();
+        //TODO: этот кусок вынести в DAOimpl можно!
 
+        Connection connection = DataSource.getConnection();
         List<Flight> flights = new ArrayList<>();
         try {
             String sql = "SELECT * FROM flight";
@@ -71,26 +71,52 @@ public class StubUtils {
         return flights;
     }
 
-    public static int randomSittingPlaceEconom(Flight flight) {
-        int place = 0;
+    public static int randomSittingPlaceEconom(long flightId) {
+        int reservedPlace = 0;
         FlightPlace flightPlace = null;
         FlightPlaceService flightPlaceService = new FlightPlaceService();
-        Optional<FlightPlace> flightPlaceOptional = flightPlaceService.get((int)flight.getFlightId());
+        Optional<FlightPlace> flightPlaceOptional = flightPlaceService.getByFlight((int) flightId);
+
         if (flightPlaceOptional.isPresent()) {
             flightPlace = flightPlaceOptional.get();
             BitSet places = flightPlace.getBitPlacesEconom();
             int length = places.length();
             Random random = new Random(47);
-            for (int i=0; i < length; i++) {
-                place = random.nextInt(length);
-                while (places.get(place)) {
-                    if (places.get(place)) {
-                        place = random.nextInt(length);
-                    } else break;
+            for (int i = 0; i < places.length(); i++) {
+                reservedPlace = random.nextInt(length);
+                if (places.get(reservedPlace)) {
+                    reservedPlace = random.nextInt(length);
+                } else {
+                    places.set(reservedPlace);
+                    System.out.println("reservedPlace:" + reservedPlace);
+                    System.out.println("places reserved:" + places);
+                    flightPlace.setBitPlacesEconom(places);
+                    flightPlaceService.update(flightPlace);
+                    break;
                 }
             }
         }
-        System.out.println(place);
-        return place;
+        return reservedPlace;
+    }
+
+    public static BitSet bitSetConversionFromString(String string) {
+        BitSet bitSet = new BitSet(string.length());
+        bitSet.set(0,bitSet.length(),false);
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == '1') {
+                bitSet.set(i);
+            }
+        }
+        return bitSet;
+    }
+
+    public static String stringConversionToBitSet(BitSet bitSet) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < bitSet.size(); i++) {
+            if (bitSet.get(i)) {
+                stringBuilder.append('1');
+            } else stringBuilder.append('0');
+        }
+        return stringBuilder.toString();
     }
 }

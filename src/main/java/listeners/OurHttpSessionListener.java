@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
 
 @WebListener
 public class OurHttpSessionListener implements HttpSessionListener {
+    public void sessionCreated(HttpSessionEvent se) {
+        HttpSession httpSession = se.getSession();
+        System.out.println("Session ID:" + httpSession.getId() +
+                " is created at: " + LocalDateTime.now());
+    }
+
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();
         SessionUtils.invalidateSession(httpSession);

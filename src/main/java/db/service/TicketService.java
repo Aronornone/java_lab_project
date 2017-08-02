@@ -164,7 +164,7 @@ public class TicketService implements TicketDao {
         return new Ticket(
                 rs.getLong("id"),
                 new Invoice(
-                        rs.getLong("id"),
+                        rs.getLong("invoice_id"),
                         new User(
                                 rs.getLong("account_id"),
                                 rs.getString("name"),
@@ -176,7 +176,7 @@ public class TicketService implements TicketDao {
                         rs.getTimestamp("invoice_datetime").toLocalDateTime()
                 ),
                 new Flight(
-                        rs.getLong("id"),
+                        rs.getLong("flight_id"),
                         new Airplane(
                                 rs.getLong("airplane_id"),
                                 rs.getString("name"),

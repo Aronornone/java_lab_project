@@ -12,12 +12,11 @@ import java.util.List;
 
 import static db.DataSource.getConnection;
 
-public class FlightPlacesGenerator {
+public class FlightPlacesGeneratorPolina {
 
     public static void main(String[] args) throws SQLException {
         generateFlightPlaces();
     }
-
 
     @SneakyThrows
     private static void generateFlightPlaces() throws SQLException {
@@ -29,8 +28,8 @@ public class FlightPlacesGenerator {
         StringBuilder valueBuilder = new StringBuilder();
         for (Flight flight : flights) {
             valueBuilder.append("('").append(flight.getFlightId()).append("\',\'");
-            int placesEconom = flight.getAirplane().getCapacityEconom();
-            int placesBusiness = flight.getAirplane().getCapacityBusiness();
+            int placesEconom = flight.getAirplane().getCapacityEconom()+1;
+            int placesBusiness = flight.getAirplane().getCapacityBusiness()+1;
             OurBitSet bitSetEconom = new OurBitSet(placesEconom);
             OurBitSet bitSetBusiness = new OurBitSet(placesBusiness);
             valueBuilder.append(StubUtils.stringConversionFromBitSet(bitSetEconom)).append("\',\'").append(StubUtils.stringConversionFromBitSet(bitSetBusiness));

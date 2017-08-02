@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface FlightPlaceDAO {
     long create(FlightPlace flightPlace);
     Optional<FlightPlace> get(int id);
-    Optional<FlightPlace> getByFlight(int id);
+    Optional<FlightPlace> getByFlightId(int id);
     void update(FlightPlace flightPlace);
     void remove(FlightPlace flightPlace);
     List<FlightPlace> getAll();

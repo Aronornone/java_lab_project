@@ -56,16 +56,20 @@ public class StubInvoiceServlet extends HttpServlet {
             flight = flightOptional.get();
         }
 
+        //TODO: extract to method and optimise
+        // check if we have enough places for buy
         Invoice invoice = null;
         if (numberTicketsFlight > (flight.getAvailablePlacesBusiness() + flight.getAvailablePlacesEconom())) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
+            //check if invoice already created in status Created for this user
             Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                     Invoice.InvoiceStatus.CREATED);
             if (invoiceOptional.isPresent()) {
                 invoice = invoiceOptional.get();
             } else {
+                //if invoice isn't created, create it
                 invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
                 is.create(invoice);
             }
@@ -74,12 +78,12 @@ public class StubInvoiceServlet extends HttpServlet {
 
         int ticketsInBucket = 0;
 
+        //TODO: will be change with getting tickets from DB
         if (httpSession.getAttribute("ticketsInBucket") != null) {
             ticketsInBucket = (int) httpSession.getAttribute("ticketsInBucket");
         }
 
         if (numberTicketsFlight != 0) {
-            System.out.println("number of tickets to buy: " + numberTicketsFlight);
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
                 int sittingPlace = StubUtils.randomSittingPlace(flight.getFlightId(), false);
@@ -89,10 +93,9 @@ public class StubInvoiceServlet extends HttpServlet {
                         false, false, flight.getBaseCost());
                 ts.create(ticket);
             }
-            // Info about number of tickets in bucket
+            // TODO: Info about number of tickets in bucket, need to change to request from DB
             ticketsInBucket = ticketsInBucket + numberTicketsFlight;
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            System.out.println("Tickets:" + ticketsInBucket);
         }
         response.sendRedirect(redirectBackString);
     }

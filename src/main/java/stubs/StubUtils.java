@@ -18,26 +18,27 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class StubUtils {
+    private static FlightPlaceService fps = new FlightPlaceService();
+    private static FlightService fs = new FlightService();
+    private static AirportService as = new AirportService();
+    private static AirplaneService aps = new AirplaneService();
 
     public static List<Airport> getAirports() {
-        AirportService airportService = new AirportService();
-        List<Airport> airports = airportService.getAll();
+        List<Airport> airports = as.getAll();
         return airports;
     }
 
     public static List<Airplane> getAirplanes() {
-        AirplaneService airplaneService = new AirplaneService();
-        List<Airplane> airplanes = airplaneService.getAll();
+        List<Airplane> airplanes = aps.getAll();
         return airplanes;
     }
 
     public static List<Flight> getFlights(List<Airport> airports, List<Airplane> airplanes) {
-        //TODO: этот кусок вынести в DAOimpl можно!
 
+        //TODO: change for DAO
         Connection connection = DataSource.getConnection();
         List<Flight> flights = new ArrayList<>();
         try {
@@ -76,59 +77,61 @@ public class StubUtils {
         return flights;
     }
 
+    /**
+     * Method returns and reserved random place in airplane.
+     * Set bit for place with BitSet in FlightPlace and decrease available places of ticket class in Flight.
+     *
+     * @param flightId id of Flight to reserve.
+     * @param business if true it will get random place from BitSet in business class and reserved it.
+     * @return random reserved place for this flight in int
+     */
     public static int randomSittingPlace(long flightId, boolean business) {
         int reservedPlace = 0;
-        FlightPlace flightPlace = null;
-        FlightPlaceService flightPlaceService = new FlightPlaceService();
-        Optional<FlightPlace> flightPlaceOptional = flightPlaceService.getByFlight((int) flightId);
+        FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
+        Flight flight = fs.get((int) flightId).get();
 
-        Flight flight = null;
-        FlightService flightService = new FlightService();
-        Optional<Flight> flightOptional = flightService.get((int)flightId);
-        if(flightOptional.isPresent()){
-            flight = flightOptional.get();
+        OurBitSet places;
+
+        if (business) {
+            places = flightPlace.getBitPlacesBusiness();
+        } else {
+            places = flightPlace.getBitPlacesEconom();
         }
+        int length = places.length();
 
-        if (flightPlaceOptional.isPresent()) {
-            flightPlace = flightPlaceOptional.get();
-            OurBitSet places;
-            if (business) {
-                places = flightPlace.getBitPlacesBusiness();
-            }
-            else {
-                places = flightPlace.getBitPlacesEconom();
-            }
-            System.out.println(places);
-            System.out.println(places.length());
-            int length = places.length();
-            Random random = new Random(47);
-            for (int i = 0; i < places.length(); i++) {
+        Random random = new Random(47);
+        for (int i = 1; i < length; i++) {
+            reservedPlace = random.nextInt(length);
+            if (places.get(reservedPlace)) {
                 reservedPlace = random.nextInt(length);
-                if (places.get(reservedPlace)) {
-                    reservedPlace = random.nextInt(length);
+            } else {
+                places.set(reservedPlace);
+                if (business) {
+                    flight.setAvailablePlacesBusiness(flight.getAvailablePlacesEconom() - 1);
                 } else {
-                    places.set(reservedPlace);
-
-                    if (business) {
-                        flight.setAvailablePlacesBusiness(flight.getAvailablePlacesEconom() - 1);
-                        flightPlace.setBitPlacesBusiness(places);
-                    }
-                    else {
-                        flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom()-1);
-                        flightPlace.setBitPlacesEconom(places);
-                    }
-
-                    System.out.println("reservedPlace:" + reservedPlace);
-                    System.out.println("places reserved:" + places);
-                    flightPlaceService.update(flightPlace);
-                    flightService.update(flight);
-                    break;
+                    flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() - 1);
                 }
+                fs.update(flight);
+                flight = fs.get((int) flightId).get();
+                flightPlace = fps.getByFlightId((int) flight.getFlightId()).get();
+                if (business) {
+                    flightPlace.setBitPlacesBusiness(places);
+                } else {
+                    flightPlace.setBitPlacesEconom(places);
+                }
+                fps.update(flightPlace);
+                break;
             }
         }
         return reservedPlace;
     }
 
+    /**
+     * Util method for ease work with BitSet from Mysql. Convert String to OurBitSet object.
+     *
+     * @param string String with sequence of 1 and 0 bits
+     * @return OurBitSet that contains installed bits from String
+     */
     public static OurBitSet bitSetConversionFromString(String string) {
         OurBitSet bitSet = new OurBitSet(string.length());
         for (int i = 0; i < string.length(); i++) {
@@ -139,6 +142,12 @@ public class StubUtils {
         return bitSet;
     }
 
+    /**
+     * Util method for ease work with BitSet from Mysql. Convert OurBitSet object to String.
+     *
+     * @param bitSet OurBitSet that contains installed bits
+     * @return String with sequence of 1 and 0 bits
+     */
     public static String stringConversionFromBitSet(OurBitSet bitSet) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < bitSet.length(); i++) {

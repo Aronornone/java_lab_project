@@ -8,12 +8,12 @@ import utils.OurBitSet;
 @AllArgsConstructor
 public class FlightPlace {
     private long flightPlacesId;
-    private Flight flightId;
+    private Flight flight;
     private OurBitSet bitPlacesEconom;
     private OurBitSet bitPlacesBusiness;
 
-    public FlightPlace(Flight flightId, OurBitSet bitPlacesEconom, OurBitSet bitPlacesBusiness) {
-        this.flightId = flightId;
+    public FlightPlace(Flight flight, OurBitSet bitPlacesEconom, OurBitSet bitPlacesBusiness) {
+        this.flight = flight;
         this.bitPlacesEconom = bitPlacesEconom;
         this.bitPlacesBusiness = bitPlacesBusiness;
     }

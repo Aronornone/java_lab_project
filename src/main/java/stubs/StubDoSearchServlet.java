@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static utils.EncodingUtil.encode;
-
 //Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
 public class StubDoSearchServlet extends HttpServlet {
@@ -55,7 +53,7 @@ public class StubDoSearchServlet extends HttpServlet {
                 departure.isEmpty() ||
                 arrival.isEmpty() ||
                 numberTicketsFilterString == null) {
-            request.setAttribute("setFilters", encode(err.getString("setFilters")));
+            request.setAttribute("setFilters", err.getString("setFilters"));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
             LocalDate dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -78,7 +76,7 @@ public class StubDoSearchServlet extends HttpServlet {
 
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {
-                request.setAttribute("nothingFound", encode(err.getString("nothingFound")));
+                request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);
 
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);

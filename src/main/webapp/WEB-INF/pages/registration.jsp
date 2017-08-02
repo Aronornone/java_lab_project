@@ -1,10 +1,13 @@
 <%@ page import="java.net.URL" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="${sessionScope.currentLocale}"/>
+<fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registration</title>
+    <title><fmt:message key="register"/> </title>
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
@@ -22,13 +25,13 @@
         <p class="error">${userAlreadyExists}</p>
 
         <form action="doReg" method="post">
-            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${email}"></p>
-            <p>Отображаемое Имя/Displayed Name: <input class="fieldLogReg" type="text" name="username"
+            <p><fmt:message key="loginLable"/> :<input class="fieldLogReg" type="email" name="email" value="${email}"></p>
+            <p><fmt:message key="dispName"/> :<input class="fieldLogReg" type="text" name="username"
                                                        value="${username}"></p>
-            <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password1"></p>
-            <p>Повторите пароль/Repeat password: <input class="fieldLogReg" type="password" name="password2"></p>
-            <input class="buttonLogReg" type="submit" value="Register/Регистрация">
-            <p><a href="loginPage">Вход\Login</a></p>
+            <p><fmt:message key="passLable"/> :<input class="fieldLogReg" type="password" name="password1"></p>
+            <p><fmt:message key="repPass"/> :<input class="fieldLogReg" type="password" name="password2"></p>
+            <input class="buttonLogReg" type="submit" value="<fmt:message key="regButton"/>"/>
+            <p><a href="loginPage"><fmt:message key="loginButton"/> </a></p>
         </form>
     </div>
 </div>

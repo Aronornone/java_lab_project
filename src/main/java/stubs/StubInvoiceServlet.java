@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static utils.EncodingUtil.encode;
-
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class StubInvoiceServlet extends HttpServlet {
@@ -55,7 +53,7 @@ public class StubInvoiceServlet extends HttpServlet {
             }
         }
         if (numberTicketsFlight < (ticketFlight.getAvailablePlacesBusiness() + ticketFlight.getAvailablePlacesEconom())) {
-            request.setAttribute("notEnoughPlaces", encode(err.getString("notEnoughPlaces")));
+            request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher("/WEB-INF/pages/doSearch.jsp").forward(request, response);
         } else {
             Invoice invoice;

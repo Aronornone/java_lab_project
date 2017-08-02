@@ -26,27 +26,34 @@ public class StubFlightsServlet extends HttpServlet {
 
 
         // Получаем путь до папки для логов
-        String pathForLog=getServletContext().getRealPath("/");
-        pathForLog=pathForLog.substring(0,pathForLog.lastIndexOf("target"))+"src/main/webapp/WEB-INF/classes/";
+
+//        String pathForLog=getServletContext().getRealPath("/");
+//        pathForLog=pathForLog.substring(0,pathForLog.lastIndexOf("target"))+"src/main/webapp/WEB-INF/classes/";
+
         // Устанавливаем динамические значения для log4j.properties
-        System.setProperty("pathReg",pathForLog+"reg.log");
-        System.setProperty("pathServ",pathForLog+"serv.log");
-        System.setProperty("pathDB",pathForLog+"db.log");
+
+//        System.setProperty("pathReg",pathForLog+"reg.log");
+//        System.setProperty("pathServ",pathForLog+"serv.log");
+//        System.setProperty("pathDB",pathForLog+"db.log");
+//
         // Инициализируем логгеры
         // Надо разобраться почему он записывает несколько раз в этой части
         // Если просто вызывать в других сервлетах, то все нормально
-        Logger logDB = ServletLog.getLgDB();
-        logDB.error("Log DB load");
-        Logger logServ = ServletLog.getLgServ();
-        logServ.error("Log Serv load");
-        logServ.fatal("we do it");
-        Logger logREG = ServletLog.getLgReg();
-        logREG.error("Log REG load");
+//
+//        Logger logDB = ServletLog.getLgDB();
+//        logDB.error("Log DB load");
+//        Logger logServ = ServletLog.getLgServ();
+//        logServ.error("Log Serv load");
+//        logServ.fatal("we do it");
+//        Logger logREG = ServletLog.getLgReg();
+//        logREG.error("Log REG load");
 
         // Устанавливаем логгеры для всех сервлетов
-        getServletContext().setAttribute("logREG", logREG);
-        getServletContext().setAttribute("logServ", logServ);
-        getServletContext().setAttribute("logDB", logDB);
+
+//        getServletContext().setAttribute("logREG", logREG);
+//        getServletContext().setAttribute("logServ", logServ);
+//        getServletContext().setAttribute("logDB", logDB);
+
 //        Для вызова из других сервлетов:
 //        Logger log=(Logger)getServletContext().getAttribute("logREG");
 //        log.error("Registration failed");

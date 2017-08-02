@@ -1,10 +1,13 @@
 <%@ page import="java.net.URL" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="${sessionScope.currentLocale}"/>
+<fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title><fmt:message key="loginTitle"/> </title>
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
@@ -22,10 +25,10 @@
         <p class="error">${regSuccess}</p>
         <p class="error">${loginFailed}</p>
         <form action="doLogin" method="post">
-            <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${requestScope.email}"></p>
-            <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password"></p>
-            <input class="buttonLogReg" type="submit" value="Login/Войти">
-            <p><a href="regPage">Регистрация\Registration</a></p>
+            <p><fmt:message key="loginLable"/> <input class="fieldLogReg" type="email" name="email" value="${requestScope.email}"></p>
+            <p><fmt:message key="passLable"/> <input class="fieldLogReg" type="password" name="password"></p>
+            <input class="buttonLogReg" type="submit" value="<fmt:message key="loginButton"/>"/>
+            <p><a href="regPage"><fmt:message key="register"/> </a></p>
         </form>
     </div>
 </div>

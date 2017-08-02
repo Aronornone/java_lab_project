@@ -4,7 +4,6 @@ import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -12,8 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static utils.EncodingUtil.encode;
 
 //Заглушка для страницы логина
 @WebServlet(urlPatterns = {"/doLogin"})
@@ -33,7 +30,7 @@ public class StubDoLoginServlet extends HttpServlet {
             user = userOptional.get();
             passwordHashDB = user.getPasswordHash();
         } else {
-            request.setAttribute("nonexistentLogin", encode(err.getString("nonexistentLogin")));
+            request.setAttribute("nonexistentLogin", err.getString("nonexistentLogin"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
@@ -52,7 +49,7 @@ public class StubDoLoginServlet extends HttpServlet {
             request.setAttribute("arrivals", airports);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
-            request.setAttribute("loginFailed", encode(err.getString("loginFailed")));
+            request.setAttribute("loginFailed", err.getString("loginFailed"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }

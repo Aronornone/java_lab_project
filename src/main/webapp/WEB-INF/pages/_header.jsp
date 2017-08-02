@@ -1,10 +1,11 @@
 <%@ page import="java.net.URL" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="${sessionScope.currentLocale}"/>
+<fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
-
 <div class="header">
-
     <div class="logged">
         <div class="flagesLogged">
             <%String path = new URL(request.getRequestURL().toString()).getPath();%>
@@ -14,16 +15,16 @@
                                                                             alt="ru"></a>
         </div>
         <c:if test="${user != null}">
-            <p>Вы/You: ${user.name}</p>
-            <a href="bucket"><input class="buttonBucket" type="submit" value="Корзина/Bucket"></a>
+            <p><fmt:message key="welcomeMessage1"/> ${user.name}</p>
+            <a href="bucket"><input class="buttonBucket" type="submit" value="<fmt:message key="cartButton"/>"/></a>
             <form action="logout" method="post">
-                <input class="buttonLogout" type="submit" value="Logout">
+                <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">
             </form>
         </c:if>
         <c:if test="${user == null}">
-            <p>Войдите, чтобы получить возможность купить билет: </p>
+            <p><fmt:message key="welcomeMessage2"/>: </p>
             <form action="loginPage" method="post">
-                <input class="buttonLogin" type="submit" value="Login">
+                <input class="buttonLogin" type="submit" value="<fmt:message key="loginButton"/>"/>
             </form>
         </c:if>
 

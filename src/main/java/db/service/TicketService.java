@@ -167,7 +167,7 @@ public class TicketService implements TicketDao {
                 new Invoice(
                         rs.getLong("id"),
                         new User(
-                                rs.getLong      ("user_id"),
+                                rs.getLong      ("account_id"),
                                 rs.getString    ("name"),
                                 rs.getString    ("email"),
                                 rs.getString    ("password_hash"),
@@ -186,7 +186,7 @@ public class TicketService implements TicketDao {
                     ),
                     rs.getString("flight_number"),
                     new Airport(
-                            rs.getLong  ("airport_id"),
+                            rs.getLong  ("departure_airport_id"),
                             rs.getString("code"),
                             rs.getString("city"),
                             rs.getString("airport_name"),
@@ -194,7 +194,7 @@ public class TicketService implements TicketDao {
                             rs.getDouble("longitude")
                     ),
                     new Airport(
-                            rs.getLong  ("airport_id"),
+                            rs.getLong  ("arrival_airport_id"),
                             rs.getString("code"),
                             rs.getString("city"),
                             rs.getString("airport_name"),

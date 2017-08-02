@@ -17,7 +17,8 @@ public class FlightService implements FlightDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
-            "  departure_airport_id, d.name, d.city, arrival_airport_id, a.name, a.city, " +
+            "  departure_airport_id, d.code, d.city, d.airport_name, d.latitude, d.latitude, " +
+                    "arrival_airport_id, a.code, a.city, a.airport_name, a.latitude, a.longitude, " +
             "  base_cost, available_places_econom, available_places_business, flight_datetime " +
             "FROM Flight f\n" +
             "  JOIN Airplane p ON p.id = f.airplane_id\n" +
@@ -169,7 +170,7 @@ public class FlightService implements FlightDAO {
                 ),
                 rs.getString("flight_number"),
                 new Airport(
-                        rs.getLong  ("airport_id"),
+                        rs.getLong  ("departure_airport_id"),
                         rs.getString("code"),
                         rs.getString("city"),
                         rs.getString("airport_name"),
@@ -177,7 +178,7 @@ public class FlightService implements FlightDAO {
                         rs.getDouble("longitude")
                 ),
                 new Airport(
-                        rs.getLong  ("airport_id"),
+                        rs.getLong  ("arrival_airport_id"),
                         rs.getString("code"),
                         rs.getString("city"),
                         rs.getString("airport_name"),

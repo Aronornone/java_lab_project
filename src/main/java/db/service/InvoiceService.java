@@ -139,7 +139,7 @@ public class InvoiceService implements InvoiceDAO {
        return new Invoice(
                rs.getLong("id"),
                new User(
-                       rs.getLong      ("user_id"),
+                       rs.getLong      ("account_id"),
                        rs.getString    ("name"),
                        rs.getString    ("email"),
                        rs.getString    ("password_hash"),

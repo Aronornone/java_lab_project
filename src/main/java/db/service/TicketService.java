@@ -5,7 +5,10 @@ import db.dao.TicketDao;
 import lombok.SneakyThrows;
 import pojo.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +30,28 @@ public class TicketService implements TicketDao {
             "  JOIN Airport dep ON dep.id = f.departure_airport_id\n" +
             "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_FLIGHT_DATETIME = "ORDER BY f.flight_datetime";
+
+
+
+    @SneakyThrows
+    public List<Ticket> getTicketsByInvoice(long invoiceId) {
+        List<Ticket> tickets = new ArrayList<>();
+        String sql = SELECT_ALL + " WHERE invoice_id =? "
+                + ORDER_BY_FLIGHT_DATETIME;
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);) {
+            ps.setLong(1, invoiceId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                tickets.add(createNewTicket(rs));
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        return tickets;
+    }
 
     @Override
     @SneakyThrows

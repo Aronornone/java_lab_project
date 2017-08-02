@@ -4,6 +4,7 @@ import db.DataSource;
 import db.service.AirplaneService;
 import db.service.AirportService;
 import db.service.FlightPlaceService;
+import db.service.FlightService;
 import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
@@ -71,15 +72,29 @@ public class StubUtils {
         return flights;
     }
 
-    public static int randomSittingPlaceEconom(long flightId) {
+    public static int randomSittingPlace(long flightId, boolean business) {
         int reservedPlace = 0;
         FlightPlace flightPlace = null;
         FlightPlaceService flightPlaceService = new FlightPlaceService();
         Optional<FlightPlace> flightPlaceOptional = flightPlaceService.getByFlight((int) flightId);
 
+        Flight flight = null;
+        FlightService flightService = new FlightService();
+        Optional<Flight> flightOptional = flightService.get((int)flightId);
+        if(flightOptional.isPresent()){
+            flight = flightOptional.get();
+        }
+
         if (flightPlaceOptional.isPresent()) {
             flightPlace = flightPlaceOptional.get();
-            BitSet places = flightPlace.getBitPlacesEconom();
+            BitSet places;
+            if (business) {
+                places = flightPlace.getBitPlacesBusiness();
+            }
+            else {
+                places = flightPlace.getBitPlacesEconom();
+            }
+
             int length = places.length();
             Random random = new Random(47);
             for (int i = 0; i < places.length(); i++) {
@@ -88,10 +103,20 @@ public class StubUtils {
                     reservedPlace = random.nextInt(length);
                 } else {
                     places.set(reservedPlace);
+
+                    if (business) {
+                        flight.setAvailablePlacesBusiness(flight.getAvailablePlacesEconom() - 1);
+                        flightPlace.setBitPlacesBusiness(places);
+                    }
+                    else {
+                        flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom()-1);
+                        flightPlace.setBitPlacesEconom(places);
+                    }
+
                     System.out.println("reservedPlace:" + reservedPlace);
                     System.out.println("places reserved:" + places);
-                    flightPlace.setBitPlacesEconom(places);
                     flightPlaceService.update(flightPlace);
+                    flightService.update(flight);
                     break;
                 }
             }
@@ -101,7 +126,7 @@ public class StubUtils {
 
     public static BitSet bitSetConversionFromString(String string) {
         BitSet bitSet = new BitSet(string.length());
-        bitSet.set(0,bitSet.length(),false);
+        bitSet.set(0, bitSet.length(), false);
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '1') {
                 bitSet.set(i);

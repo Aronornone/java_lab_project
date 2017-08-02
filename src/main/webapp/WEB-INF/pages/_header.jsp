@@ -15,6 +15,7 @@
         </div>
         <c:if test="${user != null}">
             <p>Вы/You: ${user.name}</p>
+            <p class="error">Tickets in bucket: ${sessionScope.ticketsInBucket}</p>
             <a href="bucket"><input class="buttonBucket" type="submit" value="Корзина/Bucket"></a>
             <form action="logout" method="post">
                 <input class="buttonLogout" type="submit" value="Logout">

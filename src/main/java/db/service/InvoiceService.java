@@ -64,6 +64,27 @@ public class InvoiceService implements InvoiceDAO {
         }
     }
 
+    @SneakyThrows
+    public Optional<Invoice> getInvoiceByUser(long userId, Invoice.InvoiceStatus status) {
+        String sql = SELECT_ALL + "WHERE i.account_id = ? and i.status = ?" + ORDER_BY_DATETIME;
+
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, userId);
+            ps.setString(2, status.name());
+
+            ResultSet rs = ps.executeQuery();
+
+            Invoice invoice = null;
+            while (rs.next()) {
+                invoice = createNewInvoce(rs);
+            }
+
+            return Optional.ofNullable(invoice);
+        }
+    }
+
+
     @Override
     @SneakyThrows
     public void update(Invoice invoice) {

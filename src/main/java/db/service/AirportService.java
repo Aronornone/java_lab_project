@@ -53,10 +53,9 @@ public class AirportService implements AirportDAO {
             ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
-
             Airport airport = null;
             while (rs.next()) {
-                airport = new Airport(id, rs.getString(1), rs.getString(2),rs.getString(3),rs.getDouble(4),rs.getDouble(5));
+                airport = new Airport(id, rs.getString(2), rs.getString(3),rs.getString(4),rs.getDouble(5),rs.getDouble(6));
             }
 
             return Optional.ofNullable(airport);

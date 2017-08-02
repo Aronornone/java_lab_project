@@ -3,9 +3,11 @@ package utils;
 import db.service.AirplaneService;
 import db.service.AirportService;
 import lombok.SneakyThrows;
+
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import static db.DataSource.getConnection;
 import static java.lang.StrictMath.*;
 import static utils.FlightsGenerator.DistanceCounter.calculateDistance;
@@ -49,11 +51,13 @@ public class FlightsGenerator {
         params.add(airplaneId);
         params.add(createRandomSequence(3) + "-" + createNumber(2));
         params.add(depAirportId);
+        System.out.println(depAirportId);
         params.add(arrAirportId);
+        System.out.println(arrAirportId);
         params.add(countBaseCost(getDistance(depAirportId, arrAirportId)));
         params.add(as.get(airplaneId).get().getCapacityEconom());
         params.add(as.get(airplaneId).get().getCapacityBusiness());
-        params.add(createRandomDateTime("01/09/2017", "01/09/2019"));
+        params.add(createRandomDateTime("01/08/2017", "01/09/2017"));
         return String.format(result, params.toArray());
     }
 

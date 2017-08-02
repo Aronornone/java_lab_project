@@ -15,20 +15,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class SessionUtils {
+    private static InvoiceService is = new InvoiceService();
+    private static TicketService ts = new TicketService();
+    private static FlightService fs = new FlightService();
 
     public static void invalidateSession(HttpSession httpSession) {
-        InvoiceService invoiceService = new InvoiceService();
-        TicketService ticketService = new TicketService();
-        FlightService flightService = new FlightService();
+
         User user = (User) httpSession.getAttribute("user");
 
         //get only invoice in status Created
-        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+        Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
 
             for (Ticket ticket : tickets) {
                 if (ticket.isBusinessClass()) {
@@ -36,13 +37,13 @@ public class SessionUtils {
                 } else
                     ticket.getFlight().setAvailablePlacesEconom(ticket.getFlight().getAvailablePlacesEconom() + 1);
                 //update changed flights
-                flightService.update(ticket.getFlight());
+                fs.update(ticket.getFlight());
                 //delete tickets
-                ticketService.remove(ticket);
+                ts.remove(ticket);
             }
             //update Invoice Status
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.CANCELLED);
-            invoiceService.update(invoice);
+            is.update(invoice);
         }
         httpSession.invalidate();
     }

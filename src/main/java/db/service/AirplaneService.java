@@ -4,9 +4,11 @@ import db.DataSource;
 import db.dao.AirplaneDAO;
 import lombok.SneakyThrows;
 import pojo.Airplane;
-import pojo.Flight;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +54,7 @@ public class AirplaneService implements AirplaneDAO {
 
             Airplane airplane = null;
             while (rs.next()) {
-                airplane = new Airplane(id, rs.getString(1), rs.getInt(2), rs.getInt(3));
+                airplane = new Airplane(id, rs.getString(2), rs.getInt(3), rs.getInt(4));
             }
 
             return Optional.ofNullable(airplane);

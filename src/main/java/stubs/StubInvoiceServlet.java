@@ -20,12 +20,16 @@ import java.util.ResourceBundle;
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class StubInvoiceServlet extends HttpServlet {
+    private static FlightService fs = new FlightService();
+    private static InvoiceService is = new InvoiceService();
+    private static TicketService ts = new TicketService();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
+
         User user = (User) httpSession.getAttribute("user");
 
         String dateFromString = (String) httpSession.getAttribute("dateFrom");
@@ -39,7 +43,6 @@ public class StubInvoiceServlet extends HttpServlet {
                 "&numberTicketsFilter=" + numberTicketsFilterString;
 
         if (user == null) {
-            //заглушка, будет еще предупреждение, что нужно сначала войти + сохранение выбранных фильтров
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
         int numberTicketsFlight;
@@ -48,26 +51,23 @@ public class StubInvoiceServlet extends HttpServlet {
 
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
-        FlightService flightService = new FlightService();
-        Optional<Flight> flightOptional = flightService.get(Integer.parseInt(flightIdString));
+        Optional<Flight> flightOptional = fs.get(Integer.parseInt(flightIdString));
         if (flightOptional.isPresent()) {
             flight = flightOptional.get();
         }
 
-        Invoice invoice;
-        InvoiceService invoiceService = new InvoiceService();
-
+        Invoice invoice = null;
         if (numberTicketsFlight > (flight.getAvailablePlacesBusiness() + flight.getAvailablePlacesEconom())) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
-            Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+            Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                     Invoice.InvoiceStatus.CREATED);
             if (invoiceOptional.isPresent()) {
                 invoice = invoiceOptional.get();
             } else {
                 invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
-                invoiceService.create(invoice);
+                is.create(invoice);
             }
 
             int ticketsInBucket = 0;
@@ -75,8 +75,6 @@ public class StubInvoiceServlet extends HttpServlet {
             if (httpSession.getAttribute("ticketsInBucket") != null) {
                 ticketsInBucket = (int) httpSession.getAttribute("ticketsInBucket");
             }
-
-            TicketService ticketService = new TicketService();
 
             if (numberTicketsFlight != 0) {
                 System.out.println("number of tickets to buy: " + numberTicketsFlight);
@@ -86,7 +84,7 @@ public class StubInvoiceServlet extends HttpServlet {
                     //new Ticket to DB
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, false, flight.getBaseCost());
-                    ticketService.create(ticket);
+                    ts.create(ticket);
                 }
                 // Info about number of tickets in bucket
                 ticketsInBucket = ticketsInBucket + numberTicketsFlight;
@@ -95,8 +93,6 @@ public class StubInvoiceServlet extends HttpServlet {
             }
         }
         response.sendRedirect(redirectBackString);
-        //request.getRequestDispatcher("/WEB-INF/pages/doSearch.jsp").forward(request, response);
-
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

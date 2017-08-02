@@ -23,8 +23,8 @@
                     <p class="filter"><fmt:message key="dateTo"/> </p>
                 </div>
                 <div class="fdates">
-                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}">
-                    <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}">
+                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+                    <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
                 </div>
 
                 <div class="pairports">

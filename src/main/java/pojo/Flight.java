@@ -18,7 +18,6 @@ public class Flight {
     private int availablePlacesBusiness;
     private LocalDateTime dateTime;
 
-
     public Flight(Airplane airplane, String flightNumber, Airport departureAirport,
                   Airport arrivalAirport, Double baseCost, int availablePlacesEconom,
                   int availablePlacesBusiness, LocalDateTime dateTime) {

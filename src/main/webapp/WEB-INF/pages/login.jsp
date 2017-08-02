@@ -21,6 +21,7 @@
         <p class="error">${nonexistentLogin}</p>
         <p class="error">${regSuccess}</p>
         <p class="error">${loginFailed}</p>
+        <p class="error">${fieldEmpty}</p>
         <form action="doLogin" method="post">
             <p>Логин/Login (email): <input class="fieldLogReg" type="email" name="email" value="${requestScope.email}"></p>
             <p>Пароль/Password: <input class="fieldLogReg" type="password" name="password"></p>

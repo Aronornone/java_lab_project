@@ -1,7 +1,12 @@
 package stubs;
 
+import db.service.FlightService;
 import db.service.InvoiceService;
-import pojo.*;
+import db.service.TicketService;
+import pojo.Flight;
+import pojo.Invoice;
+import pojo.Ticket;
+import pojo.User;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -33,9 +38,9 @@ public class StubInvoiceServlet extends HttpServlet {
         String arrival = (String) httpSession.getAttribute("arrivalF");
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
 
-        String redirectBackString="/doSearch?dateFrom="+dateFromString+"&dateTo="+dateToString+
-                "&selectedDeparture="+departure+"&selectedArrival="+arrival+
-                "&numberTicketsFilter="+numberTicketsFilterString;
+        String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
+                "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
+                "&numberTicketsFilter=" + numberTicketsFilterString;
 
         if (user == null) {
             //заглушка, будет еще предупреждение, что нужно сначала войти + сохранение выбранных фильтров
@@ -46,56 +51,49 @@ public class StubInvoiceServlet extends HttpServlet {
         numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
 
         String flightIdString = request.getParameter("flightId");
-        Flight invoiceFlight = null;
-        if (flightIdString != null) {
-
-            Long flightId = Long.parseLong(flightIdString);
-            List<Airplane> airplanes = StubUtils.getAirplanes();
-            List<Airport> airports = StubUtils.getAirports();
-            List<Flight> flights = StubUtils.getFlights(airports, airplanes);
-
-            for (Flight flight : flights) {
-                if (flight.getFlightId() == flightId) {
-                    invoiceFlight = flight;
-                    request.setAttribute("flightNumber", invoiceFlight.getFlightNumber());
-                    request.setAttribute("departureAirport", invoiceFlight.getDepartureAirport());
-                    request.setAttribute("arrivalAirport", invoiceFlight.getArrivalAirport());
-                    request.setAttribute("dateTime", invoiceFlight.getDateTime());
-                    request.setAttribute("airplanename", invoiceFlight.getAirplane().getName());
-                }
-            }
+        Flight flight = null;
+        FlightService flightService = new FlightService();
+        Optional<Flight> flightOptional = flightService.get(Integer.parseInt(flightIdString));
+        if (flightOptional.isPresent()) {
+            flight = flightOptional.get();
         }
 
-        if (numberTicketsFlight > (invoiceFlight.getAvailablePlacesBusiness() + invoiceFlight.getAvailablePlacesEconom())) {
+        Invoice invoice;
+        InvoiceService invoiceService = new InvoiceService();
+
+        if (numberTicketsFlight > (flight.getAvailablePlacesBusiness() + flight.getAvailablePlacesEconom())) {
             request.setAttribute("notEnoughPlaces", encode(err.getString("notEnoughPlaces")));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
-            Invoice invoice;
-            Long invoiceIdSession = (Long) httpSession.getAttribute("invoiceId");
-            if (invoiceIdSession == null) {
-                invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
-                //TODO: заказ в базе тоже должен создаться
-                invoice.setInvoiceId(1); //временно
-                httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
-
+            Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+                    Invoice.InvoiceStatus.CREATED);
+            if (invoiceOptional.isPresent()) {
+                invoice = invoiceOptional.get();
             } else {
-                InvoiceService invoiceService = new InvoiceService();
-                Optional<Invoice> invoiceOptional = invoiceService.get(invoiceIdSession.intValue());
-                if (invoiceOptional.isPresent()) {
-                    invoice = invoiceOptional.get();
-                    httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
-                } else invoice = null;
+                invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
+                invoiceService.create(invoice);
             }
+
+            int ticketsInBucket = 0;
+
+            if (httpSession.getAttribute("ticketsInBucket") != null) {
+                ticketsInBucket = (int) httpSession.getAttribute("ticketsInBucket");
+            }
+
+            TicketService ticketService = new TicketService();
 
             List<Ticket> tickets = new ArrayList<>();
             if (numberTicketsFlight != 0) {
                 System.out.println("number of tickets to buy: " + numberTicketsFlight);
                 for (int i = 0; i < numberTicketsFlight; i++) {
-                    int sittingPlace = StubUtils.randomSittingPlaceEconom(invoiceFlight.getFlightId());
-                    tickets.add(new Ticket(invoice, invoiceFlight, "", "", sittingPlace,
-                            false, false, invoiceFlight.getBaseCost()));
-                    //Здесь нужно добавление tickets в базу и бронирование количества билетов
-                    // А также отображение в header инфо о корзине
+                    //request for available places and reserve of them
+                    int sittingPlace = StubUtils.randomSittingPlace(flight.getFlightId(), false);
+                    //new Ticket to DB
+                    Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
+                            false, false, flight.getBaseCost());
+                    ticketService.create(ticket);
+                    // Info about number of tickets in bucket
+                    httpSession.setAttribute("ticketsInBucket", tickets.size() + ticketsInBucket);
                 }
             }
             request.getRequestDispatcher(redirectBackString).forward(request, response);

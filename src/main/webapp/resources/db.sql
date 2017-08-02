@@ -37,7 +37,7 @@ CREATE TABLE FlightPlace (
   PRIMARY KEY (id),
   flight_id       BIGINT        NOT NULL,
   places_econom   VARCHAR(1000) NOT NULL,
-  places_business VARCHAR(1000) NOT NULL,
+  places_business VARCHAR(1000) ,
   FOREIGN KEY (flight_id) REFERENCES Flight (id)
 );
 

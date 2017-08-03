@@ -47,10 +47,8 @@ public class FlightService implements FlightDAO {
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    flight.setFlightId(generetedKeys.getInt(1));
+                    flight.setFlightId(generetedKeys.getLong(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,32 +64,7 @@ public class FlightService implements FlightDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            Flight flight = null;
-            while (rs.next()) {
-                flight = createNewFlight(rs);
-            }
-
-            return Optional.ofNullable(flight);
-        }
-    }
-
-    @Override
-    @SneakyThrows
-    public Optional<Flight> get(Airport departureCity, Airport arrivalCity, LocalDateTime dateTime, int availablePlaces, boolean business) {
-        String sql = SELECT_ALL + " WHERE d.city = ?, a.city = ?, flight_datetime = ?, ";
-        if (business) sql += "available_places_business - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
-        else          sql += "available_places_econom - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
-
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString    (1, departureCity.getCity());
-            ps.setString    (2, arrivalCity.getCity());
-            ps.setTimestamp (3, Timestamp.valueOf(dateTime));
-            ps.setInt       (4, availablePlaces);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 

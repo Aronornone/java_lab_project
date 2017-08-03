@@ -34,7 +34,7 @@ public class InvoiceService implements InvoiceDAO {
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    invoice.setInvoiceId(generetedKeys.getInt(1));
+                    invoice.setInvoiceId(generetedKeys.getLong(1));
                 }
             }
         } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class InvoiceService implements InvoiceDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 
@@ -107,8 +107,8 @@ public class InvoiceService implements InvoiceDAO {
     public void remove(Invoice invoice) {
         String sql = "DELETE FROM Invoice WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, invoice.getInvoiceId());
 
             ps.executeUpdate();
@@ -139,11 +139,11 @@ public class InvoiceService implements InvoiceDAO {
        return new Invoice(
                rs.getLong("id"),
                new User(
-                       rs.getLong      ("account_id"),
-                       rs.getString    ("name"),
-                       rs.getString    ("email"),
-                       rs.getString    ("password_hash"),
-                       rs.getTimestamp ("registration_date").toLocalDateTime()
+                       rs.getLong     ("account_id"),
+                       rs.getString   ("a.name"),
+                       rs.getString   ("a.email"),
+                       rs.getString   ("a.password_hash"),
+                       rs.getTimestamp("a.registration_date").toLocalDateTime()
                ),
                Invoice.InvoiceStatus.valueOf(rs.getString("status")),
                rs.getTimestamp("invoice_datetime").toLocalDateTime()

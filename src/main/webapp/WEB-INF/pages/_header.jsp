@@ -8,15 +8,26 @@
 <div class="header">
     <div class="logged">
         <div class="flagesLogged">
-            <%String path = new URL(request.getRequestURL().toString()).getPath();%>
-            <a href="language?locale=${"enLocale"}&backPage=<%=path%>"><img src="resources/images/flag_en_small.png"
-                                                                            alt="en"></a>
-            <a href="language?locale=${"ruLocale"}&backPage=<%=path%>"><img src="resources/images/flag_ru_small.png"
-                                                                            alt="ru"></a>
+            <%
+                String pageName = (String) session.getAttribute("lastServletPath");
+            %>
+            <form action="language" method="post">
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_en_small.png"
+                                                                          alt="en"></a>
+                <input type="hidden" name="locale" value="enLocale">
+                <input type="hidden" name="backPage" value="<%=pageName%>">
+            </form>
+            <form action="language" method="post">
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_ru_small.png"
+                                                                          alt="ru"></a>
+                <input type="hidden" name="locale" value="ruLocale">
+                <input type="hidden" name="backPage" value="<%=pageName%>">
+            </form>
+
         </div>
         <c:if test="${sessionScope.user != null}">
             <p><fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}</p>
-            <p class="error">Tickets in cart: ${ticketsInBucket}</p>
+            <p class="error"><fmt:message key="ticketInCart"/> : ${ticketsInBucket}</p>
             <a href="bucket"><input class="buttonBucket" type="submit" value="<fmt:message key="cartButton"/>"/></a>
             <form action="logout" method="post">
                 <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">

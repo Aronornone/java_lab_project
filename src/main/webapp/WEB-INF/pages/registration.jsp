@@ -15,10 +15,23 @@
 <body>
 <div class="body">
     <div class="formLogReg">
-        <div class="flagesLogReg">
-            <%String path = new URL(request.getRequestURL().toString()).getPath();%>
-            <a href="language?locale=${"enLocale"}&backPage=<%=path%>"><img src="resources/images/flag_en.png" alt="en"></a>
-            <a href="language?locale=${"ruLocale"}&backPage=<%=path%>"><img src="resources/images/flag_ru.png" alt="ru"></a>
+        <div class="flagesLogged">
+            <%
+                String pageName = (String) session.getAttribute("lastServletPath");
+            %>
+            <form action="language" method="post">
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_en_small.png"
+                                                                          alt="en"></a>
+                <input type="hidden" name="locale" value="enLocale">
+                <input type="hidden" name="backPage" value="<%=pageName%>">
+            </form>
+            <form action="language" method="post">
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_ru_small.png"
+                                                                          alt="ru"></a>
+                <input type="hidden" name="locale" value="ruLocale">
+                <input type="hidden" name="backPage" value="<%=pageName%>">
+            </form>
+
         </div>
         <p class="error">${passMismatch}</p>
         <p class="error">${fieldEmpty}</p>

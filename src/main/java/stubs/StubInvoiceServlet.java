@@ -37,10 +37,11 @@ public class StubInvoiceServlet extends HttpServlet {
         String departure = (String) httpSession.getAttribute("departureF");
         String arrival = (String) httpSession.getAttribute("arrivalF");
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+        String businessString = (String) httpSession.getAttribute("business");
 
         String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
                 "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                "&numberTicketsFilter=" + numberTicketsFilterString;
+                "&numberTicketsFilter=" + numberTicketsFilterString + "&business="+businessString;
 
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -93,7 +94,6 @@ public class StubInvoiceServlet extends HttpServlet {
                     ts.create(ticket);
                 }
             }
-            // TODO: Info about number of tickets in bucket, need to change to request from DB
             ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }

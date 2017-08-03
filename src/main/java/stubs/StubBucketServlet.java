@@ -38,23 +38,22 @@ public class StubBucketServlet extends HttpServlet {
             //Для этого заказа найти все билеты, вытащить из них рейсы и сгруппировать билеты
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
 
-            tickets.sort(new Comparator<Ticket>() {
-                @Override
-                public int compare(Ticket o1, Ticket o2) {
-                    return (int) (o1.getFlight().getFlightId()-o2.getFlight().getFlightId());
-                }
-            });
-
-            System.out.println(tickets);
-
-            List<Flight> flights = new ArrayList<>();
+            Set<Flight> flights = new HashSet<>();
             for(Ticket ticket: tickets) {
                 flights.add(ticket.getFlight());
             }
 
-            System.out.println("ticketsForFlights:" + flights );
+            Set<Ticket> ticketsForFlight = new HashSet<>();;
+            for(Flight flight: flights) {
+                ticketsForFlight = new HashSet<>();;
+                for(Ticket ticket: tickets)
+                if(flight.getFlightId() == ticket.getFlight().getFlightId()) {
+                    ticketsForFlight.add(ticket);
+                }
+                flight.setTickets(ticketsForFlight);
+            }
 
-            request.setAttribute("ticketsFlights", flights);
+            request.setAttribute("flights", flights);
 
 
             //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery

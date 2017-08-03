@@ -20,22 +20,25 @@
         <div class="bucket">
             <div class="bucketTable">
                 <div class="flightList">
-                    <c:forEach items="${requestScope.ticketsFlights}" var="flight">
+                    <c:forEach items="${requestScope.flights}" var="flight">
                         <div class="flightInfo">
-                            <fmt:message key="tabFlight"/>: <b>${flight.key.flightNumber}</b><fmt:message key="tabFrom"/>:
-                            <b>${flight.key.departureAirport.code} (${flight.key.departureAirport.airportName})</b>
-                            <fmt:message key="tabTo"/>:<b>${flight.key.arrivalAirport.code} (${flight.key.arrivalAirport.airportName})</b>.
-                            <fmt:message key="tabDateTime"/>: <b>${flight.key.dateTime}</b> <fmt:message key="tabAirplane"/>:
-                            <b>${flight.key.airplane.name}</b>
+                            <fmt:message key="tabFlight"/>: <b>${flight.flightNumber}</b> <fmt:message key="tabFrom"/>:
+                            <b>${flight.departureAirport.code} (${flight.departureAirport.airportName})</b>
+                            <fmt:message key="tabTo"/>: <b>${flight.arrivalAirport.code}
+                            (${flight.arrivalAirport.airportName})</b>.
+                            <fmt:message key="tabDateTime"/>: <b>${flight.dateTime}</b> <fmt:message key="tabAirplane"/>:
+                            <b>${flight.airplane.name}</b>
                         </div>
-                        <!--<%--
-                        <c:forEach items="${flight.value}" var="tickets">
+                        <c:forEach items="${flight.tickets}" var="ticket">
                             <div class="passenger">
                                 <p class="passengerNum"><fmt:message key="passenger"/></p>
                                 <table class="buckettable">
                                     <tr>
                                         <th><fmt:message key="name"/></th>
                                         <th><fmt:message key="passport"/></th>
+                                        <th><fmt:message key="lugg"/></th>
+                                        <th><fmt:message key="place"/></th>
+                                        <th><fmt:message key="price"/></th>
                                         <th class="tableButDel"></th>
                                     </tr>
                                     <tr>
@@ -43,7 +46,18 @@
                                         </td>
                                         <td><input type="text" name="passport" value=""></td>
                                         <td>
-                                            <input type="hidden" name="ticketId" value="${tickets.ticketId}">
+                                            <div class="tableBucketField">
+                                                <input class="checkbox" name="luggage" type="checkbox" value="0">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="tableBucketField">${ticket.sittingPlace}</div>
+                                        </td>
+                                        <td>
+                                            <div class="tableBucketField">${ticket.price}</div>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="ticketId" value="${ticket.ticketId}">
                                             <form name="ticketDelete" action="ticketDelete" method="post">
                                                 <input class="buttonDelete" type="submit"
                                                        value="<fmt:message key="delete"/>">
@@ -51,25 +65,10 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <div class="wrapOptions">
-                                    <div>
-                                        <p><fmt:message key="busClass"/>
-                                            <input class="checkbox" name="business" type="checkbox" value="0">
-                                            <fmt:message key="lugg"/>
-                                            <input class="checkbox" name="luggage" type="checkbox" value="0">
-                                        </p>
-                                    </div>
-                                    <div class="pasCost">
-                                        <div class="pplace"><fmt:message key="place"/></div>
-                                        <div class="place">${tickets.sittingPlace}</div>
-                                        <div class="pcost"><fmt:message key="price"/>:</div>
-                                        <div class="cost">${tickets.price}</div>
-                                    </div>
-                                </div>
-                                <hr class="headerLine">
+                                <hr class="headerLineTicket">
                             </div>
-                        </c:forEach>--%>
-                        -->
+                        </c:forEach>
+                        <hr class="headerLineFlight">
                     </c:forEach>
                 </div>
 

@@ -39,6 +39,7 @@ public class StubDoSearchServlet extends HttpServlet {
         String departure = request.getParameter("selectedDeparture");
         String arrival = request.getParameter("selectedArrival");
         String numberTicketsFilterString = request.getParameter("numberTicketsFilter");
+        String businessString = request.getParameter("business");
 
         //Сохраняем фильтры для следующих запросов в рамках этой же сессии
         httpSession.setAttribute("numberTicketsFilter", numberTicketsFilterString);
@@ -46,6 +47,7 @@ public class StubDoSearchServlet extends HttpServlet {
         httpSession.setAttribute("dateTo", dateToString);
         httpSession.setAttribute("departureF", departure);
         httpSession.setAttribute("arrivalF", arrival);
+        httpSession.setAttribute("business", businessString);
 
         //проверяем фильтры перед парсингом
         if ((dateFromString.isEmpty()) ||
@@ -62,7 +64,7 @@ public class StubDoSearchServlet extends HttpServlet {
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
 
             //TODO: Добавить в логгер информацию о поиске
-            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTicketsFilter);
+            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTicketsFilter + businessString);
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             List<Flight> foundFlights = new ArrayList<>();

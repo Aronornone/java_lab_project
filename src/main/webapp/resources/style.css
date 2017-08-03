@@ -163,6 +163,7 @@ a:active {
 
 .logged {
     display: inline-flex;
+    width: 100%;
 }
 
 .test {
@@ -213,11 +214,16 @@ tr:hover {
 }
 
 p.filter {
-    margin: 5px;
+    margin: 5px 5px 5px 0;
 }
 
 .flagesLogged {
-    margin: 13px;
+    margin: 13px 0 13px 0;
+    display: inline-flex;
+}
+.rightHeader{
+    display: flex;
+    margin-left: auto;
 }
 
 .pairports, .pdates, .fairports, .fdates, .pnumberTickets {

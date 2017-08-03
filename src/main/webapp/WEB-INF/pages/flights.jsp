@@ -51,7 +51,6 @@
                         </c:forEach>
                     </datalist>
                 </div>
-
                 <div class="pnumberTickets">
                     <p class="filter"><fmt:message key="numPassengers"/>
                         <c:if test="${sessionScope.numberTicketsFilter == null}">

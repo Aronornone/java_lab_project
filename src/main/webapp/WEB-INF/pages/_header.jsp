@@ -1,4 +1,3 @@
-<%@ page import="java.net.URL" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -25,21 +24,29 @@
             </form>
 
         </div>
-        <c:if test="${sessionScope.user != null}">
-            <p><fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}</p>
-            <p class="error"><fmt:message key="ticketInCart"/> : ${ticketsInBucket}</p>
-            <a href="bucket"><input class="buttonBucket" type="submit" value="<fmt:message key="cartButton"/>"/></a>
-            <form action="logout" method="post">
-                <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">
-            </form>
-        </c:if>
-        <c:if test="${sessionScope.user == null}">
-            <p><fmt:message key="welcomeMessage2"/>: </p>
-            <form action="loginPage" method="post">
-                <input class="buttonLogin" type="submit" value="<fmt:message key="loginButton"/>"/>
-            </form>
-        </c:if>
-
+        <div class="rightHeader">
+            <c:if test="${sessionScope.user != null}">
+                <p><fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}</p>
+                <a href="bucket">
+                    <c:if test="${sessionScope.ticketsInBucket != null}">
+                        <input class="buttonBucket" type="submit"
+                               value="<fmt:message key="cartButton"/>: ${ticketsInBucket} <fmt:message key="cartTickets"/>"/>
+                    </c:if>
+                    <c:if test="${sessionScope.ticketsInBucket == null}">
+                        <input class="buttonBucket" type="submit"
+                               value="<fmt:message key="cartButton"/>: 0 <fmt:message key="cartTickets"/>"/></c:if>
+                </a>
+                <form action="logout" method="post">
+                    <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">
+                </form>
+            </c:if>
+            <c:if test="${sessionScope.user == null}">
+                <p><fmt:message key="welcomeMessage2"/>: </p>
+                <form action="loginPage" method="post">
+                    <input class="buttonLogin" type="submit" value="<fmt:message key="loginButton"/>"/>
+                </form>
+            </c:if>
+        </div>
     </div>
 </div>
 

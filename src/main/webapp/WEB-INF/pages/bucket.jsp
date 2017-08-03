@@ -57,8 +57,8 @@
                                             <div class="tableBucketField">${ticket.price}</div>
                                         </td>
                                         <td>
-                                            <input type="hidden" name="ticketId" value="${ticket.ticketId}">
                                             <form name="ticketDelete" action="ticketDelete" method="post">
+                                            <input type="hidden" name="ticketId" value="${ticket.ticketId}">
                                                 <input class="buttonDelete" type="submit"
                                                        value="<fmt:message key="delete"/>">
                                             </form>

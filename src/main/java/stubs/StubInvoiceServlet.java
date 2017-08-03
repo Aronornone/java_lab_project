@@ -52,7 +52,7 @@ public class StubInvoiceServlet extends HttpServlet {
 
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
-        Optional<Flight> flightOptional = fs.get(Integer.parseInt(flightIdString));
+        Optional<Flight> flightOptional = fs.get(Long.parseLong(flightIdString));
         if (flightOptional.isPresent()) {
             flight = flightOptional.get();
         }

@@ -23,8 +23,6 @@ public class StubFlightsServlet extends HttpServlet {
         SessionUtils.checkCookie(cookies, request, httpSession);
 
 
-
-
         // Получаем путь до папки для логов
         String pathForLog=getServletContext().getRealPath("/");
         System.out.println(pathForLog);

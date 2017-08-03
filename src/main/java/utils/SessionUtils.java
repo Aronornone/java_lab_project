@@ -51,7 +51,7 @@ public class SessionUtils {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("userId")) {
                     UserService userService = new UserService();
-                    Optional<User> userOptional = userService.get(Integer.parseInt(cookie.getValue()));
+                    Optional<User> userOptional = userService.get(Long.parseLong(cookie.getValue()));
                     if (userOptional.isPresent()) {
                         user = userOptional.get();
                         httpSession.setAttribute("user", user);

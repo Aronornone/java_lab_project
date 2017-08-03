@@ -42,7 +42,7 @@ public class UserService implements UserDAO {
     @Override
     @SneakyThrows
     public Optional<User> get(long id) {
-        String sql = "SELECT name, email, password_hash, registration_date FROM Account WHERE id = ?";
+        String sql = "SELECT id, name, email, password_hash, registration_date FROM Account WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {

@@ -92,9 +92,10 @@ public class InvoiceService implements InvoiceDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setLong      (1, invoice.getUser().getUserId());
-            ps.setString    (2, String.valueOf(invoice.getInvoiceStatus()));
-            ps.setTimestamp (3, Timestamp.valueOf(invoice.getTimestamp()));
+            ps.setLong     (1, invoice.getUser().getUserId());
+            ps.setString   (2, String.valueOf(invoice.getInvoiceStatus()));
+            ps.setTimestamp(3, Timestamp.valueOf(invoice.getTimestamp()));
+            ps.setLong     (4, invoice.getInvoiceId());
 
             ps.executeUpdate();
         } catch (SQLException e) {

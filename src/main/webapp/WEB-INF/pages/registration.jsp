@@ -1,4 +1,3 @@
-<%@ page import="java.net.URL" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -20,13 +19,13 @@
                 String pageName = (String) session.getAttribute("lastServletPath");
             %>
             <form action="language" method="post">
-                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_en_small.png"
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_en.png"
                                                                           alt="en"></a>
                 <input type="hidden" name="locale" value="enLocale">
                 <input type="hidden" name="backPage" value="<%=pageName%>">
             </form>
             <form action="language" method="post">
-                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_ru_small.png"
+                <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_ru.png"
                                                                           alt="ru"></a>
                 <input type="hidden" name="locale" value="ruLocale">
                 <input type="hidden" name="backPage" value="<%=pageName%>">

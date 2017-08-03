@@ -14,7 +14,7 @@ import java.util.Optional;
 public class InvoiceService implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
-            "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +
+            "  i.id, account_id, a.name, a.email, a.password_hash, status, invoice_datetime\n" +
             "FROM Invoice i\n" +
             "  JOIN Account a ON a.id = i.account_id\n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
@@ -32,11 +32,11 @@ public class InvoiceService implements InvoiceDAO {
 
             ps.executeUpdate();
 
-            //try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-            //    if (generetedKeys.next()) {
-            //        invoice.setInvoiceId(generetedKeys.getInt(1));
-            //    }
-            //}
+            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
+                if (generetedKeys.next()) {
+                    invoice.setInvoiceId(generetedKeys.getLong(1));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class InvoiceService implements InvoiceDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 
@@ -95,7 +95,6 @@ public class InvoiceService implements InvoiceDAO {
             ps.setLong      (1, invoice.getUser().getUserId());
             ps.setString    (2, String.valueOf(invoice.getInvoiceStatus()));
             ps.setTimestamp (3, Timestamp.valueOf(invoice.getTimestamp()));
-            ps.setLong (4, invoice.getInvoiceId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -108,8 +107,8 @@ public class InvoiceService implements InvoiceDAO {
     public void remove(Invoice invoice) {
         String sql = "DELETE FROM Invoice WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, invoice.getInvoiceId());
 
             ps.executeUpdate();
@@ -140,11 +139,11 @@ public class InvoiceService implements InvoiceDAO {
        return new Invoice(
                rs.getLong("id"),
                new User(
-                       rs.getLong      ("account_id"),
-                       rs.getString    ("name"),
-                       rs.getString    ("email"),
-                       rs.getString    ("password_hash"),
-                       rs.getTimestamp ("registration_date").toLocalDateTime()
+                       rs.getLong     ("account_id"),
+                       rs.getString   ("a.name"),
+                       rs.getString   ("a.email"),
+                       rs.getString   ("a.password_hash"),
+                       rs.getTimestamp("a.registration_date").toLocalDateTime()
                ),
                Invoice.InvoiceStatus.valueOf(rs.getString("status")),
                rs.getTimestamp("invoice_datetime").toLocalDateTime()

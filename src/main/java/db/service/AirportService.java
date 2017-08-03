@@ -19,10 +19,10 @@ public class AirportService implements AirportDAO {
     @Override
     @SneakyThrows
     public long create(Airport airport) {
-        String query = "INSERT INTO Airport (code, city,airport_name, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Airport (code, city, airport_name, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query)) {
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airport.getCode());
             ps.setString(2, airport.getCity());
             ps.setString(3, airport.getAirportName());
@@ -33,7 +33,7 @@ public class AirportService implements AirportDAO {
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    airport.setAirportId(generetedKeys.getInt(1));
+                    airport.setAirportId(generetedKeys.getLong(1));
                 }
             }
         } catch (SQLException e) {
@@ -50,12 +50,13 @@ public class AirportService implements AirportDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
+
             Airport airport = null;
             while (rs.next()) {
-                airport = new Airport(id, rs.getString(2), rs.getString(3),rs.getString(4),rs.getDouble(5),rs.getDouble(6));
+                airport = createNewAirport(rs);
             }
 
             return Optional.ofNullable(airport);
@@ -105,18 +106,22 @@ public class AirportService implements AirportDAO {
              PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
-                airports.add(new Airport(
-                        result.getLong  ("id"),
-                        result.getString("code"),
-                        result.getString("city"),
-                        result.getString("airport_name"),
-                        result.getDouble("latitude"),
-                        result.getDouble("longitude")));
+                airports.add(createNewAirport(result));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return airports;
+    }
+
+    private Airport createNewAirport(ResultSet result) throws SQLException {
+        return new Airport(
+                result.getLong  ("id"),
+                result.getString("code"),
+                result.getString("city"),
+                result.getString("airport_name"),
+                result.getDouble("latitude"),
+                result.getDouble("longitude"));
     }
 }

@@ -85,7 +85,7 @@ public class TicketService implements TicketDao {
 
     @Override
     @SneakyThrows
-    public Optional<Ticket> get(int id) {
+    public Optional<Ticket> get(long id) {
         String sql = SELECT_ALL + "WHERE t.id = ?\n" + ORDER_BY_FLIGHT_DATETIME;
 
         try(Connection connection = DataSource.getConnection();

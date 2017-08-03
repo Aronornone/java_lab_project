@@ -59,7 +59,7 @@ public class FlightService implements FlightDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Flight> get(int id) {
+    public Optional<Flight> get(long id) {
         String sql = SELECT_ALL + "WHERE f.id = ?\n" + ORDER_BY_DATETIME_AND_BASECOST;
 
         try(Connection connection = DataSource.getConnection();

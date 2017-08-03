@@ -46,7 +46,7 @@ public class InvoiceService implements InvoiceDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Invoice> get(int id) {
+    public Optional<Invoice> get(long id) {
         String sql = SELECT_ALL + "WHERE i.id = ?\n" + ORDER_BY_DATETIME;
 
         try(Connection connection = DataSource.getConnection();

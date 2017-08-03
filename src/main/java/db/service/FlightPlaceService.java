@@ -57,7 +57,7 @@ public class FlightPlaceService implements FlightPlaceDAO {
 
     @Override
     @SneakyThrows
-    public Optional<FlightPlace> get(int id) {
+    public Optional<FlightPlace> get(long id) {
         String sql = SELECT_ALL + "WHERE fp.id = ?\n" + ORDER_BY_DATETIME;
 
         try(Connection connection = DataSource.getConnection();
@@ -77,7 +77,7 @@ public class FlightPlaceService implements FlightPlaceDAO {
 
     @Override
     @SneakyThrows
-    public Optional<FlightPlace> getByFlightId(int flightId) {
+    public Optional<FlightPlace> getByFlightId(long flightId) {
         String sql = SELECT_ALL + " WHERE fp.flight_id = ? " + ORDER_BY_DATETIME;
 
         try(Connection connection = DataSource.getConnection();

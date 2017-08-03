@@ -45,7 +45,7 @@ public class AirportService implements AirportDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Airport> get(int id) {
+    public Optional<Airport> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AirplaneDAO {
     long create(Airplane airplane);
-    Optional<Airplane> get(int id);
+    Optional<Airplane> get(long id);
     void update(Airplane airplane);
     void remove(Airplane airplane);
     List<Airplane> getAll();

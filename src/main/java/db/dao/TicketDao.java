@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TicketDao {
     long create(Ticket ticket);
-    Optional<Ticket> get(int id);
+    Optional<Ticket> get(long id);
     void update(Ticket ticket);
     void remove(Ticket ticket);
     List<Ticket> getAll();

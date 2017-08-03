@@ -43,7 +43,7 @@ public class AirplaneService implements AirplaneDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Airplane> get(int id) {
+    public Optional<Airplane> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface InvoiceDAO {
     long create(Invoice invoice);
-    Optional<Invoice> get(int id);
+    Optional<Invoice> get(long id);
     void update(Invoice invoice);
     void remove(Invoice invoice);
     List<Invoice> getAll();

@@ -42,7 +42,7 @@ public class UserService implements UserDAO {
     @Override
     @SneakyThrows
     public Optional<User> get(long id) {
-        String sql = "SELECT name, email, password_hash, registration_date FROM Account WHERE id = ?";
+        String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -72,10 +72,10 @@ public class UserService implements UserDAO {
             User user = null;
             while (rs.next()) {
                 user = new User(
-                        rs.getLong("id"),
-                        rs.getString("name"),
+                        rs.getLong     ("id"),
+                        rs.getString   ("name"),
                         email,
-                        rs.getString("password_hash"),
+                        rs.getString   ("password_hash"),
                         rs.getTimestamp("registration_date").toLocalDateTime());
             }
 

@@ -71,8 +71,14 @@ public class UserService implements UserDAO {
 
             User user = null;
             while (rs.next()) {
-                user = createNewUser(rs);
+                user = new User(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        email,
+                        rs.getString("password_hash"),
+                        rs.getTimestamp("registration_date").toLocalDateTime());
             }
+
             return Optional.ofNullable(user);
         }
     }

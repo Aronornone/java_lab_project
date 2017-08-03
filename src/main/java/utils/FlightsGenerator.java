@@ -68,20 +68,9 @@ public class FlightsGenerator {
     }
 
     private static int countBaseCost(double distance) {
-//        double baseCost = 0;
-//        double x = -5;
-//        double counter = distance;
-//        while (counter > 100) {
-//            baseCost += 0.04 * Math.exp(-x);
-//            counter -= 100;
-//            x += 0.10;
-//        }
-//        return (int) (baseCost + distance * 0.04) * 60; // converted
         int basePrice=(int)(2.4*distance+500);
-//        System.out.println("Distance: "+distance+" Price: "+basePrice);
         return basePrice ;
     }
-
 
     static class DistanceCounter {
         static double calculateDistance(double lat1, double long1, double lat2, double long2) {

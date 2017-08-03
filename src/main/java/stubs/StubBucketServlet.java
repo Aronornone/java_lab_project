@@ -31,8 +31,6 @@ public class StubBucketServlet extends HttpServlet {
         FlightService flightService = new FlightService();
 
         httpSession.setAttribute("lastServletPath",request.getServletPath());
-        System.out.println("lastServletPath changed to "+ httpSession.getAttribute("lastServletPath"));
-        System.out.println("Must be " + request.getServletPath());
 
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);

@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class StubDoLoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
-
+        HttpSession httpSession = request.getSession();
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
         String passwordHashReq = "";
@@ -44,7 +44,6 @@ public class StubDoLoginServlet extends HttpServlet {
         }
 
         if (passwordHashDB.equals(passwordHashReq)) {
-            HttpSession httpSession = request.getSession();
             httpSession.setAttribute("user", user);
 
             Cookie cookieUserId;

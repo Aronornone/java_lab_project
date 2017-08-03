@@ -16,7 +16,7 @@ import java.util.Optional;
 public class TicketService implements TicketDao {
     private static final String SELECT_ALL =
             "SELECT\n" +
-                    "  t.id, invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
+                    "  t.id, t.invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
                     "  i.status, i.invoice_datetime, flight_id, f.airplane_id, ap.name, ap.capacity_econom, ap.capacity_business, f.flight_number,\n" +
                     "  f.departure_airport_id, dep.code, dep.city, dep.airport_name, dep.latitude, dep.longitude,\n" +
                     "  f.arrival_airport_id, arr.code, arr.city, arr.airport_name, arr.latitude, arr.longitude,\n" +
@@ -167,9 +167,9 @@ public class TicketService implements TicketDao {
                         rs.getLong("invoice_id"),
                         new User(
                                 rs.getLong("account_id"),
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                rs.getString("password_hash"),
+                                rs.getString("a.name"),
+                                rs.getString("a.email"),
+                                rs.getString("a.password_hash"),
                                 rs.getTimestamp("registration_date").toLocalDateTime()
                         ),
                         Invoice.InvoiceStatus.valueOf(rs.getString("status")),
@@ -179,26 +179,26 @@ public class TicketService implements TicketDao {
                         rs.getLong("flight_id"),
                         new Airplane(
                                 rs.getLong("airplane_id"),
-                                rs.getString("name"),
-                                rs.getInt("capacity_econom"),
-                                rs.getInt("capacity_business")
+                                rs.getString("ap.name"),
+                                rs.getInt("ap.capacity_econom"),
+                                rs.getInt("ap.capacity_business")
                         ),
                         rs.getString("flight_number"),
                         new Airport(
                                 rs.getLong("departure_airport_id"),
-                                rs.getString("code"),
-                                rs.getString("city"),
-                                rs.getString("airport_name"),
-                                rs.getDouble("latitude"),
-                                rs.getDouble("longitude")
+                                rs.getString("dep.code"),
+                                rs.getString("dep.city"),
+                                rs.getString("dep.airport_name"),
+                                rs.getDouble("dep.latitude"),
+                                rs.getDouble("dep.longitude")
                         ),
                         new Airport(
                                 rs.getLong("arrival_airport_id"),
-                                rs.getString("code"),
-                                rs.getString("city"),
-                                rs.getString("airport_name"),
-                                rs.getDouble("latitude"),
-                                rs.getDouble("longitude")
+                                rs.getString("arr.code"),
+                                rs.getString("arr.city"),
+                                rs.getString("arr.airport_name"),
+                                rs.getDouble("arr.latitude"),
+                                rs.getDouble("arr.longitude")
                         ),
                         rs.getDouble("base_cost"),
                         rs.getInt("available_places_econom"),

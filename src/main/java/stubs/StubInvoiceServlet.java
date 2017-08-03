@@ -78,23 +78,23 @@ public class StubInvoiceServlet extends HttpServlet {
 
         int ticketsInBucket = 0;
 
-        //TODO: will be change with getting tickets from DB
-        if (httpSession.getAttribute("ticketsInBucket") != null) {
-            ticketsInBucket = (int) httpSession.getAttribute("ticketsInBucket");
-        }
-
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
-                int sittingPlace = StubUtils.randomSittingPlace(flight.getFlightId(), false);
-                System.out.println(sittingPlace);
-                //new Ticket to DB
-                Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
-                        false, false, flight.getBaseCost());
-                ts.create(ticket);
+                int sittingPlace = StubUtils.getRandomSittingPlace(flight.getFlightId(), false);
+                if (sittingPlace==0) {
+                    request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
+                    request.getRequestDispatcher(redirectBackString).forward(request, response);
+                }
+                else {
+                    //new Ticket to DB
+                    Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
+                            false, false, flight.getBaseCost());
+                    ts.create(ticket);
+                }
             }
             // TODO: Info about number of tickets in bucket, need to change to request from DB
-            ticketsInBucket = ticketsInBucket + numberTicketsFlight;
+            ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }
         response.sendRedirect(redirectBackString);

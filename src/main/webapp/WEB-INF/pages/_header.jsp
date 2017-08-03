@@ -14,15 +14,15 @@
             <a href="language?locale=${"ruLocale"}&backPage=<%=path%>"><img src="resources/images/flag_ru_small.png"
                                                                             alt="ru"></a>
         </div>
-        <c:if test="${user != null}">
-            <p><fmt:message key="welcomeMessage1"/> ${user.name}</p>
-            <p class="error">Tickets in cart: ${sessionScope.ticketsInBucket}</p>
+        <c:if test="${sessionScope.user != null}">
+            <p><fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}</p>
+            <p class="error">Tickets in cart: ${ticketsInBucket}</p>
             <a href="bucket"><input class="buttonBucket" type="submit" value="<fmt:message key="cartButton"/>"/></a>
             <form action="logout" method="post">
                 <input class="buttonLogout" type="submit" value="<fmt:message key="logoutButton"/>">
             </form>
         </c:if>
-        <c:if test="${user == null}">
+        <c:if test="${sessionScope.user == null}">
             <p><fmt:message key="welcomeMessage2"/>: </p>
             <form action="loginPage" method="post">
                 <input class="buttonLogin" type="submit" value="<fmt:message key="loginButton"/>"/>

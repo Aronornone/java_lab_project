@@ -1,7 +1,12 @@
 package utils;
 
-import db.service.*;
-import pojo.*;
+import db.service.InvoiceService;
+import db.service.TicketService;
+import db.service.UserService;
+import pojo.Invoice;
+import pojo.Ticket;
+import pojo.User;
+import stubs.StubUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +17,6 @@ import java.util.Optional;
 public class SessionUtils {
     private static InvoiceService is = new InvoiceService();
     private static TicketService ts = new TicketService();
-    private static FlightService fs = new FlightService();
-    private static FlightPlaceService fps = new FlightPlaceService();
 
     /**
      * Method for invalidate userSession if it destroyed by Logout or timeout
@@ -29,39 +32,17 @@ public class SessionUtils {
     public static void invalidateSession(HttpSession httpSession) {
 
         User user = (User) httpSession.getAttribute("user");
-
         Invoice invoice = null;
+
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            Flight flight;
-
-            for (Ticket ticket : tickets) {
-                long flightId = ticket.getFlight().getFlightId();
-                FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
-                flight = fs.get((int) flightId).get();
-                OurBitSet newBitSet;
-                if (ticket.isBusinessClass()) {
-                    flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() + 1);
-                    newBitSet = flightPlace.getBitPlacesBusiness();
-                    newBitSet.clear(ticket.getSittingPlace());
-                    flightPlace.setBitPlacesBusiness(newBitSet);
-                } else {
-                    flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() + 1);
-                    newBitSet = flightPlace.getBitPlacesEconom();
-                    newBitSet.clear(ticket.getSittingPlace());
-                    flightPlace.setBitPlacesEconom(newBitSet);
-                }
-                fps.update(flightPlace);
-                fs.update(flight);
-                ts.remove(ticket);
-            }
+            StubUtils.revertSittingPlaces(tickets);
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.CANCELLED);
             is.update(invoice);
         }
         httpSession.invalidate();
     }
-
 
     public static void checkCookie(Cookie[] cookies, HttpServletRequest request,
                                    HttpSession httpSession) {

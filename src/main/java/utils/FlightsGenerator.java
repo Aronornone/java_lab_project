@@ -19,7 +19,7 @@ public class FlightsGenerator {
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
-        fillFlightsTable(40); //put number of flights you want to insert into table
+        fillFlightsTable(1000); //put number of flights you want to insert into table
     }
 
     @SneakyThrows

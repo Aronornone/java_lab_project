@@ -22,11 +22,10 @@ public class StubDoLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
         String passwordHashReq = "";
-        if (nonHashedPasswordReq != null) {
+        if (nonHashedPasswordReq != null && !email.isEmpty()) {
             passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
         } else {
             request.setAttribute("fieldEmpty",err.getString("fieldEmpty"));
-            request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
 
@@ -76,7 +75,6 @@ public class StubDoLoginServlet extends HttpServlet {
 
                 response.sendRedirect(redirectBackString);
             }
-            //request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         } else {
             request.setAttribute("loginFailed", err.getString("loginFailed"));
             request.setAttribute("email", email);

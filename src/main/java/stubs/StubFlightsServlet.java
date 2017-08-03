@@ -46,12 +46,6 @@ public class StubFlightsServlet extends HttpServlet {
 //        Logger log=(Logger)getServletContext().getAttribute("logDB");
 //        log.info("DB started");
 
-
-
-
-
-
-
         httpSession.setAttribute("currentLocale", Locale.getDefault());
         getServletContext().setAttribute("errors", ResourceBundle.
                 getBundle("ErrorsBundle", Locale.getDefault()));

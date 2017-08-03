@@ -150,26 +150,26 @@ public class FlightPlaceService implements FlightPlaceDAO {
                         rs.getLong("flight_id"),
                         new Airplane(
                                 rs.getLong("airplane_id"),
-                                rs.getString("name"),
-                                rs.getInt("capacity_econom"),
-                                rs.getInt("capacity_business")
+                                rs.getString("p.name"),
+                                rs.getInt("p.capacity_econom"),
+                                rs.getInt("p.capacity_business")
                         ),
                         rs.getString("flight_number"),
                         new Airport(
                                 rs.getLong("departure_airport_id"),
-                                rs.getString("code"),
-                                rs.getString("city"),
-                                rs.getString("airport_name"),
-                                rs.getDouble("latitude"),
-                                rs.getDouble("longitude")
+                                rs.getString("d.code"),
+                                rs.getString("d.city"),
+                                rs.getString("d.airport_name"),
+                                rs.getDouble("d.latitude"),
+                                rs.getDouble("d.longitude")
                         ),
                         new Airport(
                                 rs.getLong("arrival_airport_id"),
-                                rs.getString("code"),
-                                rs.getString("city"),
-                                rs.getString("airport_name"),
-                                rs.getDouble("latitude"),
-                                rs.getDouble("longitude")
+                                rs.getString("a.code"),
+                                rs.getString("a.city"),
+                                rs.getString("a.airport_name"),
+                                rs.getDouble("a.latitude"),
+                                rs.getDouble("a.longitude")
                         ),
                         rs.getDouble("base_cost"),
                         rs.getInt("available_places_econom"),

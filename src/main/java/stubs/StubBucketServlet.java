@@ -30,8 +30,6 @@ public class StubBucketServlet extends HttpServlet {
         TicketService ticketService = new TicketService();
         FlightService flightService = new FlightService();
 
-        //TODO: сделать запрос Invoice для текущего юзера в состоянии Created
-        //get only invoice in status Created
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
@@ -39,23 +37,29 @@ public class StubBucketServlet extends HttpServlet {
             Invoice invoice = invoiceOptional.get();
             //Для этого заказа найти все билеты, вытащить из них рейсы и сгруппировать билеты
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
-            Set<Flight> flights = new HashSet<>();
-            for(Ticket ticket : tickets) {
+
+            tickets.sort(new Comparator<Ticket>() {
+                @Override
+                public int compare(Ticket o1, Ticket o2) {
+                    return (int) (o1.getFlight().getFlightId()-o2.getFlight().getFlightId());
+                }
+            });
+
+            System.out.println(tickets);
+
+            List<Flight> flights = new ArrayList<>();
+            for(Ticket ticket: tickets) {
                 flights.add(ticket.getFlight());
             }
 
-            for(Flight flight: flights) {
+            System.out.println("ticketsForFlights:" + flights );
 
-            }
+            request.setAttribute("ticketsFlights", flights);
 
-
-            String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
 
             //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
             //boolean business = (boolean) request.getAttribute("business");
             //boolean luggage = (boolean) request.getAttribute("luggage");
-
-            request.setAttribute("flights", flights);
 
             double sumTotal = 0;
             // calc total Sum of all tickets in invoice

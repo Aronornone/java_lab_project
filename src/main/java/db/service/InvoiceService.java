@@ -14,7 +14,7 @@ import java.util.Optional;
 public class InvoiceService implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
-            "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +
+            "  i.id, account_id, a.name, a.email, a.password_hash, status, invoice_datetime\n" +
             "FROM Invoice i\n" +
             "  JOIN Account a ON a.id = i.account_id\n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
@@ -32,11 +32,11 @@ public class InvoiceService implements InvoiceDAO {
 
             ps.executeUpdate();
 
-            //try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-            //    if (generetedKeys.next()) {
-            //        invoice.setInvoiceId(generetedKeys.getInt(1));
-            //    }
-            //}
+            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
+                if (generetedKeys.next()) {
+                    invoice.setInvoiceId(generetedKeys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,7 +95,6 @@ public class InvoiceService implements InvoiceDAO {
             ps.setLong      (1, invoice.getUser().getUserId());
             ps.setString    (2, String.valueOf(invoice.getInvoiceStatus()));
             ps.setTimestamp (3, Timestamp.valueOf(invoice.getTimestamp()));
-            ps.setLong (4, invoice.getInvoiceId());
 
             ps.executeUpdate();
         } catch (SQLException e) {

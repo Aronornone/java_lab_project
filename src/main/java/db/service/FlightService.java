@@ -90,8 +90,8 @@ public class FlightService implements FlightDAO {
             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString    (1, departureCity.getCity());
             ps.setString    (2, arrivalCity.getCity());
-            ps.setInt       (3, availablePlaces);
             ps.setTimestamp (3, Timestamp.valueOf(dateTime));
+            ps.setInt       (4, availablePlaces);
 
             ResultSet rs = ps.executeQuery();
 

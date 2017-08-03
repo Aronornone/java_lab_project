@@ -19,10 +19,10 @@ public class AirplaneService implements AirplaneDAO {
     @Override
     @SneakyThrows
     public long create(Airplane airplane) {
-        String query = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query)) {
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airplane.getName());
             ps.setInt   (2, airplane.getCapacityEconom());
             ps.setInt   (3, airplane.getCapacityBusiness());

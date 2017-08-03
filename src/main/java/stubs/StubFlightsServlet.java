@@ -27,6 +27,7 @@ public class StubFlightsServlet extends HttpServlet {
 
         // Получаем путь до папки для логов
         String pathForLog=getServletContext().getRealPath("/");
+        System.out.println(pathForLog);
         // Устанавливаем динамические значения для log4j.properties
         System.setProperty("pathReg",pathForLog+"reg.log");
         System.setProperty("pathServ",pathForLog+"serv.log");

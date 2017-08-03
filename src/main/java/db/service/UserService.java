@@ -86,10 +86,11 @@ public class UserService implements UserDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPasswordHash());
-            ps.setLong  (4, user.getUserId());
+            ps.setString    (1, user.getName());
+            ps.setString    (2, user.getEmail());
+            ps.setString    (3, user.getPasswordHash());
+            ps.setTimestamp (3, Timestamp.valueOf(user.getRegistrationDate()));
+            ps.setLong      (4, user.getUserId());
 
             ps.executeUpdate();
         } catch (SQLException e) {

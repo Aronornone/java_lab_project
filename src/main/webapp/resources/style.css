@@ -137,8 +137,26 @@ a:active {
     padding: 10px 20px;
 }
 
-.buttonDelete {
-    font-size: 10pt;
+a.buttonDelete:link {
+    color: white;
+    text-decoration: none;
+    cursor: default;
+}
+
+a.buttonDelete:visited {
+    color: white;
+}
+
+a.buttonDelete:hover {
+    color: white;
+}
+
+a.buttonDelete:active {
+    color: white;
+}
+
+a.buttonDelete {
+    font-size: 12pt;
     background-color: #af1300;
     border: none;
     color: white;

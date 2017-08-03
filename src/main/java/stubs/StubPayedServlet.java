@@ -28,15 +28,27 @@ public class StubPayedServlet extends HttpServlet {
 
         Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
-        if (invoiceOptional.isPresent()) {
+
+        String[] ticketsIds = (String[]) httpSession.getAttribute("ticketsArray");
+        String[] passengerNames = (String[]) httpSession.getAttribute("passengersArray");
+        String[] passports = (String[]) httpSession.getAttribute("passportsArray");
+
+        if (StubUtils.checkEmptyAndSaveForPay(ticketsIds, passengerNames, passports)) {
+            request.setAttribute("setFields", err.getString("setFields"));
+            request.getRequestDispatcher("/bucket").forward(request, response);
+        } else if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
             is.update(invoice);
             int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
+            httpSession.setAttribute("invoiceView", null);
             request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("/bucket").forward(request, response);
         }
     }
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }

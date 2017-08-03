@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StubUtils {
@@ -207,5 +208,32 @@ public class StubUtils {
             } else stringBuilder.append('0');
         }
         return stringBuilder.toString();
+    }
+
+    public static boolean checkEmptyAndSaveForPay(String[] ticketsIds, String[] passengerNames, String[] passports) {
+        boolean empty = false;
+        if (ticketsIds != null && passengerNames != null && passports != null) {
+            List<String> ticketsList = Arrays.asList(ticketsIds);
+            List<String> passengersList = Arrays.asList(passengerNames);
+            List<String> passportsList = Arrays.asList(passports);
+
+            for (String string : ticketsList) {
+                if (string.isEmpty()) empty = true;
+            }
+            for (String string : passengersList) {
+                if (string.isEmpty()) empty = true;
+            }
+            for (String string : passportsList) {
+                if (string.isEmpty()) empty = true;
+            }
+            for (int i = 0; i < ticketsIds.length; i++) {
+                Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
+                ticketToUpdate.setPassengerName(passengerNames[i]);
+                ticketToUpdate.setPassport(passports[i]);
+                ts.update(ticketToUpdate);
+            }
+        }
+        else empty=true;
+        return empty;
     }
 }

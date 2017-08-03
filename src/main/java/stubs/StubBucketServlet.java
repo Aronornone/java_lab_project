@@ -1,6 +1,5 @@
 package stubs;
 
-import db.service.FlightService;
 import db.service.InvoiceService;
 import db.service.TicketService;
 import pojo.Flight;
@@ -28,7 +27,6 @@ public class StubBucketServlet extends HttpServlet {
 
         InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
-        FlightService flightService = new FlightService();
 
         httpSession.setAttribute("lastServletPath",request.getServletPath());
 
@@ -37,8 +35,14 @@ public class StubBucketServlet extends HttpServlet {
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            //Для этого заказа найти все билеты, вытащить из них рейсы и сгруппировать билеты
+            httpSession.setAttribute("invoiceView",invoice.getInvoiceId());
+            httpSession.setAttribute("invoiceId",invoice.getInvoiceId());
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+
+            if (tickets.size()==0) {
+                httpSession.setAttribute("invoiceView",null);
+                request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+            }
 
             Set<Flight> flights = new HashSet<>();
             for(Ticket ticket: tickets) {
@@ -56,7 +60,6 @@ public class StubBucketServlet extends HttpServlet {
             }
 
             request.setAttribute("flights", flights);
-
             //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
             //boolean business = (boolean) request.getAttribute("business");
             //boolean luggage = (boolean) request.getAttribute("luggage");

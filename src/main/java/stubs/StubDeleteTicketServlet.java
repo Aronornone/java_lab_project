@@ -24,20 +24,22 @@ public class StubDeleteTicketServlet extends HttpServlet {
     private static TicketService ts = new TicketService();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
 
-        String redirectBackString = "/bucket";
-
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
-
-        String ticketIdString = request.getParameter("ticketId");
-        Optional<Ticket> ticketOptional = ts.get(Long.parseLong(ticketIdString));
+        String ticketId = (String) request.getParameter("ticketId");
+        Optional<Ticket> ticketOptional = ts.get(Long.parseLong(ticketId));
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
             List<Ticket> tickets = new ArrayList<>();
@@ -46,11 +48,7 @@ public class StubDeleteTicketServlet extends HttpServlet {
             int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }
-
+        String redirectBackString = "/bucket";
         response.sendRedirect(redirectBackString);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
     }
 }

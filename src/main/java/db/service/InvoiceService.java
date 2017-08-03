@@ -31,12 +31,12 @@ public class InvoiceService implements InvoiceDAO {
             ps.setTimestamp (3, Timestamp.valueOf(invoice.getTimestamp()));
 
             ps.executeUpdate();
-
+/*
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
                     invoice.setInvoiceId(generetedKeys.getLong(1));
                 }
-            }
+            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }

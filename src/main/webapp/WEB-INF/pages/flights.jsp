@@ -111,6 +111,7 @@
                             </td>
                             <td>
                                 <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
+                                <p class="error">${sessionScope.ticketsAdd}</p>
                             </td>
                         </tr>
                     </form>

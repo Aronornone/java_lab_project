@@ -362,3 +362,47 @@ p.passengerNum {
     background-color: lightyellow;
     border: 5px groove;
 }
+.invoiceSuccess{
+    margin-top: 100px;
+    text-align: center;
+    font-size: 16pt;
+}
+.printTickets{
+
+}
+.printTickets tr:hover {
+     background-color: rgba(255, 255, 255, 0);
+ }
+
+p.invoices{
+    text-align: center;
+    font-size: 16pt;
+}
+
+button.invoiceToggle{
+    font-size: 14pt;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    width: 100%;
+    clear: both;
+    margin: 10px 10px 10px 0;
+    background-color: steelblue;
+}
+.ticketInfo{
+    width: 48.3%;
+    padding: 5px;
+    display: inline-table;
+    border: 3px dotted steelblue;
+    margin-bottom: 5px;
+}
+.flightInfo{
+    font-size: 14pt;
+    border: none;
+    color: white;
+    padding: 15px 5px 1px 5px;
+    width: 100%;
+    clear: both;
+    margin: 0px 0px 10px 0px;
+    background-color: steelblue;
+}

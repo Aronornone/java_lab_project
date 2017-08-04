@@ -25,6 +25,9 @@ public class StubBucketServlet extends HttpServlet {
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
 
+        if (user == null) {
+            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+        }
         InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
 
@@ -44,14 +47,14 @@ public class StubBucketServlet extends HttpServlet {
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             }
 
-            Set<Flight> flights = new HashSet<>();
+            Set<Flight> flights = new LinkedHashSet<>();
             for(Ticket ticket: tickets) {
                 flights.add(ticket.getFlight());
             }
 
-            Set<Ticket> ticketsForFlight = new HashSet<>();;
+           LinkedHashSet<Ticket> ticketsForFlight;
             for(Flight flight: flights) {
-                ticketsForFlight = new HashSet<>();;
+                ticketsForFlight = new LinkedHashSet<>();
                 for(Ticket ticket: tickets)
                 if(flight.getFlightId() == ticket.getFlight().getFlightId()) {
                     ticketsForFlight.add(ticket);

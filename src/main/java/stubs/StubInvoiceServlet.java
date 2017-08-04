@@ -39,13 +39,13 @@ public class StubInvoiceServlet extends HttpServlet {
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
         String[] checkBox = (String[]) httpSession.getAttribute("business");
 
-        System.out.println("checkbox:"+checkBox);
+        System.out.println("checkbox:" + checkBox);
 
         String redirectBackString;
-        if (checkBox!=null){
+        if (checkBox != null) {
             redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
                     "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                    "&numberTicketsFilter=" + numberTicketsFilterString + "&box="+checkBox[0];
+                    "&numberTicketsFilter=" + numberTicketsFilterString + "&box=" + checkBox[0];
         } else {
             redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
                     "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
@@ -66,10 +66,22 @@ public class StubInvoiceServlet extends HttpServlet {
             flight = flightOptional.get();
         }
 
+        String[] checkbox = (String[]) httpSession.getAttribute("business");
+        boolean business = false;
+        int availableForClass = flight.getAvailablePlacesEconom();
+        if (checkbox != null) {
+            if (checkbox[0].equals("business")) {
+                business = true;
+                availableForClass = flight.getAvailablePlacesBusiness();
+            }
+        }
+
         //TODO: extract to method and optimise
         // check if we have enough places for buy
+
         Invoice invoice = null;
-        if (numberTicketsFlight > (flight.getAvailablePlacesBusiness() + flight.getAvailablePlacesEconom())) {
+
+        if (numberTicketsFlight > availableForClass) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
@@ -84,27 +96,25 @@ public class StubInvoiceServlet extends HttpServlet {
                 is.create(invoice);
             }
         }
-        invoice = is.getInvoiceByUser(user.getUserId(),Invoice.InvoiceStatus.CREATED).get();
-
-        int ticketsInBucket = 0;
+        invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
 
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
                 int sittingPlace = StubUtils.getRandomSittingPlace(flight.getFlightId(), false);
-                if (sittingPlace==0) {
+                if (sittingPlace == 0) {
                     request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
-                }
-                else {
+                } else {
                     //new Ticket to DB
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, false, flight.getBaseCost());
                     ts.create(ticket);
                 }
             }
-            ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
+            int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
+            request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }
         response.sendRedirect(redirectBackString);
     }

@@ -4,9 +4,25 @@
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
 <fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
-
-<div class="invoiceSuccess">
-        <p><fmt:message key="paid"/> </p>
-        <p><fmt:message key="getBack"/> <a href="flights"><fmt:message key="flightsList"/></p>
+<html>
+<head>
+    <title><fmt:message key="payTitle"/></title>
+    <link rel="stylesheet"
+          type="text/css"
+          href="<c:url value='resources/style.css'/>">
+</head>
+<body>
+<div class="body">
+    <jsp:include page="/WEB-INF/pages/_header.jsp"/>
+    <div class="wrapper">
+        <div class="invoiceSuccess">
+            <p><fmt:message key="paid"/></p>
+            <p><fmt:message key="getBack"/> <a href="flights"><fmt:message key="flightsList"/></a></p>
+            <p><fmt:message key="or"/> <a href="ticketsPrint"><fmt:message key="ticketsPrint"/></a></p>
+        </div>
+    </div>
+    <jsp:include page="/WEB-INF/pages/_footer.jsp"/>
 </div>
+</body>
+</html>
 

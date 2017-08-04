@@ -38,13 +38,15 @@
                     </div>
                 </div>
                 <%----%>
-
                 <c:if test="${sessionScope.lastServletPath =='/bucket' }">
                     <form action="flights" method="post">
                         <input class="goBackBut" type="submit" value="<fmt:message key="goBackBut"/>">
                     </form>
                 </c:if>
 
+                <form action="ticketsPrint" method="post">
+                    <input class="goBackBut" type="submit" value="<fmt:message key="ticketPrintBut"/>">
+                </form>
 
                 <a href="bucket">
                     <c:if test="${sessionScope.ticketsInBucket != null}">
@@ -55,7 +57,6 @@
                         <input class="buttonBucket" type="submit"
                                value="<fmt:message key="cartButton"/>: 0 <fmt:message key="cartTickets"/>"/></c:if>
                 </a>
-
             </c:if>
             <c:if test="${sessionScope.user == null}">
                 <fmt:message key="welcomeMessage2"/>

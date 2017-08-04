@@ -23,18 +23,23 @@ public class StubPayedServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
-
         User user = (User) httpSession.getAttribute("user");
+        httpSession.setAttribute("lastServletPath", request.getServletPath());
+        request.setCharacterEncoding("UTF-8");
 
         Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
+        String[] ticketsIds = request.getParameterValues("ticketId");
+        String[] passengerNames = request.getParameterValues("passengerName");
+        String[] passports = request.getParameterValues("passport");
 
-        String[] ticketsIds = (String[]) httpSession.getAttribute("ticketsArray");
-        String[] passengerNames = (String[]) httpSession.getAttribute("passengersArray");
-        String[] passports = (String[]) httpSession.getAttribute("passportsArray");
+        httpSession.setAttribute("ticketsArray", ticketsIds);
+        httpSession.setAttribute("passengersArray", passengerNames);
+        httpSession.setAttribute("passportsArray", passports);
 
         if (StubUtils.checkEmptyAndSaveForPay(ticketsIds, passengerNames, passports)) {
             request.setAttribute("setFields", err.getString("setFields"));
+            request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);
         } else if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();

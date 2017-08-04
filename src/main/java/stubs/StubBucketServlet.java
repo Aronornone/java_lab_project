@@ -40,7 +40,7 @@ public class StubBucketServlet extends HttpServlet {
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
 
             if (tickets.size()==0) {
-                httpSession.setAttribute("invoiceView",null);
+                httpSession.setAttribute("invoiceView","noTickets");
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             }
 
@@ -72,6 +72,7 @@ public class StubBucketServlet extends HttpServlet {
 
             request.setAttribute("totalSum", sumTotal);
         } else {
+            httpSession.setAttribute("invoiceView","noTickets");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);

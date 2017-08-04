@@ -64,8 +64,9 @@
                         </c:if>
                     </p>
                     <p class="filter"><fmt:message key="busClass"/>
-                            <input class="fieldFilters" type="checkbox"
-                                   value="${business}" name="business">
+                    <input class="fieldFilters" type="checkbox"
+                    <c:if test="${sessionScope.business !=null}"> checked="checked" </c:if>
+                                   value="business" name="box">
                     </p>
                 </div>
                 <p class="error">${requestScope.nothingFound}</p>

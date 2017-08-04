@@ -37,11 +37,20 @@ public class StubInvoiceServlet extends HttpServlet {
         String departure = (String) httpSession.getAttribute("departureF");
         String arrival = (String) httpSession.getAttribute("arrivalF");
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-        String businessString = (String) httpSession.getAttribute("business");
+        String[] checkBox = (String[]) httpSession.getAttribute("business");
 
-        String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
-                "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                "&numberTicketsFilter=" + numberTicketsFilterString + "&business="+businessString;
+        System.out.println("checkbox:"+checkBox);
+
+        String redirectBackString;
+        if (checkBox!=null){
+            redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
+                    "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
+                    "&numberTicketsFilter=" + numberTicketsFilterString + "&box="+checkBox[0];
+        } else {
+            redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
+                    "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
+                    "&numberTicketsFilter=" + numberTicketsFilterString;
+        }
 
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

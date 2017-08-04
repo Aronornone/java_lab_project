@@ -59,19 +59,25 @@ public class StubDoLoginServlet extends HttpServlet {
                 String departure = (String) httpSession.getAttribute("departureF");
                 String arrival = (String) httpSession.getAttribute("arrivalF");
                 String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-                String businessString = (String) httpSession.getAttribute("businessString");
+                String[] checkBox = (String[]) httpSession.getAttribute("business");
+
                 if ((dateFromString == null) ||
                         (dateToString == null) ||
                         (departure == null) ||
                         (arrival == null) ||
                         (numberTicketsFilterString == null)) {
                     response.sendRedirect("/");
+                } else if (checkBox!=null){
+                    String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
+                            "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
+                            "&numberTicketsFilter=" + numberTicketsFilterString + "&box="+checkBox[0];
+                    response.sendRedirect(redirectBackString);
                 } else {
                     String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
                             "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                            "&numberTicketsFilter=" + numberTicketsFilterString + "&business=" + businessString;
-
+                            "&numberTicketsFilter=" + numberTicketsFilterString;
                     response.sendRedirect(redirectBackString);
+
                 }
             } else {
                 request.setAttribute("loginFailed", err.getString("loginFailed"));

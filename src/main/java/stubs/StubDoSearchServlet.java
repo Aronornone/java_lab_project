@@ -34,12 +34,13 @@ public class StubDoSearchServlet extends HttpServlet {
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
         //получаем установленные фильтры
+
         String dateFromString = request.getParameter("dateFrom");
         String dateToString = request.getParameter("dateTo");
         String departure = request.getParameter("selectedDeparture");
         String arrival = request.getParameter("selectedArrival");
         String numberTicketsFilterString = request.getParameter("numberTicketsFilter");
-        String businessString = request.getParameter("business");
+        String[] checkbox = request.getParameterValues("box");
 
         //Сохраняем фильтры для следующих запросов в рамках этой же сессии
         httpSession.setAttribute("numberTicketsFilter", numberTicketsFilterString);
@@ -47,7 +48,13 @@ public class StubDoSearchServlet extends HttpServlet {
         httpSession.setAttribute("dateTo", dateToString);
         httpSession.setAttribute("departureF", departure);
         httpSession.setAttribute("arrivalF", arrival);
-        httpSession.setAttribute("business", businessString);
+        httpSession.setAttribute("business", checkbox);
+
+        boolean business = false;
+        if (checkbox != null) {
+            if (checkbox[0].equals("business"))
+                business = true;
+        }
 
         //проверяем фильтры перед парсингом
         if ((dateFromString.isEmpty()) ||
@@ -64,7 +71,10 @@ public class StubDoSearchServlet extends HttpServlet {
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
 
             //TODO: Добавить в логгер информацию о поиске
-            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTicketsFilter + businessString);
+            System.out.println("Searching for flight:" + dateFrom + " " + dateTo
+                    + " " + departure + " " + arrival + " " + numberTicketsFilter
+                    + checkbox);
+
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             List<Flight> foundFlights = new ArrayList<>();
@@ -77,6 +87,7 @@ public class StubDoSearchServlet extends HttpServlet {
                     foundFlights.add(flight);
                 }
             }
+            System.out.println("foundFlights:" + foundFlights);
 
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {

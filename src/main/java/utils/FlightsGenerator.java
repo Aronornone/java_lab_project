@@ -19,7 +19,7 @@ public class FlightsGenerator {
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
-        fillFlightsTable(1000); //put number of flights you want to insert into table
+        fillFlightsTable(100); //put number of flights you want to insert into table
     }
 
     @SneakyThrows
@@ -44,8 +44,10 @@ public class FlightsGenerator {
     @SuppressWarnings("unchecked")
     private static String getRandomFlight() {
         int airplaneId = createNumber(1, as.getAll().size());
-        int depAirportId = createNumber(1, aps.getAll().size());
-        int arrAirportId = createNumber(1, aps.getAll().size());
+        int depAirportId = createNumber(1, 20);
+        //int depAirportId = createNumber(1, aps.getAll().size());
+        int arrAirportId = createNumber(1, 20);
+        //int arrAirportId = createNumber(1, aps.getAll().size());
         String result = "(%d,'%s',%d ,%d, %d, %d ,%d ,'%s')";
         List params = new ArrayList();
         params.add(airplaneId);

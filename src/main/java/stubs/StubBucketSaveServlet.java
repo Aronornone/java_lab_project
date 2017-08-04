@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 //Заглушка для страницы корзины
@@ -22,6 +23,7 @@ public class StubBucketSaveServlet extends HttpServlet {
 
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         //int ticketsNumber = StubUtils.getNumberOfTicketsInInvoice(user);
+        request.setCharacterEncoding("UTF-8");
 
         String[] ticketsIds = request.getParameterValues("ticketId");
         String[] passengerNames = request.getParameterValues("passengerName");
@@ -33,12 +35,9 @@ public class StubBucketSaveServlet extends HttpServlet {
 
         if (StubUtils.checkEmptyAndSaveForPay(ticketsIds, passengerNames, passports)) {
             request.setAttribute("setFields", err.getString("setFields"));
-            request.setAttribute("changesSaved", err.getString("changesSaved"));
-            request.getRequestDispatcher("/bucket").forward(request, response);
-        } else {
-            request.setAttribute("changesSaved", err.getString("changesSaved"));
         }
-
+        System.out.println(Arrays.asList(passengerNames));
+        request.setAttribute("changesSaved", err.getString("changesSaved"));
         request.getRequestDispatcher("/bucket").forward(request, response);
     }
 

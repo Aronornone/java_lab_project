@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
 <fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
@@ -22,7 +22,6 @@
             <div class="bucketTable">
                 <div class="flightList">
                     <form id="saveForm" name="saveForm" action="save" method="post">
-                        <div>
                             <c:forEach items="${requestScope.flights}" var="flight">
                                 <div class="flightInfo">
                                     <fmt:message key="tabFlight"/>: <b>${flight.flightNumber}</b> <fmt:message
@@ -51,9 +50,9 @@
                                                     <input class="passengerfield" type="text" name="passengerName"
                                                            value="${ticket.passengerName}">
                                                 </td>
-                                                <td><input type="text" name="passport" value="${ticket.passport}"
-                                                ></td>
-                                                <td>
+                                                <td><input type="text" name="passport" value="${ticket.passport}" >
+                                                </td>
+                                               <td>
                                                     <div class="tableBucketField">
                                                         <input class="checkbox" name="luggage" type="checkbox"
                                                                value="0">
@@ -68,7 +67,8 @@
                                                 <td>
                                                     <div>
                                                         <input type="hidden" name="ticketId" value="${ticket.ticketId}">
-                                                        <a href="ticketDelete?ticketId=${ticket.ticketId}" class="buttonDelete" ><fmt:message key="delete"/> </a>
+                                                        <a href="ticketDelete?ticketId=${ticket.ticketId}" class="buttonDelete" >
+                                                        <fmt:message key="delete"/> </a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -78,10 +78,9 @@
                                 </c:forEach>
                                 <hr class="headerLineFlight">
                             </c:forEach>
-                        </div>
                     </form>
                 </div>
-                <c:if test="${sessionScope.invoiceView != 'noTickets'}">
+                <%--<c:if test="${sessionScope.invoiceView != 'noTickets'}">--%>
                     <p class="error">${setFields}</p>
                     <p class="error">${changesSaved}</p>
                     <div class="butPay">
@@ -96,7 +95,7 @@
                                    form="payInvoice"/>
                         </form>
                     </div>
-                </c:if>
+               <%--</c:if>--%>
             </div>
         </div>
     </div>

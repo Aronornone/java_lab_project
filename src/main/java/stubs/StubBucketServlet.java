@@ -24,58 +24,56 @@ public class StubBucketServlet extends HttpServlet {
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
+        request.setCharacterEncoding("UTF-8");
 
         InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
 
-        httpSession.setAttribute("lastServletPath",request.getServletPath());
+        httpSession.setAttribute("lastServletPath", request.getServletPath());
 
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
-
-        if (invoiceOptional.isPresent()) {
+        if (!invoiceOptional.isPresent()) {
+            httpSession.setAttribute("invoiceView", "noTickets");
+            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+        } else {
             Invoice invoice = invoiceOptional.get();
-            httpSession.setAttribute("invoiceView",invoice.getInvoiceId());
-            httpSession.setAttribute("invoiceId",invoice.getInvoiceId());
-            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+            httpSession.setAttribute("invoiceView", invoice.getInvoiceId());
+            httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
+            List<Ticket> allTicketsOfInvoice = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
 
-            if (tickets.size()==0) {
-                httpSession.setAttribute("invoiceView","noTickets");
+            if (allTicketsOfInvoice.size() == 0) {
+                httpSession.setAttribute("invoiceView", "noTickets");
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             }
 
             Set<Flight> flights = new HashSet<>();
-            for(Ticket ticket: tickets) {
+            for (Ticket ticket : allTicketsOfInvoice) {
                 flights.add(ticket.getFlight());
             }
 
-            Set<Ticket> ticketsForFlight = new HashSet<>();;
-            for(Flight flight: flights) {
-                ticketsForFlight = new HashSet<>();;
-                for(Ticket ticket: tickets)
-                if(flight.getFlightId() == ticket.getFlight().getFlightId()) {
-                    ticketsForFlight.add(ticket);
-                }
+            Set<Ticket> ticketsForFlight;
+            for (Flight flight : flights) {
+                ticketsForFlight = new HashSet<>();
+
+                for (Ticket ticket : allTicketsOfInvoice)
+                    if (flight.getFlightId() == ticket.getFlight().getFlightId()) {
+                        ticketsForFlight.add(ticket);
+                    }
                 flight.setTickets(ticketsForFlight);
             }
 
             request.setAttribute("flights", flights);
-            //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
-            //boolean business = (boolean) request.getAttribute("business");
-            //boolean luggage = (boolean) request.getAttribute("luggage");
 
             double sumTotal = 0;
-            // calc total Sum of all tickets in invoice
-            for(Ticket ticket: tickets) {
+            // calc total Sum of all allTicketsOfInvoice in invoice
+            for (Ticket ticket : allTicketsOfInvoice) {
                 sumTotal = sumTotal + ticket.getPrice();
             }
-
             request.setAttribute("totalSum", sumTotal);
-        } else {
-            httpSession.setAttribute("invoiceView","noTickets");
-            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

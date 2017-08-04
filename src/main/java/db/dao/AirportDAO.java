@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AirportDAO {
     long create(Airport airport);
-    Optional<Airport> get(int id);
+    Optional<Airport> get(long id);
     void update(Airport airport);
     void remove(Airport airport);
     List<Airport> getAll();

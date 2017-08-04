@@ -7,6 +7,6 @@
 
 <div class="invoiceSuccess">
         <p><fmt:message key="paid"/> </p>
-        <p> PS.Будет всплывашкой</p>
+        <p><fmt:message key="getBack"/> <a href="flights"><fmt:message key="flightsList"/></p>
 </div>
 

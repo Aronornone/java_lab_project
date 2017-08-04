@@ -20,16 +20,16 @@ public class UserService implements UserDAO {
         String sql = "INSERT INTO Account (name, email, password_hash, registration_date) VALUES (?, ?, ?, ?)";
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString    (1, user.getName());
-            ps.setString    (2, user.getEmail());
-            ps.setString    (3, user.getPasswordHash());
-            ps.setTimestamp (4, Timestamp.valueOf(user.getRegistrationDate()));
+            ps.setString   (1, user.getName());
+            ps.setString   (2, user.getEmail());
+            ps.setString   (3, user.getPasswordHash());
+            ps.setTimestamp(4, Timestamp.valueOf(user.getRegistrationDate()));
 
             ps.executeUpdate();
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    user.setUserId(generetedKeys.getInt(1));
+                    user.setUserId(generetedKeys.getLong(1));
                 }
             }
         } catch (SQLException e) {
@@ -41,19 +41,18 @@ public class UserService implements UserDAO {
 
     @Override
     @SneakyThrows
-    public Optional<User> get(int id) {
-        String sql = "SELECT name, email, password_hash, registration_date FROM Account WHERE id = ?";
+    public Optional<User> get(long id) {
+        String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 
             User user = null;
             while (rs.next()) {
-                user = new User(id, rs.getString(1), rs.getString(2), rs.getString(3),
-                        rs.getTimestamp(4).toLocalDateTime());
+                user = createNewUser(rs);
             }
             return Optional.ofNullable(user);
         }
@@ -72,9 +71,14 @@ public class UserService implements UserDAO {
 
             User user = null;
             while (rs.next()) {
-                user = new User(rs.getInt(1), rs.getString(2), email, rs.getString(4),
-                        rs.getTimestamp(5).toLocalDateTime());
+                user = new User(
+                        rs.getLong     ("id"),
+                        rs.getString   ("name"),
+                        email,
+                        rs.getString   ("password_hash"),
+                        rs.getTimestamp("registration_date").toLocalDateTime());
             }
+
             return Optional.ofNullable(user);
         }
     }
@@ -86,10 +90,11 @@ public class UserService implements UserDAO {
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPasswordHash());
-            ps.setLong  (4, user.getUserId());
+            ps.setString   (1, user.getName());
+            ps.setString   (2, user.getEmail());
+            ps.setString   (3, user.getPasswordHash());
+            ps.setTimestamp(3, Timestamp.valueOf(user.getRegistrationDate()));
+            ps.setLong     (4, user.getUserId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -102,8 +107,8 @@ public class UserService implements UserDAO {
     public void remove(User user) {
         String sql = "DELETE FROM Account WHERE id = ?";
 
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, user.getUserId());
 
             ps.executeUpdate();
@@ -120,18 +125,23 @@ public class UserService implements UserDAO {
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_REG_DATE);
             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                users.add(new User(
-                        rs.getLong      ("id"),
-                        rs.getString    ("name"),
-                        rs.getString    ("email"),
-                        rs.getString    ("password_hash"),
-                        rs.getTimestamp ("registration_date").toLocalDateTime()
-                ));
+                users.add(createNewUser(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return users;
+    }
+
+    @SneakyThrows
+    private User createNewUser(ResultSet rs) {
+        return new User(
+                rs.getLong     ("id"),
+                rs.getString   ("name"),
+                rs.getString   ("email"),
+                rs.getString   ("password_hash"),
+                rs.getTimestamp("registration_date").toLocalDateTime()
+        );
     }
 }

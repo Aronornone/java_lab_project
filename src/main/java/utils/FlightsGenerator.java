@@ -3,9 +3,11 @@ package utils;
 import db.service.AirplaneService;
 import db.service.AirportService;
 import lombok.SneakyThrows;
+
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import static db.DataSource.getConnection;
 import static java.lang.StrictMath.*;
 import static utils.FlightsGenerator.DistanceCounter.calculateDistance;
@@ -17,7 +19,7 @@ public class FlightsGenerator {
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
-        fillFlightsTable(50); //put number of flights you want to insert into table
+        fillFlightsTable(100); //put number of flights you want to insert into table
     }
 
     @SneakyThrows
@@ -42,8 +44,10 @@ public class FlightsGenerator {
     @SuppressWarnings("unchecked")
     private static String getRandomFlight() {
         int airplaneId = createNumber(1, as.getAll().size());
-        int depAirportId = createNumber(1, aps.getAll().size());
-        int arrAirportId = createNumber(1, aps.getAll().size());
+        int depAirportId = createNumber(1, 20);
+        //int depAirportId = createNumber(1, aps.getAll().size());
+        int arrAirportId = createNumber(1, 20);
+        //int arrAirportId = createNumber(1, aps.getAll().size());
         String result = "(%d,'%s',%d ,%d, %d, %d ,%d ,'%s')";
         List params = new ArrayList();
         params.add(airplaneId);
@@ -53,7 +57,7 @@ public class FlightsGenerator {
         params.add(countBaseCost(getDistance(depAirportId, arrAirportId)));
         params.add(as.get(airplaneId).get().getCapacityEconom());
         params.add(as.get(airplaneId).get().getCapacityBusiness());
-        params.add(createRandomDateTime("01/09/2017", "01/09/2019"));
+        params.add(createRandomDateTime("01/08/2017", "01/09/2017"));
         return String.format(result, params.toArray());
     }
 
@@ -66,20 +70,9 @@ public class FlightsGenerator {
     }
 
     private static int countBaseCost(double distance) {
-//        double baseCost = 0;
-//        double x = -5;
-//        double counter = distance;
-//        while (counter > 100) {
-//            baseCost += 0.04 * Math.exp(-x);
-//            counter -= 100;
-//            x += 0.10;
-//        }
-//        return (int) (baseCost + distance * 0.04) * 60; // converted
         int basePrice=(int)(2.4*distance+500);
-//        System.out.println("Distance: "+distance+" Price: "+basePrice);
         return basePrice ;
     }
-
 
     static class DistanceCounter {
         static double calculateDistance(double lat1, double long1, double lat2, double long2) {
@@ -101,4 +94,6 @@ public class FlightsGenerator {
             return sin(phi / 2) * sin(phi / 2) + cos(phi1) * cos(phi2) * sin(lambda / 2) * sin(lambda / 2);
         }
     }
+
+
 }

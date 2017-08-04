@@ -4,9 +4,11 @@ import db.DataSource;
 import db.dao.AirplaneDAO;
 import lombok.SneakyThrows;
 import pojo.Airplane;
-import pojo.Flight;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +19,10 @@ public class AirplaneService implements AirplaneDAO {
     @Override
     @SneakyThrows
     public long create(Airplane airplane) {
-        String query = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(query)) {
+            PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airplane.getName());
             ps.setInt   (2, airplane.getCapacityEconom());
             ps.setInt   (3, airplane.getCapacityBusiness());
@@ -29,7 +31,7 @@ public class AirplaneService implements AirplaneDAO {
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    airplane.setAirplaneId(generetedKeys.getInt(1));
+                    airplane.setAirplaneId(generetedKeys.getLong(1));
                 }
             }
         } catch (SQLException e) {
@@ -41,18 +43,18 @@ public class AirplaneService implements AirplaneDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Airplane> get(int id) {
+    public Optional<Airplane> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 
             Airplane airplane = null;
             while (rs.next()) {
-                airplane = new Airplane(id, rs.getString(1), rs.getInt(2), rs.getInt(3));
+                airplane = createNewAirplane(rs);
             }
 
             return Optional.ofNullable(airplane);
@@ -99,16 +101,21 @@ public class AirplaneService implements AirplaneDAO {
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                airplanes.add(new Airplane(
-                        rs.getLong  ("id"),
-                        rs.getString("name"),
-                        rs.getInt   ("capacity_econom"),
-                        rs.getInt   ("capacity_business")));
+                airplanes.add(createNewAirplane(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return airplanes;
+    }
+
+    @SneakyThrows
+    private Airplane createNewAirplane(ResultSet rs) {
+        return new Airplane(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getInt("capacity_econom"),
+                rs.getInt("capacity_business"));
     }
 }

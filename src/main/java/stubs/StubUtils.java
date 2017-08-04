@@ -9,13 +9,11 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 import pojo.FlightPlace;
-import utils.FlightHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -73,8 +71,6 @@ public class StubUtils {
         }
         return flights;
     }
-
-
 
     public static int randomSittingPlace(long flightId, boolean business) {
         int reservedPlace = 0;
@@ -147,88 +143,5 @@ public class StubUtils {
             } else stringBuilder.append('0');
         }
         return stringBuilder.toString();
-    }
-
-    public static String generateButtons(int i) {
-        int FLIGHTS_PER_PAGE=2;
-        int pages=2;
-        StringBuilder sb=new StringBuilder();
-        while (i-2>=0){
-            sb.append(generateOneButton(pages++)).append(" ");
-            i-=2;
-        }
-        return sb.toString();
-
-    }
-
-    public static String generateOneButton(int number){
-        StringBuilder sb=new StringBuilder();
-        sb.append("<a href=\"/\"").append(number).append("\\\">").append(number).append("</a>");
-        return sb.toString();
-
-    }
-    public static int getAmountFlights(String arrival, String departure){
-        Connection con=DataSource.getConnection();
-        int i=0;
-        try{
-            String sql= "SELECT COUNT(*) AS tt FROM flight " +
-                        "WHERE " +
-                        "arrival_airport_id=(SELECT id FROM airport WHERE airport_name='"+arrival+"') " +
-                        "AND " +
-                        "departure_airport_id=(SELECT id FROM airport WHERE airport_name='"+departure+"')";
-            PreparedStatement ps=con.prepareStatement(sql);
-            ResultSet rs =ps.executeQuery();
-            rs.next();
-            i=rs.getInt("tt");
-            rs.close();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return i;
-    }
-
-
-    /**
-     *
-     * @param departure id departured airport
-     * @param arrival id arrival airport
-     * @param dateFrom date to departure
-     * @param dateTo date till departure need to be done
-     * @param requiredSeats
-     * @param business
-     * @param numberOfPage
-     * @return
-     */
-    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage){
-        Connection con = DataSource.getConnection();
-        int FLIGHTS_PER_PAGE=2;
-        List<FlightHelper> flights = new ArrayList<>();
-        try{
-            String checkSeats="";
-            if (business){
-                checkSeats=" AND available_places_business>="+requiredSeats+" ";
-            } else {
-                if (business){
-                    checkSeats=" AND available_places_econom>="+requiredSeats+" ";
-                }
-            }
-            String sql="SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'"+dateFrom+"'  AND flight_datetime<'"+dateTo+"' AND departure_airport_id="+departure+" AND arrival_airport_id="+arrival+checkSeats+") AS tt ORDER BY flight_datetime LIMIT "
-                    +(numberOfPage-1)*FLIGHTS_PER_PAGE+","+numberOfPage*FLIGHTS_PER_PAGE;
-            PreparedStatement ps=con.prepareStatement(sql);
-            ResultSet result =ps.executeQuery();
-
-
-            while (result.next()) {
-                flights.add(new FlightHelper(result.getLong("id"),
-                        result.getDouble("base_cost"), result.getString("flight_number"),departure, arrival,  result.getTimestamp("flight_datetime").toLocalDateTime()));
-
-            }
-
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return flights;
     }
 }

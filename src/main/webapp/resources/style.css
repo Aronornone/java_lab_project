@@ -5,7 +5,6 @@
     margin: auto;
 }
 
-
 div.formLogReg {
     width: 300px;
     height: 300px;
@@ -107,7 +106,7 @@ a:active {
     padding: 7px 14px;
     float: right;
     clear: both;
-    margin:10px 0 10px 10px;
+    margin: 10px 0 10px 10px;
 }
 
 .buttonBucketSave {
@@ -117,7 +116,7 @@ a:active {
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin:10px 0 10px 10px;
+    margin: 10px 0 10px 10px;
 }
 
 .buttonBucketPay {
@@ -127,8 +126,9 @@ a:active {
     color: white;
     padding: 7px 14px;
     clear: both;
-    margin:10px 0 10px 10px;
+    margin: 10px 0 10px 10px;
 }
+
 .buttonSearch {
     font-size: 16pt;
     background-color: #3f669f;
@@ -136,15 +136,34 @@ a:active {
     color: white;
     padding: 10px 20px;
 }
-.buttonDelete{
-    font-size: 10pt;
+
+a.buttonDelete:link {
+    color: white;
+    text-decoration: none;
+    cursor: default;
+}
+
+a.buttonDelete:visited {
+    color: white;
+}
+
+a.buttonDelete:hover {
+    color: white;
+}
+
+a.buttonDelete:active {
+    color: white;
+}
+
+a.buttonDelete {
+    font-size: 12pt;
     background-color: #af1300;
     border: none;
     color: white;
     padding: 7px 14px;
     float: right;
     clear: both;
-    margin:10px 0 10px 10px;
+    margin: 10px 0 10px 10px;
 }
 
 .buttonBuy {
@@ -162,6 +181,7 @@ a:active {
 
 .logged {
     display: inline-flex;
+    width: 100%;
 }
 
 .test {
@@ -180,38 +200,48 @@ th, td {
 tr {
     text-align: left;
 }
-.tableButDel{
-    width:50%;
+
+.tableButDel {
+    width: 50%;
 }
 
 tr:hover {
     background-color: rgba(217, 240, 213, 0.31);
     padding: 5px;
 }
-.passengerfield{
-    width:350px;
+
+.passengerfield {
+    width: 350px;
 }
+
 .buckettable {
     width: 100%;
 }
+
 .buckettable tr:hover {
     background-color: rgba(255, 255, 255, 0);
 }
 
-.buckettable th , .bucketTable  td{
+.buckettable th, .bucketTable td {
     border-bottom: 0;
 }
+
 .search {
     display: inline-flex;
     width: 100%;
 }
 
 p.filter {
-    margin: 5px;
+    margin: 5px 5px 5px 0;
 }
 
 .flagesLogged {
-    margin: 13px;
+    margin: 13px 0 13px 0;
+    display: inline-flex;
+}
+.rightHeader{
+    display: flex;
+    margin-left: auto;
 }
 
 .pairports, .pdates, .fairports, .fdates, .pnumberTickets {
@@ -223,12 +253,53 @@ p.filter {
     margin-left: auto;
 }
 
-.butPay{
+.butPay {
     float: right;
     display: inline-flex;
 }
-p.passengerNum{
-    font-size: 15pt;
+
+p.passengerNum {
+    font-size: 13pt;
+    margin: 5px 0 5px 0;
+}
+
+
+
+.costTotal {
+    font-weight: bold;
+    font-size: 20pt;
+    margin: 20px 15px auto 10px;
+}
+
+.pCostTotal {
+    margin: 30px auto 0;
+}
+
+.pasCost {
+    display: inline-flex;
+    float: right;
+    margin: auto 0 auto auto;
+}
+
+.wrapOptions {
+    display: inline-flex;
+    width: 100%;
+}
+
+.error {
+    color: #af1300;
+    font-weight: bold;
+}
+.headerLineFlight {
+    border-width: 3px;
+    border-style: groove;
+}
+.headerLineTicket{
+
+}
+.tableBucketField{
+    width: 100px;
+    text-align: center;
 }
 
 .cost {
@@ -238,28 +309,4 @@ p.passengerNum{
 .place {
     font-weight: bold;
     margin: 0 20px 0 0;
-}
-.costTotal{
-    font-weight: bold;
-    font-size: 20pt;
-    margin: 20px 15px auto 10px;
-}
-
-.pCostTotal{
-    margin: 30px auto 0;
-}
-
-.pasCost{
-    display: inline-flex;
-    float: right;
-    margin: auto 0 auto auto;
-}
-
-.wrapOptions{
-    display: inline-flex;
-    width: 100%;
-}
-.error{
-    color: #af1300;
-    font-weight:bold;
 }

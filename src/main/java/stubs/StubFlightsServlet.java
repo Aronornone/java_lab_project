@@ -18,15 +18,15 @@ import java.util.ResourceBundle;
 public class StubFlightsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
+        httpSession.setAttribute("lastServletPath",request.getServletPath());
 
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
 
 
-
-
         // Получаем путь до папки для логов
         String pathForLog=getServletContext().getRealPath("/");
+        System.out.println(pathForLog);
         // Устанавливаем динамические значения для log4j.properties
         System.setProperty("pathReg",pathForLog+"reg.log");
         System.setProperty("pathServ",pathForLog+"serv.log");
@@ -47,18 +47,16 @@ public class StubFlightsServlet extends HttpServlet {
 //        log.info("DB started");
 
 
-
-
-
-
-
-        httpSession.setAttribute("currentLocale", Locale.getDefault());
-        getServletContext().setAttribute("errors", ResourceBundle.
-                getBundle("ErrorsBundle", Locale.getDefault()));
+        if (httpSession.getAttribute("currentLocale") == null) {
+            httpSession.setAttribute("currentLocale", Locale.getDefault());
+            getServletContext().setAttribute("errors", ResourceBundle.
+                    getBundle("ErrorsBundle", Locale.getDefault()));
+        }
 
         List<Airport> airports = StubUtils.getAirports();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
+
 
         request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
     }

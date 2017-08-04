@@ -11,7 +11,7 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/regPage")
 public class StubRegPageServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getSession().setAttribute("lastServletPath",request.getServletPath());
         request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
 
     }

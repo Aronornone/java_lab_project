@@ -17,7 +17,7 @@ public class FlightService implements FlightDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
-            "  departure_airport_id, d.code, d.city, d.airport_name, d.latitude, d.latitude, " +
+            "  departure_airport_id, d.code, d.city, d.airport_name, d.latitude, d.longitude, " +
                     "arrival_airport_id, a.code, a.city, a.airport_name, a.latitude, a.longitude, " +
             "  base_cost, available_places_econom, available_places_business, flight_datetime " +
             "FROM Flight f\n" +
@@ -47,10 +47,8 @@ public class FlightService implements FlightDAO {
 
             try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
                 if (generetedKeys.next()) {
-                    flight.setFlightId(generetedKeys.getInt(1));
+                    flight.setFlightId(generetedKeys.getLong(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,37 +59,12 @@ public class FlightService implements FlightDAO {
 
     @Override
     @SneakyThrows
-    public Optional<Flight> get(int id) {
+    public Optional<Flight> get(long id) {
         String sql = SELECT_ALL + "WHERE f.id = ?\n" + ORDER_BY_DATETIME_AND_BASECOST;
 
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            Flight flight = null;
-            while (rs.next()) {
-                flight = createNewFlight(rs);
-            }
-
-            return Optional.ofNullable(flight);
-        }
-    }
-
-    @Override
-    @SneakyThrows
-    public Optional<Flight> get(Airport departureCity, Airport arrivalCity, LocalDateTime dateTime, int availablePlaces, boolean business) {
-        String sql = SELECT_ALL + " WHERE d.city = ?, a.city = ?, flight_datetime = ?, ";
-        if (business) sql += "available_places_business - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
-        else          sql += "available_places_econom - ? >= 0" + ORDER_BY_DATETIME_AND_BASECOST;
-
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString    (1, departureCity.getCity());
-            ps.setString    (2, arrivalCity.getCity());
-            ps.setInt       (3, availablePlaces);
-            ps.setTimestamp (3, Timestamp.valueOf(dateTime));
+            ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
 
@@ -164,26 +137,26 @@ public class FlightService implements FlightDAO {
                 rs.getLong("id"),
                 new Airplane(
                         rs.getLong  ("airplane_id"),
-                        rs.getString("name"),
-                        rs.getInt   ("capacity_econom"),
-                        rs.getInt   ("capacity_business")
+                        rs.getString("p.name"),
+                        rs.getInt   ("p.capacity_econom"),
+                        rs.getInt   ("p.capacity_business")
                 ),
                 rs.getString("flight_number"),
                 new Airport(
                         rs.getLong  ("departure_airport_id"),
-                        rs.getString("code"),
-                        rs.getString("city"),
-                        rs.getString("airport_name"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude")
+                        rs.getString("d.code"),
+                        rs.getString("d.city"),
+                        rs.getString("d.airport_name"),
+                        rs.getDouble("d.latitude"),
+                        rs.getDouble("d.longitude")
                 ),
                 new Airport(
                         rs.getLong  ("arrival_airport_id"),
-                        rs.getString("code"),
-                        rs.getString("city"),
-                        rs.getString("airport_name"),
-                        rs.getDouble("latitude"),
-                        rs.getDouble("longitude")
+                        rs.getString("a.code"),
+                        rs.getString("a.city"),
+                        rs.getString("a.airport_name"),
+                        rs.getDouble("a.latitude"),
+                        rs.getDouble("a.longitude")
                 ),
                 rs.getDouble    ("base_cost"),
                 rs.getInt       ("available_places_econom"),

@@ -4,10 +4,7 @@ import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 //Заглушка для страницы логаута
@@ -17,7 +14,13 @@ public class StubLogoutServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         SessionUtils.invalidateSession(httpSession);
 
-        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies) {
+            if(cookie.getName().equals("userId"))
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+        }
+        response.sendRedirect("/");
 
     }
 

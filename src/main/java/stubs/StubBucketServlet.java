@@ -1,6 +1,5 @@
 package stubs;
 
-import db.service.FlightService;
 import db.service.InvoiceService;
 import db.service.TicketService;
 import pojo.Flight;
@@ -28,34 +27,42 @@ public class StubBucketServlet extends HttpServlet {
 
         InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
-        FlightService flightService = new FlightService();
 
-        //TODO: сделать запрос Invoice для текущего юзера в состоянии Created
-        //get only invoice in status Created
+        httpSession.setAttribute("lastServletPath",request.getServletPath());
+
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            //Для этого заказа найти все билеты, вытащить из них рейсы и сгруппировать билеты
+            httpSession.setAttribute("invoiceView",invoice.getInvoiceId());
+            httpSession.setAttribute("invoiceId",invoice.getInvoiceId());
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+
+            if (tickets.size()==0) {
+                httpSession.setAttribute("invoiceView","noTickets");
+                request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+            }
+
             Set<Flight> flights = new HashSet<>();
-            for(Ticket ticket : tickets) {
+            for(Ticket ticket: tickets) {
                 flights.add(ticket.getFlight());
             }
 
+            Set<Ticket> ticketsForFlight = new HashSet<>();;
             for(Flight flight: flights) {
-
+                ticketsForFlight = new HashSet<>();;
+                for(Ticket ticket: tickets)
+                if(flight.getFlightId() == ticket.getFlight().getFlightId()) {
+                    ticketsForFlight.add(ticket);
+                }
+                flight.setTickets(ticketsForFlight);
             }
 
-
-            String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-
+            request.setAttribute("flights", flights);
             //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
             //boolean business = (boolean) request.getAttribute("business");
             //boolean luggage = (boolean) request.getAttribute("luggage");
-
-            request.setAttribute("flights", flights);
 
             double sumTotal = 0;
             // calc total Sum of all tickets in invoice
@@ -65,6 +72,7 @@ public class StubBucketServlet extends HttpServlet {
 
             request.setAttribute("totalSum", sumTotal);
         } else {
+            httpSession.setAttribute("invoiceView","noTickets");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);

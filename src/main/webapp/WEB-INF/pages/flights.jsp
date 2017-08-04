@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><fmt:message key="flightsTitle"/> </title>
+    <title><fmt:message key="flightsTitle"/></title>
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
@@ -19,17 +19,19 @@
             <form name="form1" class="search" action="doSearch" method="get">
 
                 <div class="pdates">
-                    <p class="filter"><fmt:message key="dateFrom"/> </p>
-                    <p class="filter"><fmt:message key="dateTo"/> </p>
+                    <p class="filter"><fmt:message key="dateFrom"/></p>
+                    <p class="filter"><fmt:message key="dateTo"/></p>
                 </div>
                 <div class="fdates">
-                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}">
-                    <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}">
+                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}" required
+                           pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+                    <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}" required
+                           pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
                 </div>
 
                 <div class="pairports">
-                    <p class="filter"><fmt:message key="depAirp"/> </p>
-                    <p class="filter"><fmt:message key="arrAirp"/> </p>
+                    <p class="filter"><fmt:message key="depAirp"/></p>
+                    <p class="filter"><fmt:message key="arrAirp"/></p>
                 </div>
                 <div class="fairports">
                     <input name="selectedDeparture" pattern="[A-Z]{3}" list="DA-filter" class="checkFilter"
@@ -49,7 +51,6 @@
                         </c:forEach>
                     </datalist>
                 </div>
-
                 <div class="pnumberTickets">
                     <p class="filter"><fmt:message key="numPassengers"/>
                         <c:if test="${sessionScope.numberTicketsFilter == null}">
@@ -61,6 +62,11 @@
                                    value="${sessionScope.numberTicketsFilter}"
                                    name="numberTicketsFilter">
                         </c:if>
+                    </p>
+                    <p class="filter"><fmt:message key="busClass"/>
+                    <input class="fieldFilters" type="checkbox"
+                    <c:if test="${sessionScope.business !=null}"> checked="checked" </c:if>
+                                   value="business" name="box">
                     </p>
                 </div>
                 <p class="error">${requestScope.nothingFound}</p>
@@ -79,12 +85,12 @@
 
             <table>
                 <tr>
-                    <th><fmt:message key="tabFrom"/> </th>
-                    <th><fmt:message key="tabTo"/> </th>
-                    <th><fmt:message key="tabDateTime"/> </th>
+                    <th><fmt:message key="tabFrom"/></th>
+                    <th><fmt:message key="tabTo"/></th>
+                    <th><fmt:message key="tabDateTime"/></th>
                     <th><fmt:message key="tabFlight"/></th>
-                    <th><fmt:message key="tabAirplane"/> </th>
-                    <th><fmt:message key="tabCost"/> </th>
+                    <th><fmt:message key="tabAirplane"/></th>
+                    <th><fmt:message key="tabCost"/></th>
                     <th></th>
                     <th></th>
                 </tr>

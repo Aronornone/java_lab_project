@@ -34,11 +34,13 @@ public class StubDoSearchServlet extends HttpServlet {
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
         //получаем установленные фильтры
+
         String dateFromString = request.getParameter("dateFrom");
         String dateToString = request.getParameter("dateTo");
         String departure = request.getParameter("selectedDeparture");
         String arrival = request.getParameter("selectedArrival");
         String numberTicketsFilterString = request.getParameter("numberTicketsFilter");
+        String[] checkbox = request.getParameterValues("box");
 
         //Сохраняем фильтры для следующих запросов в рамках этой же сессии
         httpSession.setAttribute("numberTicketsFilter", numberTicketsFilterString);
@@ -46,6 +48,13 @@ public class StubDoSearchServlet extends HttpServlet {
         httpSession.setAttribute("dateTo", dateToString);
         httpSession.setAttribute("departureF", departure);
         httpSession.setAttribute("arrivalF", arrival);
+        httpSession.setAttribute("business", checkbox);
+
+        boolean business = false;
+        if (checkbox != null) {
+            if (checkbox[0].equals("business"))
+                business = true;
+        }
 
         //проверяем фильтры перед парсингом
         if ((dateFromString.isEmpty()) ||
@@ -62,17 +71,23 @@ public class StubDoSearchServlet extends HttpServlet {
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
 
             //TODO: Добавить в логгер информацию о поиске
-            System.out.println("Searching for flight:" + dateFrom + " " + dateTo + " " + departure + " " + arrival + " " + numberTicketsFilter);
+            System.out.println("Searching for flight:" + dateFrom + " " + dateTo
+                    + " " + departure + " " + arrival + " " + numberTicketsFilter
+                    + checkbox);
+
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             List<Flight> foundFlights = new ArrayList<>();
             for (Flight flight : flights) {
-                if ((flight.getArrivalAirport().getCode().equals(arrival)) && (flight.getDepartureAirport().getCode().equals(departure)) &&
+                if ((flight.getArrivalAirport().getCode().equals(arrival)) &&
+                        (flight.getDepartureAirport().getCode().equals(departure)) &&
                         ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTicketsFilter) &&
-                        ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) && flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
+                        ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) &&
+                                flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
                     foundFlights.add(flight);
                 }
             }
+            System.out.println("foundFlights:" + foundFlights);
 
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {

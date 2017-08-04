@@ -2,19 +2,18 @@ package pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.BitSet;
+import utils.OurBitSet;
 
 @Data
 @AllArgsConstructor
 public class FlightPlace {
     private long flightPlacesId;
-    private Flight flightId;
-    private BitSet bitPlacesEconom;
-    private BitSet bitPlacesBusiness;
+    private Flight flight;
+    private OurBitSet bitPlacesEconom;
+    private OurBitSet bitPlacesBusiness;
 
-    public FlightPlace(Flight flightId, BitSet bitPlacesEconom, BitSet bitPlacesBusiness) {
-        this.flightId = flightId;
+    public FlightPlace(Flight flight, OurBitSet bitPlacesEconom, OurBitSet bitPlacesBusiness) {
+        this.flight = flight;
         this.bitPlacesEconom = bitPlacesEconom;
         this.bitPlacesBusiness = bitPlacesBusiness;
     }

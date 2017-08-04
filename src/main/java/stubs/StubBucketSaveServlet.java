@@ -22,7 +22,7 @@ public class StubBucketSaveServlet extends HttpServlet {
 
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         //int ticketsNumber = StubUtils.getNumberOfTicketsInInvoice(user);
-
+        request.setCharacterEncoding("UTF-8");
         String[] ticketsIds = request.getParameterValues("ticketId");
         String[] passengerNames = request.getParameterValues("passengerName");
         String[] passports = request.getParameterValues("passport");
@@ -33,12 +33,9 @@ public class StubBucketSaveServlet extends HttpServlet {
 
         if (StubUtils.checkEmptyAndSaveForPay(ticketsIds, passengerNames, passports)) {
             request.setAttribute("setFields", err.getString("setFields"));
-            request.setAttribute("changesSaved", err.getString("changesSaved"));
-            request.getRequestDispatcher("/bucket").forward(request, response);
-        } else {
-            request.setAttribute("changesSaved", err.getString("changesSaved"));
         }
 
+        request.setAttribute("changesSaved", err.getString("changesSaved"));
         request.getRequestDispatcher("/bucket").forward(request, response);
     }
 

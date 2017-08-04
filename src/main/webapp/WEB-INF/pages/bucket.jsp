@@ -81,7 +81,7 @@
                         </div>
                     </form>
                 </div>
-                <c:if test="${sessionScope.invoiceView != 'noTickets'}">
+                <%--<c:if test="${sessionScope.invoiceView != 'noTickets'}">--%>
                     <p class="error">${setFields}</p>
                     <p class="error">${changesSaved}</p>
                     <div class="butPay">
@@ -96,7 +96,7 @@
                                    form="payInvoice"/>
                         </form>
                     </div>
-                </c:if>
+                <%--</c:if>--%>
             </div>
         </div>
     </div>

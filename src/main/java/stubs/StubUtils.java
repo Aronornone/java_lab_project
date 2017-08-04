@@ -3,6 +3,7 @@ package stubs;
 import db.DataSource;
 import db.service.*;
 import pojo.*;
+import utils.FlightHelper;
 import utils.OurBitSet;
 import utils.RandomGenerator;
 
@@ -236,4 +237,69 @@ public class StubUtils {
         else empty=true;
         return empty;
     }
+
+    public static String generateButtons(int i) {
+        int FLIGHTS_PER_PAGE=2;
+        int pages=2;
+        StringBuilder sb=new StringBuilder();
+        while (i-2>=0){
+            sb.append(generateOneButton(pages++)).append(" ");
+            i-=2;
+        }
+        return sb.toString();
+
+    }
+
+    public static String generateOneButton(int number){
+        StringBuilder sb=new StringBuilder();
+        sb.append("<a href=\"/\"").append(number).append("\\\">").append(number).append("</a>");
+        return sb.toString();
+
+    }
+    public static int getAmountFlights(String arrival, String departure){
+        Connection con=DataSource.getConnection();
+        int i=0;
+        try{
+            String sql= "SELECT COUNT(*) AS tt FROM flight " +
+                    "WHERE " +
+                    "arrival_airport_id=(SELECT id FROM airport WHERE airport_name='"+arrival+"') " +
+                    "AND " +
+                    "departure_airport_id=(SELECT id FROM airport WHERE airport_name='"+departure+"')";
+            PreparedStatement ps=con.prepareStatement(sql);
+            ResultSet rs =ps.executeQuery();
+            rs.next();
+            i=rs.getInt("tt");
+            rs.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
+    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int avalibleSeats, boolean business, int numberOfPage){
+        Connection con = DataSource.getConnection();
+        int FLIGHTS_PER_PAGE=2;
+        List<FlightHelper> flights = new ArrayList<>();
+        try{
+            String sql="SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'"+dateFrom+"'  AND flight_datetime<'"+dateTo+"' AND departure_airport_id="+departure+" AND arrival_airport_id="+arrival+") AS tt ORDER BY flight_datetime LIMIT "
+                    +(numberOfPage-1)*FLIGHTS_PER_PAGE+","+numberOfPage*FLIGHTS_PER_PAGE;
+            PreparedStatement ps=con.prepareStatement(sql);
+            ResultSet result =ps.executeQuery();
+
+
+            while (result.next()) {
+                flights.add(new FlightHelper(result.getLong("id"),
+                        result.getDouble("base_cost"), result.getString("flight_number"),departure, arrival,  result.getTimestamp("flight_datetime").toLocalDateTime()));
+
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flights;
+    }
+
+
 }

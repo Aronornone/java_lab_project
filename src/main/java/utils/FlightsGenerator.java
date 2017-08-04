@@ -19,7 +19,13 @@ public class FlightsGenerator {
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
-        fillFlightsTable(100); //put number of flights you want to insert into table
+//        fillFlightsTable(2000); //put number of flights you want to insert into table
+        fillFlightsTable(50,1,2);
+        fillFlightsTable(50,1,3);
+        fillFlightsTable(50,2,3);
+        fillFlightsTable(50,2,1);
+        fillFlightsTable(50,3,2);
+        fillFlightsTable(50,3,1);
     }
 
     @SneakyThrows
@@ -30,10 +36,29 @@ public class FlightsGenerator {
         System.out.println("Done");
     }
 
+    @SneakyThrows
+    private static void fillFlightsTable(int number,int depId,int arrId) {
+        String query = "INSERT INTO flight (airplane_id,flight_number,departure_airport_id,arrival_airport_id, base_cost,available_places_econom,available_places_business,flight_datetime) VALUES " + createValues(number,depId,arrId);
+        Statement statement = getConnection().createStatement();
+        statement.executeUpdate(query);
+        System.out.println("Done");
+    }
+
+
     private static String createValues(int number) {
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < number; j++) {
             sb.append(getRandomFlight()).append(',');
+//            System.out.println("Processed "+(j+1));
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    private static String createValues(int number, int depId, int arrId) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < number; j++) {
+            sb.append(getRandomFlight(depId, arrId)).append(',');
 //            System.out.println("Processed "+(j+1));
         }
         sb.deleteCharAt(sb.length() - 1);
@@ -61,6 +86,26 @@ public class FlightsGenerator {
         return String.format(result, params.toArray());
     }
 
+    @SneakyThrows
+    private static String getRandomFlight(int depId, int arrId) {
+        int airplaneId = createNumber(1, as.getAll().size());
+//        int depAirportId = createNumber(1, 20);
+        //int depAirportId = createNumber(1, aps.getAll().size());
+//        int arrAirportId = createNumber(1, 20);
+        //int arrAirportId = createNumber(1, aps.getAll().size());
+        String result = "(%d,'%s',%d ,%d, %d, %d ,%d ,'%s')";
+        List params = new ArrayList();
+        params.add(airplaneId);
+        params.add(createRandomSequence(3) + "-" + createNumber(2));
+        params.add(depId);
+        params.add(arrId);
+        params.add(countBaseCost(getDistance(arrId, depId)));
+        params.add(as.get(airplaneId).get().getCapacityEconom());
+        params.add(as.get(airplaneId).get().getCapacityBusiness());
+        params.add(createRandomDateTime("01/08/2017", "01/09/2017"));
+        return String.format(result, params.toArray());
+    }
+
     private static double getDistance(int departureAirportId, int arrivalAirportId) {
         double lat1 = aps.get(departureAirportId).get().getLatitude();
         double lon1 = aps.get(departureAirportId).get().getLongitude();
@@ -70,8 +115,8 @@ public class FlightsGenerator {
     }
 
     private static int countBaseCost(double distance) {
-        int basePrice=(int)(2.4*distance+500);
-        return basePrice ;
+        int basePrice = (int) (2.4 * distance + 500);
+        return basePrice;
     }
 
     static class DistanceCounter {

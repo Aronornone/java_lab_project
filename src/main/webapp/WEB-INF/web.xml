@@ -24,9 +24,4 @@
         <param-name>dbUserPwd</param-name>
         <param-value>mysql_pwd</param-value>
     </context-param>
-
-    <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.request.charset</param-name>
-        <param-value>UTF-8</param-value>
-    </context-param>
 </web-app>

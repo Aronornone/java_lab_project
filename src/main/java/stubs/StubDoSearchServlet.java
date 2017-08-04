@@ -4,6 +4,8 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 import pojo.User;
+import utils.FlightHelper;
+import utils.PriceRecounter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,9 +29,8 @@ public class StubDoSearchServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
-        List<Airplane> airplanes = StubUtils.getAirplanes();
+
         List<Airport> airports = StubUtils.getAirports();
-        List<Flight> flights = StubUtils.getFlights(airports, airplanes);
 
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
@@ -50,6 +51,7 @@ public class StubDoSearchServlet extends HttpServlet {
         httpSession.setAttribute("arrivalF", arrival);
         httpSession.setAttribute("business", checkbox);
 
+
         boolean business = false;
         if (checkbox != null) {
             if (checkbox[0].equals("business"))
@@ -69,6 +71,16 @@ public class StubDoSearchServlet extends HttpServlet {
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
+            Airport dep=new Airport();
+            Airport arr=new Airport();
+            for ( Airport a:airports) {
+                if( a.getCode().equals(departure)){
+                    dep=a;
+                } else if( a.getCode().equals(arrival)){
+                    arr=a;
+                }
+            }
+
 
             //TODO: Добавить в логгер информацию о поиске
             System.out.println("Searching for flight:" + dateFrom + " " + dateTo
@@ -77,16 +89,14 @@ public class StubDoSearchServlet extends HttpServlet {
 
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
-            List<Flight> foundFlights = new ArrayList<>();
-            for (Flight flight : flights) {
-                if ((flight.getArrivalAirport().getCode().equals(arrival)) &&
-                        (flight.getDepartureAirport().getCode().equals(departure)) &&
-                        ((flight.getAvailablePlacesEconom() + flight.getAvailablePlacesBusiness()) >= numberTicketsFilter) &&
-                        ((flight.getDateTime().isAfter(dateFrom.atStartOfDay())) &&
-                                flight.getDateTime().isBefore(dateToPlusDay.atStartOfDay()))) {
-                    foundFlights.add(flight);
-                }
+            List<FlightHelper> foundFlights=StubUtils.getFlights(dep.getAirportId(),arr.getAirportId(),dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, 1);
+            for ( FlightHelper f: foundFlights) {
+                f.setArrivalAir(arr);
+                f.setDepartureAir(dep);
+                f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(),f.getDateTime(),business));
+
             }
+
 
             //если список рейсов пустой, предупреждаем
             if (foundFlights.isEmpty()) {

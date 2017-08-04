@@ -290,7 +290,7 @@ public class StubUtils {
      */
     public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
         Connection con = DataSource.getConnection();
-        int FLIGHTS_PER_PAGE = 2;
+        int FLIGHTS_PER_PAGE = 10;
         List<FlightHelper> flights = new ArrayList<>();
         try {
             String checkSeats = "";

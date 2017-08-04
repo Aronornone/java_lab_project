@@ -239,9 +239,14 @@ p.filter {
     margin: 13px 0 13px 0;
     display: inline-flex;
 }
-.rightHeader{
+
+.rightHeader {
+    position: relative;
     display: flex;
+    text-align: center;
     margin-left: auto;
+    /*margin-top: auto;*/
+    align-items: center;
 }
 
 .pairports, .pdates, .fairports, .fdates, .pnumberTickets {
@@ -262,8 +267,6 @@ p.passengerNum {
     font-size: 13pt;
     margin: 5px 0 5px 0;
 }
-
-
 
 .costTotal {
     font-weight: bold;
@@ -290,14 +293,17 @@ p.passengerNum {
     color: #af1300;
     font-weight: bold;
 }
+
 .headerLineFlight {
     border-width: 3px;
     border-style: groove;
 }
-.headerLineTicket{
+
+.headerLineTicket {
 
 }
-.tableBucketField{
+
+.tableBucketField {
     width: 100px;
     text-align: center;
 }
@@ -309,4 +315,50 @@ p.passengerNum {
 .place {
     font-weight: bold;
     margin: 0 20px 0 0;
+}
+
+.goBackBut {
+    font-size: 10pt;
+    background-color: #0017af;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    float: right;
+    clear: both;
+    margin: 10px 0 10px 10px;
+}
+
+#usernameIn {
+    color: red;
+    text-decoration: underline;
+    cursor: pointer;
+}
+#usernameOut{
+    color: red;
+    text-decoration: underline;
+    cursor: pointer;
+}
+#toggleIn {
+    display: block;
+}
+#toggleOut {
+    /*so that panel will show up under username*/
+    display: block;
+}
+#panIn {
+    position: absolute;
+    width: 90px;
+    top: 43px;
+    text-align: center;
+    display: none;
+    background-color: lightyellow;
+    border: 5px groove;
+}
+#panOut {
+    position: absolute;
+    width: 90px;
+    top: 43px;
+    display: none;
+    background-color: lightyellow;
+    border: 5px groove;
 }

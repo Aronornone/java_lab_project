@@ -277,25 +277,43 @@ public class StubUtils {
         return i;
     }
 
-    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int avalibleSeats, boolean business, int numberOfPage){
+    /**
+     *
+     * @param departure id departured airport
+     * @param arrival id arrival airport
+     * @param dateFrom date to departure
+     * @param dateTo date till departure need to be done
+     * @param requiredSeats
+     * @param business
+     * @param numberOfPage
+     * @return
+     */
+    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
         Connection con = DataSource.getConnection();
-        int FLIGHTS_PER_PAGE=2;
+        int FLIGHTS_PER_PAGE = 2;
         List<FlightHelper> flights = new ArrayList<>();
-        try{
-            String sql="SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'"+dateFrom+"'  AND flight_datetime<'"+dateTo+"' AND departure_airport_id="+departure+" AND arrival_airport_id="+arrival+") AS tt ORDER BY flight_datetime LIMIT "
-                    +(numberOfPage-1)*FLIGHTS_PER_PAGE+","+numberOfPage*FLIGHTS_PER_PAGE;
-            PreparedStatement ps=con.prepareStatement(sql);
-            ResultSet result =ps.executeQuery();
+        try {
+            String checkSeats = "";
+            if (business) {
+                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+            } else {
+                if (business) {
+                    checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+                }
+            }
+            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'" + dateFrom + "'  AND flight_datetime<'" + dateTo + "' AND departure_airport_id=" + departure + " AND arrival_airport_id=" + arrival + checkSeats + ") AS tt ORDER BY flight_datetime LIMIT "
+                    + (numberOfPage - 1) * FLIGHTS_PER_PAGE + "," + numberOfPage * FLIGHTS_PER_PAGE;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet result = ps.executeQuery();
 
 
             while (result.next()) {
                 flights.add(new FlightHelper(result.getLong("id"),
-                        result.getDouble("base_cost"), result.getString("flight_number"),departure, arrival,  result.getTimestamp("flight_datetime").toLocalDateTime()));
+                        result.getDouble("base_cost"), result.getString("flight_number"), departure, arrival, result.getTimestamp("flight_datetime").toLocalDateTime()));
 
             }
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return flights;

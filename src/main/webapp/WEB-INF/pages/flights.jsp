@@ -89,7 +89,6 @@
                     <th><fmt:message key="tabTo"/></th>
                     <th><fmt:message key="tabDateTime"/></th>
                     <th><fmt:message key="tabFlight"/></th>
-                    <th><fmt:message key="tabAirplane"/></th>
                     <th><fmt:message key="tabCost"/></th>
                     <th></th>
                     <th></th>
@@ -98,11 +97,10 @@
                 <c:forEach items="${flights}" var="flight">
                     <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
                         <tr>
-                            <td>${flight.departureAirport.code} (${flight.departureAirport.city})</td>
-                            <td>${flight.arrivalAirport.code} (${flight.arrivalAirport.city})</td>
+                            <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
+                            <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
                             <td>${flight.dateTime}</td>
                             <td>${flight.flightNumber}</td>
-                            <td>${flight.airplane.name}</td>
                             <td>${flight.baseCost}</td>
                             <td>
                                 <input id="num" class="fieldFilters" type="number" min="1"
@@ -118,7 +116,15 @@
                     </form>
                 </c:forEach>
 
+
             </table>
+            <div>
+                ${button}
+            </div>
+            <div>
+                ${button1}
+            </div>
+
         </div>
 
     </div>

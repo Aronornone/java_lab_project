@@ -24,6 +24,7 @@ public class StubBucketServlet extends HttpServlet {
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
+        request.setCharacterEncoding("UTF-8");
 
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -61,9 +62,6 @@ public class StubBucketServlet extends HttpServlet {
             }
 
             request.setAttribute("flights", flights);
-            //Logic for calc ticket price with parameters of checkboxes, make it onclick action and jquery
-            //boolean business = (boolean) request.getAttribute("business");
-            //boolean luggage = (boolean) request.getAttribute("luggage");
 
             double sumTotal = 0;
             // calc total Sum of all tickets in invoice

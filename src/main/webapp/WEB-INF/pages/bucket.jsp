@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page pageEncoding="UTF-8"%>
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
 <fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>

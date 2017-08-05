@@ -105,6 +105,7 @@ a:active {
 .buttonBucket {
     font-size: 12pt;
     background-color: #4CAF30;
+    text-decoration: underline;
     border: none;
     color: white;
     padding: 7px 14px;
@@ -178,6 +179,12 @@ a.buttonDelete {
 
 .buttonBuy {
     float: right;
+}
+
+.menuButton {
+    color: white;
+    background-color: #d56e00 !important;
+    margin: 0px 0px 0px 10px !important;
 }
 
 .header {
@@ -461,11 +468,6 @@ button.invoiceToggle {
     padding: 7px 0px;
 }
 
-.menuButton {
-    color: white;
-    background-color: #d56e00 !important;
-    margin: 0px 0px 0px 10px !important;
-}
 
 .menu ul {
     position: absolute;

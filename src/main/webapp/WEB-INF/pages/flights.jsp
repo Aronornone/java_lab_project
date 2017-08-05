@@ -72,6 +72,7 @@
                 <p class="error">${requestScope.nothingFound}</p>
                 <p class="error">${requestScope.setFilters}</p>
                 <p class="error">${requestScope.notEnoughPlaces}</p>
+                <p class="error">${ticketsAdd}</p>
                 <div class="psearchBut">
                     <p>
                         <input class="buttonSearch" type="submit" value="<fmt:message key="searchButton"/>"/>
@@ -111,7 +112,7 @@
                             </td>
                             <td>
                                 <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
-                                <p class="error">${sessionScope.ticketsAdd}</p>
+
                             </td>
                         </tr>
                     </form>

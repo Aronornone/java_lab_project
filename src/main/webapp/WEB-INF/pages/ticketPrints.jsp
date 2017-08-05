@@ -17,7 +17,7 @@
             $('.ticketInfo').hide();
             $(".invoiceToggle").click(function () {
                 $('.ticketInfo').hide();
-                $(this).nextAll('.ticketInfo').toggle("slow");
+                $(this).nextAll('.ticketInfo').toggle("fast");
             });
         });
     </script>
@@ -38,7 +38,7 @@
 
                     <c:forEach items="${invoice.tickets}" var="ticket">
                         <div class="ticketInfo">
-                            <p><fmt:message key="ticket"/> №${ticket.ticketId}</p>
+                            <p><u></u><fmt:message key="ticket"/> <b>№${ticket.ticketId}</b></p></u>
                             <div class="printTickets">
                                 <div class="firstBlock">
                                     <p><fmt:message key="tabFlight"/> <b>${ticket.flight.flightNumber}</b>
@@ -51,8 +51,14 @@
                                     <p><fmt:message key="name"/> <b>${ticket.passengerName}</b>
                                     <fmt:message key="passport"/> <b>${ticket.passport}</b></p>
                                     <p><fmt:message key="place"/> <b>${ticket.sittingPlace}</b>
-                                    <fmt:message key="lugg"/> <b>${ticket.luggage}</b>
-                                    <fmt:message key="busClass"/> <b>${ticket.businessClass}</b>
+                                    <fmt:message key="lugg"/> <b>
+                                            <c:if test="${ticket.luggage==true}"><fmt:message key="yes"/></c:if>
+                                            <c:if test="${ticket.luggage==false}"><fmt:message key="no"/></c:if>
+                                        </b>
+                                    <fmt:message key="busClass"/> <b>
+                                            <c:if test="${ticket.businessClass==true}"><fmt:message key="yes"/></c:if>
+                                            <c:if test="${ticket.businessClass==false}"><fmt:message key="no"/></c:if>
+                                        </b>
                                     <fmt:message key="price"/> <b>${ticket.price}</b></p>
                                 </div>
                             </div>

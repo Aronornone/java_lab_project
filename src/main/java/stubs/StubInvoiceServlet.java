@@ -101,14 +101,14 @@ public class StubInvoiceServlet extends HttpServlet {
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
-                int sittingPlace = StubUtils.getRandomSittingPlace(flight.getFlightId(), false);
+                int sittingPlace = StubUtils.getRandomSittingPlace(flight.getFlightId(), business);
                 if (sittingPlace == 0) {
                     request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
                 } else {
                     //new Ticket to DB
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
-                            false, false, flight.getBaseCost());
+                            false, business, flight.getBaseCost());
                     ts.create(ticket);
                 }
             }

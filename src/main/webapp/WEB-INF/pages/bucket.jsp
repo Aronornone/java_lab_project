@@ -14,9 +14,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('.passenger').hide();
+            //$('.passenger').hide();
             $(".flightInfo").click(function () {
-                $('.passenger').hide();
+                //$('.passenger').hide();
                 $(this).nextAll('.passenger').toggle("slow");
             });
         });
@@ -26,9 +26,9 @@
 <body>
 <div class="body">
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
-    <p class="error"> ${cartEmpty}</p>
     <div class="wrapper">
         <div class="bucket">
+            <p class="error"> ${cartEmpty}</p>
             <div class="bucketTable">
                 <div class="flightList">
                     <form id="payInvoice" name="payInvoice" action="ticketPay" method="post">
@@ -56,6 +56,7 @@
                                                     <th><fmt:message key="lugg"/></th>
                                                     <th><fmt:message key="place"/></th>
                                                     <th><fmt:message key="price"/></th>
+                                                    <th><fmt:message key="busClass"/></th>
                                                     <th class="tableButDel"></th>
                                                 </tr>
                                                 <tr>
@@ -78,6 +79,10 @@
                                                         <div class="tableBucketField">${ticket.price}</div>
                                                     </td>
                                                     <td>
+                                                        <c:if test="${ticket.businessClass==true}" ><fmt:message key="yes"/></c:if>
+                                                        <c:if test="${ticket.businessClass==false}" ><fmt:message key="no"/></c:if>
+                                                    </td>
+                                                    <td>
                                                         <div>
                                                             <input type="hidden" name="ticketId"
                                                                    value="${ticket.ticketId}">
@@ -87,23 +92,22 @@
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <hr class="headerLineTicket">
                                         </div>
                                     </c:forEach>
                                 </div>
                             </c:forEach>
                         </div>
-                        <%--<c:if test="${sessionScope.invoiceView != 'noTickets'}">--%>
-                        <p class="error">${setFields}</p>
-                        <p class="error">${changesSaved}</p>
-                        <div class="butPay">
-                            <div class="pCostTotal"><fmt:message key="total"/> :</div>
-                            <div class="costTotal">${totalSum}</div>
+                        <c:if test="${ticketsInBucket != null && ticketsInBucket != 0}">
+                            <p class="error">${setFields}</p>
+                            <p class="error">${changesSaved}</p>
+                            <div class="butPay">
+                                <div class="pCostTotal"><fmt:message key="total"/> :</div>
+                                <div class="costTotal">${totalSum}</div>
 
-                            <input class="buttonBucketPay" type="submit" value="<fmt:message key="pay"/> "
-                                   form="payInvoice"/>
-                        </div>
-                        <%--</c:if>--%>
+                                <input class="buttonBucketPay" type="submit" value="<fmt:message key="pay"/> "
+                                       form="payInvoice"/>
+                            </div>
+                        </c:if>
                     </form>
                 </div>
             </div>

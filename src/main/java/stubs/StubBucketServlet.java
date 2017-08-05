@@ -38,12 +38,10 @@ public class StubBucketServlet extends HttpServlet {
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            httpSession.setAttribute("invoiceView",invoice.getInvoiceId());
             httpSession.setAttribute("invoiceId",invoice.getInvoiceId());
             List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
 
             if (tickets.size()==0) {
-                httpSession.setAttribute("invoiceView","noTickets");
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             }
 
@@ -52,7 +50,7 @@ public class StubBucketServlet extends HttpServlet {
                 flights.add(ticket.getFlight());
             }
 
-           LinkedHashSet<Ticket> ticketsForFlight;
+            LinkedHashSet<Ticket> ticketsForFlight;
             for(Flight flight: flights) {
                 ticketsForFlight = new LinkedHashSet<>();
                 for(Ticket ticket: tickets)
@@ -72,10 +70,8 @@ public class StubBucketServlet extends HttpServlet {
             for(Ticket ticket: tickets) {
                 sumTotal = sumTotal + ticket.getPrice();
             }
-
             request.setAttribute("totalSum", sumTotal);
         } else {
-            httpSession.setAttribute("invoiceView","noTickets");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);

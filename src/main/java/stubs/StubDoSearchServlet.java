@@ -1,8 +1,6 @@
 package stubs;
 
-import pojo.Airplane;
 import pojo.Airport;
-import pojo.Flight;
 import pojo.User;
 import utils.FlightHelper;
 import utils.PriceRecounter;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -81,24 +78,21 @@ public class StubDoSearchServlet extends HttpServlet {
                 }
             }
 
-
             //TODO: Добавить в логгер информацию о поиске
             System.out.println("Searching for flight:" + dateFrom + " " + dateTo
                     + " " + departure + " " + arrival + " " + numberTicketsFilter
                     + checkbox);
 
-
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
-            List<FlightHelper> foundFlights=StubUtils.getFlights(dep.getAirportId(),arr.getAirportId(),dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, 1);
+            List<FlightHelper> foundFlights=StubUtils.getFlights(dep.getAirportId(),arr.getAirportId(),
+                    dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, 1);
             for ( FlightHelper f: foundFlights) {
                 f.setArrivalAir(arr);
                 f.setDepartureAir(dep);
                 f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(),f.getDateTime(),business));
-
             }
 
-
-            //если список рейсов пустой, предупреждаем
+            //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);

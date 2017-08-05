@@ -137,7 +137,7 @@ public class InvoiceService implements InvoiceDAO {
 
     @SneakyThrows
     public List<Invoice> getAllInvoicesByUserAndStatus(long userId, Invoice.InvoiceStatus status) {
-        String sql = SELECT_ALL + "WHERE i.account_id = ? and status =? " + ORDER_BY_DATETIME;
+        String sql = SELECT_ALL + "WHERE i.account_id = ? and status =? " + ORDER_BY_DATETIME +" DESC";
         List<Invoice> invoices = new ArrayList<>();
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

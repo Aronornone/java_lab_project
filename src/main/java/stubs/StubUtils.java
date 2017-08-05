@@ -112,7 +112,7 @@ public class StubUtils {
             }
             places.set(reservedPlace);
             if (business) {
-                flight.setAvailablePlacesBusiness(flight.getAvailablePlacesEconom() - 1);
+                flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() - 1);
             } else {
                 flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() - 1);
             }
@@ -233,62 +233,59 @@ public class StubUtils {
                 ticketToUpdate.setPassport(passports[i]);
                 ts.update(ticketToUpdate);
             }
-        }
-        else empty=true;
+        } else empty = true;
         return empty;
     }
 
     public static String generateButtons(int i) {
-        int FLIGHTS_PER_PAGE=2;
-        int pages=2;
-        StringBuilder sb=new StringBuilder();
-        while (i-2>=0){
+        int FLIGHTS_PER_PAGE = 2;
+        int pages = 2;
+        StringBuilder sb = new StringBuilder();
+        while (i - 2 >= 0) {
             sb.append(generateOneButton(pages++)).append(" ");
-            i-=2;
+            i -= 2;
         }
         return sb.toString();
-
     }
 
-    public static String generateOneButton(int number){
-        StringBuilder sb=new StringBuilder();
+    public static String generateOneButton(int number) {
+        StringBuilder sb = new StringBuilder();
         sb.append("<a href=\"/\"").append(number).append("\\\">").append(number).append("</a>");
         return sb.toString();
-
     }
-    public static int getAmountFlights(String arrival, String departure){
-        Connection con=DataSource.getConnection();
-        int i=0;
-        try{
-            String sql= "SELECT COUNT(*) AS tt FROM flight " +
+
+    public static int getAmountFlights(String arrival, String departure) {
+        Connection con = DataSource.getConnection();
+        int i = 0;
+        try {
+            String sql = "SELECT COUNT(*) AS tt FROM flight " +
                     "WHERE " +
-                    "arrival_airport_id=(SELECT id FROM airport WHERE airport_name='"+arrival+"') " +
+                    "arrival_airport_id=(SELECT id FROM airport WHERE airport_name='" + arrival + "') " +
                     "AND " +
-                    "departure_airport_id=(SELECT id FROM airport WHERE airport_name='"+departure+"')";
-            PreparedStatement ps=con.prepareStatement(sql);
-            ResultSet rs =ps.executeQuery();
+                    "departure_airport_id=(SELECT id FROM airport WHERE airport_name='" + departure + "')";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             rs.next();
-            i=rs.getInt("tt");
+            i = rs.getInt("tt");
             rs.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return i;
     }
 
     /**
-     *
-     * @param departure id departured airport
-     * @param arrival id arrival airport
-     * @param dateFrom date to departure
-     * @param dateTo date till departure need to be done
+     * @param departure     id departured airport
+     * @param arrival       id arrival airport
+     * @param dateFrom      date to departure
+     * @param dateTo        date till departure need to be done
      * @param requiredSeats
      * @param business
      * @param numberOfPage
      * @return
      */
-    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
+    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo,
+                                                int requiredSeats, boolean business, int numberOfPage) {
         Connection con = DataSource.getConnection();
         int FLIGHTS_PER_PAGE = 10;
         List<FlightHelper> flights = new ArrayList<>();
@@ -297,22 +294,21 @@ public class StubUtils {
             if (business) {
                 checkSeats = " AND available_places_business>=" + requiredSeats + " ";
             } else {
-                if (business) {
-                    checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
-                }
+                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
             }
-            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'" + dateFrom + "'  AND flight_datetime<'" + dateTo + "' AND departure_airport_id=" + departure + " AND arrival_airport_id=" + arrival + checkSeats + ") AS tt ORDER BY flight_datetime LIMIT "
-                    + (numberOfPage - 1) * FLIGHTS_PER_PAGE + "," + numberOfPage * FLIGHTS_PER_PAGE;
+            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'" + dateFrom +
+                    "'  AND flight_datetime<'" + dateTo + "' AND departure_airport_id=" +
+                    departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
+                    "AS tt ORDER BY flight_datetime LIMIT "
+                    + (numberOfPage - 1) * FLIGHTS_PER_PAGE + "," +
+                    numberOfPage * FLIGHTS_PER_PAGE;
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet result = ps.executeQuery();
-
 
             while (result.next()) {
                 flights.add(new FlightHelper(result.getLong("id"),
                         result.getDouble("base_cost"), result.getString("flight_number"), departure, arrival, result.getTimestamp("flight_datetime").toLocalDateTime()));
-
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -102,7 +102,7 @@ a:active {
     margin: 10px 0 10px 10px;
 }
 
-.buttonBucket {
+.buttonBucketMenu {
     font-size: 12pt;
     background-color: #4CAF30;
     text-decoration: underline;
@@ -114,6 +114,16 @@ a:active {
     margin: 10px 0 10px 10px;
 }
 
+.buttonBucket {
+    font-size: 12pt;
+    background-color: #4CAF30;
+    border: none;
+    color: white;
+    padding: 7px 14px;
+    float: right;
+    clear: both;
+    margin: 10px 0 10px 10px;
+}
 .buttonBucketSave {
     font-size: 14pt;
     background-color: #0017af;
@@ -443,7 +453,7 @@ button.invoiceToggle {
 }
 
 .buttonMenu {
-    font-size: 10pt;
+    font-size: 11pt;
     background-color: #8BC34A;
     border: none;
     color: white;

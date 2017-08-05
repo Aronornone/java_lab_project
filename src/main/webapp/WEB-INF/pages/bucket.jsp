@@ -99,8 +99,8 @@
                             </c:forEach>
                         </div>
                         <c:if test="${ticketsInBucket != null && ticketsInBucket != 0}">
-                            <p class="error">${setFields}</p>
-                            <p class="error">${changesSaved}</p>
+                            <p class="error">${setFields} <p class="error">${changesSaved}</p>
+                            <p class="error"><fmt:message key="checkInfo"/></p>
                             <div class="butPay">
                                 <div class="pCostTotal"><fmt:message key="total"/> :</div>
                                 <div class="costTotal">${totalSum}</div>

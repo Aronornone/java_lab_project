@@ -46,11 +46,11 @@
                 <fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}!
                 <a href="bucket">
                     <c:if test="${sessionScope.ticketsInBucket != null}">
-                        <input class="buttonBucket" type="submit"
+                        <input class="buttonBucketMenu" type="submit"
                                value="<fmt:message key="cartButton"/>: ${ticketsInBucket} <fmt:message key="cartTickets"/>"/>
                     </c:if>
                     <c:if test="${sessionScope.ticketsInBucket == null}">
-                        <input class="buttonBucket" type="submit"
+                        <input class="buttonBucketMenu" type="submit"
                                value="<fmt:message key="cartButton"/>: 0 <fmt:message key="cartTickets"/>"/></c:if>
                 </a>
 

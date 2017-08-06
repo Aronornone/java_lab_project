@@ -1,8 +1,9 @@
-package stubs;
+package controller;
 
 import db.service.InvoiceService;
 import pojo.Invoice;
 import pojo.User;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -14,8 +15,8 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы оплаты
 
-@WebServlet(urlPatterns = {"/ticketPay"})
-public class StubPayedServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/invoicePay"})
+public class PayInvoiceServlet extends HttpServlet {
     private static InvoiceService is = new InvoiceService();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +38,7 @@ public class StubPayedServlet extends HttpServlet {
         httpSession.setAttribute("passengersArray", passengerNames);
         httpSession.setAttribute("passportsArray", passports);
 
-        if (StubUtils.checkEmptyAndSaveForPay(ticketsIds, passengerNames, passports)) {
+        if (ServletUtils.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports)) {
             request.setAttribute("setFields", err.getString("setFields"));
             request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);
@@ -45,7 +46,7 @@ public class StubPayedServlet extends HttpServlet {
             Invoice invoice = invoiceOptional.get();
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
             is.update(invoice);
-            int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
+            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             httpSession.setAttribute("invoiceView", null);
             request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);

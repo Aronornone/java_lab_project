@@ -1,10 +1,8 @@
 package utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import pojo.Airport;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

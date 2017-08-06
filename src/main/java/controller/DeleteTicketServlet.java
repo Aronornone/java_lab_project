@@ -1,10 +1,11 @@
-package stubs;
+package controller;
 
 import db.service.FlightService;
 import db.service.InvoiceService;
 import db.service.TicketService;
 import pojo.Ticket;
 import pojo.User;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketDelete"})
-public class StubDeleteTicketServlet extends HttpServlet {
+public class DeleteTicketServlet extends HttpServlet {
     private static FlightService fs = new FlightService();
     private static InvoiceService is = new InvoiceService();
     private static TicketService ts = new TicketService();
@@ -38,14 +39,14 @@ public class StubDeleteTicketServlet extends HttpServlet {
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
-        String ticketId = (String) request.getParameter("ticketId");
+        String ticketId = request.getParameter("ticketId");
         Optional<Ticket> ticketOptional = ts.get(Long.parseLong(ticketId));
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
             List<Ticket> tickets = new ArrayList<>();
             tickets.add(ticket);
-            StubUtils.revertSittingPlaces(tickets);
-            int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
+            ServletUtils.revertSittingPlaces(tickets);
+            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }
         String redirectBackString = "/bucket";

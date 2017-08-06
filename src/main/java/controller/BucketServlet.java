@@ -1,4 +1,4 @@
-package stubs;
+package controller;
 
 import db.service.InvoiceService;
 import db.service.TicketService;
@@ -16,7 +16,7 @@ import java.util.*;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/bucket"})
-public class StubBucketServlet extends HttpServlet {
+public class BucketServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

@@ -1,8 +1,9 @@
-package stubs;
+package controller;
 
 import org.apache.log4j.Logger;
 import pojo.Airport;
 import utils.ServletLog;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -15,7 +16,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы поиска
 @WebServlet(urlPatterns = {"", "/flights"})
-public class StubFlightsServlet extends HttpServlet {
+public class FlightsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute("lastServletPath",request.getServletPath());
@@ -53,7 +54,7 @@ public class StubFlightsServlet extends HttpServlet {
                     getBundle("ErrorsBundle", Locale.getDefault()));
         }
 
-        List<Airport> airports = StubUtils.getAirports();
+        List<Airport> airports = ServletUtils.getAirports();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
 

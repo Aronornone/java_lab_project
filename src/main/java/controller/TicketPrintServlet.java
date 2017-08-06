@@ -1,4 +1,4 @@
-package stubs;
+package controller;
 
 import db.service.InvoiceService;
 import db.service.TicketService;
@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketsPrint"})
-public class StubTicketPrintServlet extends HttpServlet {
+public class TicketPrintServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -25,6 +25,7 @@ public class StubTicketPrintServlet extends HttpServlet {
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
+        httpSession.setAttribute("lastServletPath", request.getServletPath());
 
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -33,25 +34,22 @@ public class StubTicketPrintServlet extends HttpServlet {
         InvoiceService invoiceService = new InvoiceService();
         TicketService ticketService = new TicketService();
 
-        httpSession.setAttribute("lastServletPath", request.getServletPath());
-
-        List<Invoice> invoicesForJSP = new ArrayList<>();
-        List<Invoice> allPayedInvoices=invoiceService.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
-        if(!allPayedInvoices.isEmpty()) {
+        List<Invoice> allPayedInvoices = invoiceService.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
+        List<Invoice> invoicesSortedForPrint = new ArrayList<>();
+        if (!allPayedInvoices.isEmpty()) {
             List<Ticket> ticketsForPayedInvoice;
             for (Invoice invoice : allPayedInvoices) {
                 ticketsForPayedInvoice = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
                 invoice.setTickets(ticketsForPayedInvoice);
-                invoicesForJSP.add(invoice);
+                invoicesSortedForPrint.add(invoice);
             }
-            request.setAttribute("invoices", invoicesForJSP);
-        }
-        else{
-            request.setAttribute("noPayedInvoices",err.getString("noPayedInvoices"));
+            request.setAttribute("invoices", invoicesSortedForPrint);
+        } else {
+            request.setAttribute("noPayedInvoices", err.getString("noPayedInvoices"));
         }
         request.getRequestDispatcher("/WEB-INF/pages/ticketPrints.jsp").forward(request, response);
+    }
 
-}
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }

@@ -1,4 +1,4 @@
-package stubs;
+package controller;
 
 import utils.SessionUtils;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 //Заглушка для страницы логаута
 @WebServlet(urlPatterns = "/logout")
-public class StubLogoutServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
         SessionUtils.invalidateSession(httpSession);

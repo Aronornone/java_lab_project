@@ -1,4 +1,4 @@
-package stubs;
+package controller;
 
 import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы регистрации
 @WebServlet(urlPatterns = "/doReg")
-public class StubDoRegServlet extends HttpServlet {
+public class DoRegServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 

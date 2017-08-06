@@ -1,9 +1,10 @@
-package stubs;
+package controller;
 
 import pojo.Airport;
 import pojo.User;
 import utils.FlightHelper;
 import utils.PriceRecounter;
+import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,20 +20,18 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
-public class StubDoSearchServlet extends HttpServlet {
+public class DoSearchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
-
-
-        List<Airport> airports = StubUtils.getAirports();
+        List<Airport> airports = ServletUtils.getAirports();
 
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
-        //получаем установленные фильтры
 
+        // получаем установленные фильтры
         String dateFromString = request.getParameter("dateFrom");
         String dateToString = request.getParameter("dateTo");
         String departure = request.getParameter("selectedDeparture");
@@ -47,7 +46,6 @@ public class StubDoSearchServlet extends HttpServlet {
         httpSession.setAttribute("departureF", departure);
         httpSession.setAttribute("arrivalF", arrival);
         httpSession.setAttribute("business", checkbox);
-
 
         boolean business = false;
         if (checkbox != null) {
@@ -84,7 +82,7 @@ public class StubDoSearchServlet extends HttpServlet {
                     + checkbox);
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
-            List<FlightHelper> foundFlights=StubUtils.getFlights(dep.getAirportId(),arr.getAirportId(),
+            List<FlightHelper> foundFlights= ServletUtils.getFlights(dep.getAirportId(),arr.getAirportId(),
                     dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, 1);
             for ( FlightHelper f: foundFlights) {
                 f.setArrivalAir(arr);

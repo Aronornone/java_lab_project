@@ -153,7 +153,7 @@ a:active {
 }
 
 .buttonSearch:hover, .buttonBucketPay:hover, .buttonBucketSave:hover,
-.buttonBucket:hover, .buttonLogout:hover, .buttonLogReg:hover, a.buttonDelete:hover,
+.buttonBucket:hover, .buttonBucketMenu:hover,.buttonLogout:hover, .buttonLogReg:hover, a.buttonDelete:hover,
 .goBackBut:hover, .menuButton:hover, .flightInfo, .invoiceToggle, .buttonMenu:hover, .buttonLogin:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

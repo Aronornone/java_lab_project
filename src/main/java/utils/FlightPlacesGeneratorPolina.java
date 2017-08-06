@@ -4,7 +4,6 @@ import db.service.FlightPlaceService;
 import db.service.FlightService;
 import lombok.SneakyThrows;
 import pojo.Flight;
-import stubs.StubUtils;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +31,7 @@ public class FlightPlacesGeneratorPolina {
             int placesBusiness = flight.getAirplane().getCapacityBusiness()+1;
             OurBitSet bitSetEconom = new OurBitSet(placesEconom);
             OurBitSet bitSetBusiness = new OurBitSet(placesBusiness);
-            valueBuilder.append(StubUtils.stringConversionFromBitSet(bitSetEconom)).append("\',\'").append(StubUtils.stringConversionFromBitSet(bitSetBusiness));
+            valueBuilder.append(ServletUtils.stringConversionFromBitSet(bitSetEconom)).append("\',\'").append(ServletUtils.stringConversionFromBitSet(bitSetBusiness));
             valueBuilder.append("'),");
         }
         valueBuilder.deleteCharAt(valueBuilder.length() - 1);

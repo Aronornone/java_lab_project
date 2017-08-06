@@ -1,11 +1,13 @@
 package db;
 
-import java.io.*;
+import org.apache.commons.dbcp2.BasicDataSource;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import org.apache.commons.dbcp2.BasicDataSource;
 
 public class DataSource {
     private static String DRIVER_CLASS_NAME;

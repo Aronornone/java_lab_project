@@ -7,7 +7,7 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 import pojo.FlightPlace;
-import stubs.StubUtils;
+import utils.ServletUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -102,8 +102,8 @@ public class FlightPlaceService implements FlightPlaceDAO {
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, flightPlaces.getFlight().getFlightId());
-            ps.setString(2, StubUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesEconom()));
-            ps.setString(3, StubUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesBusiness()));
+            ps.setString(2, ServletUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesEconom()));
+            ps.setString(3, ServletUtils.stringConversionFromBitSet(flightPlaces.getBitPlacesBusiness()));
             ps.setLong(4, flightPlaces.getFlightPlacesId());
 
             ps.executeUpdate();
@@ -176,8 +176,8 @@ public class FlightPlaceService implements FlightPlaceDAO {
                         rs.getInt      ("available_places_business"),
                         rs.getTimestamp("flight_datetime").toLocalDateTime()
                 ),
-                StubUtils.bitSetConversionFromString(rs.getString("places_econom")),
-                StubUtils.bitSetConversionFromString(rs.getString("places_business"))
+                ServletUtils.bitSetConversionFromString(rs.getString("places_econom")),
+                ServletUtils.bitSetConversionFromString(rs.getString("places_business"))
         );
     }
 }

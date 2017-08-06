@@ -1,22 +1,19 @@
-package stubs;
+package utils;
 
 import db.DataSource;
 import db.service.*;
 import pojo.*;
-import utils.FlightHelper;
-import utils.OurBitSet;
-import utils.RandomGenerator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
-public class StubUtils {
+public class ServletUtils {
     private static FlightPlaceService fps = new FlightPlaceService();
     private static FlightService fs = new FlightService();
     private static AirportService as = new AirportService();
@@ -29,54 +26,8 @@ public class StubUtils {
         return airports;
     }
 
-    public static List<Airplane> getAirplanes() {
-        List<Airplane> airplanes = aps.getAll();
-        return airplanes;
-    }
-
-    public static List<Flight> getFlights(List<Airport> airports, List<Airplane> airplanes) {
-
-        //TODO: change for DAO
-        Connection connection = DataSource.getConnection();
-        List<Flight> flights = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM flight";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                Long id = result.getLong("id");
-                Long airplaneId = result.getLong("airplane_id");
-                String flightNumber = result.getString("flight_number");
-                Long departureAirportId = result.getLong("departure_airport_id");
-                Long arrivalAirportId = result.getLong("arrival_airport_id");
-                Integer availableEconom = result.getInt("available_places_econom");
-                Integer availableBusiness = result.getInt("available_places_business");
-                Airport departureAirport = new Airport();
-                Airport arrivalAirport = new Airport();
-                for (Airport airport : airports) {
-                    if (departureAirportId == airport.getAirportId())
-                        departureAirport = airport;
-                    if (arrivalAirportId == airport.getAirportId())
-                        arrivalAirport = airport;
-                }
-                Airplane airplaneFlight = new Airplane();
-                for (Airplane airplane : airplanes) {
-                    if (airplaneId.equals(airplane.getAirplaneId())) {
-                        airplaneFlight = airplane;
-                    }
-                }
-                Double baseCost = result.getDouble("base_cost");
-                LocalDateTime dateTime = result.getTimestamp("flight_datetime").toLocalDateTime();
-                flights.add(new Flight(id, airplaneFlight, flightNumber, departureAirport, arrivalAirport, baseCost, availableEconom, availableBusiness, dateTime));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return flights;
-    }
-
     /**
-     * Method returns and reserved random place in airplane.
+     * Method returns and reserved random place in airplane after user has add it to cart.
      * Set bit for place with BitSet in FlightPlace and decrease available places of ticket class in Flight.
      *
      * @param flightId id of Flight to reserve.
@@ -87,30 +38,30 @@ public class StubUtils {
         FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
         Flight flight = fs.get((int) flightId).get();
 
-        OurBitSet places;
-        int available;
+        OurBitSet placesBitSet;
+        int availablePlacesInClass;
 
         if (business) {
-            places = flightPlace.getBitPlacesBusiness();
-            available = flight.getAvailablePlacesBusiness();
+            placesBitSet = flightPlace.getBitPlacesBusiness();
+            availablePlacesInClass = flight.getAvailablePlacesBusiness();
         } else {
-            places = flightPlace.getBitPlacesEconom();
-            available = flight.getAvailablePlacesEconom();
+            placesBitSet = flightPlace.getBitPlacesEconom();
+            availablePlacesInClass = flight.getAvailablePlacesEconom();
         }
 
-        int length = places.length();
+        int lengthPlacesBitSet = placesBitSet.length();
         int reservedPlace = 0;
         while (true) {
-            if (available == 0) {
-                System.out.println("Not enough places");
+            if (availablePlacesInClass == 0) {
+                //TODO: logging
+                System.out.println("Not enough placesBitSet");
                 break;
             }
-
-            reservedPlace = RandomGenerator.createNumber(1, length);
-            if (places.get(reservedPlace)) {
+            reservedPlace = RandomGenerator.createNumber(1, lengthPlacesBitSet);
+            if (placesBitSet.get(reservedPlace)) {
                 continue;
             }
-            places.set(reservedPlace);
+            placesBitSet.set(reservedPlace);
             if (business) {
                 flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() - 1);
             } else {
@@ -120,9 +71,9 @@ public class StubUtils {
             flight = fs.get((int) flightId).get();
             flightPlace = fps.getByFlightId((int) flight.getFlightId()).get();
             if (business) {
-                flightPlace.setBitPlacesBusiness(places);
+                flightPlace.setBitPlacesBusiness(placesBitSet);
             } else {
-                flightPlace.setBitPlacesEconom(places);
+                flightPlace.setBitPlacesEconom(placesBitSet);
             }
             fps.update(flightPlace);
             break;
@@ -131,29 +82,30 @@ public class StubUtils {
     }
 
     /**
-     * Method for getting number of tickets in created invoice of user
+     * Method for getting number of tickets in created invoice of user (exactly bucket)
      *
      * @param user user for whom we check number of tickets in invoice to view in bucket
      * @return
      */
     public static int getNumberOfTicketsInInvoice(User user) {
         Invoice invoice;
-        int numberOfTickets = 0;
+        int numberOfTicketsInInvoice = 0;
 
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            numberOfTickets = tickets.size();
+            numberOfTicketsInInvoice = tickets.size();
         }
-        return numberOfTickets;
+        return numberOfTicketsInInvoice;
     }
 
     /**
-     * Method to revert places to flights.
+     * Method for revert places to flights if session of user is ended and he doesn't pay for invoice.
      * If you use it for reset places in ticket from econom to business and conversely,
-     * you must first revert places, then chenge ticket class (to business\econom)
+     * you must first revert places, then change ticket class (to business\econom).
+     * After reverting tickets are deleted.
      *
-     * @param tickets List of tickets on which we must return sitting places to flight and bitsetFlightPlace
+     * @param tickets List of tickets on which we must update sitting places to flight and bitsetFlightPlace
      */
     public static void revertSittingPlaces(List<Ticket> tickets) {
         Flight flight;
@@ -161,17 +113,17 @@ public class StubUtils {
             long flightId = ticket.getFlight().getFlightId();
             FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
             flight = fs.get((int) flightId).get();
-            OurBitSet newBitSet;
+            OurBitSet newPlacesBitSet;
             if (ticket.isBusinessClass()) {
                 flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() + 1);
-                newBitSet = flightPlace.getBitPlacesBusiness();
-                newBitSet.clear(ticket.getSittingPlace());
-                flightPlace.setBitPlacesBusiness(newBitSet);
+                newPlacesBitSet = flightPlace.getBitPlacesBusiness();
+                newPlacesBitSet.clear(ticket.getSittingPlace());
+                flightPlace.setBitPlacesBusiness(newPlacesBitSet);
             } else {
                 flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() + 1);
-                newBitSet = flightPlace.getBitPlacesEconom();
-                newBitSet.clear(ticket.getSittingPlace());
-                flightPlace.setBitPlacesEconom(newBitSet);
+                newPlacesBitSet = flightPlace.getBitPlacesEconom();
+                newPlacesBitSet.clear(ticket.getSittingPlace());
+                flightPlace.setBitPlacesEconom(newPlacesBitSet);
             }
             fps.update(flightPlace);
             fs.update(flight);
@@ -201,7 +153,7 @@ public class StubUtils {
      * @param bitSet OurBitSet that contains installed bits
      * @return String with sequence of 1 and 0 bits
      */
-    public static String stringConversionFromBitSet(OurBitSet bitSet) {
+    public static String stringConversionFromBitSet(BitSet bitSet) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < bitSet.length(); i++) {
             if (bitSet.get(i)) {
@@ -211,7 +163,15 @@ public class StubUtils {
         return stringBuilder.toString();
     }
 
-    public static boolean checkEmptyAndSaveForPay(String[] ticketsIds, String[] passengerNames, String[] passports) {
+    /**
+     * Method for check if all fields of tickets in invoice are contains information. Then it saves ticket info, anyway.
+     *
+     * @param ticketsIds     array of Strings tickets ids
+     * @param passengerNames array of Strings passenger names
+     * @param passports      array of Strings passports
+     * @return true if some of fields are empty, false if all fields are fill right.
+     */
+    public static boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames, String[] passports) {
         boolean empty = false;
         if (ticketsIds != null && passengerNames != null && passports != null) {
             List<String> ticketsList = Arrays.asList(ticketsIds);
@@ -227,14 +187,25 @@ public class StubUtils {
             for (String string : passportsList) {
                 if (string.isEmpty()) empty = true;
             }
-            for (int i = 0; i < ticketsIds.length; i++) {
-                Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
-                ticketToUpdate.setPassengerName(passengerNames[i]);
-                ticketToUpdate.setPassport(passports[i]);
-                ts.update(ticketToUpdate);
-            }
+            updateTicketWhilePay(ticketsIds, passengerNames, passports);
         } else empty = true;
         return empty;
+    }
+
+    /**
+     * Method for update information of ticket based on what client set in fields
+     *
+     * @param ticketsIds     array of Strings tickets ids
+     * @param passengerNames array of Strings passenger names
+     * @param passports      array of Strings passports
+     */
+    private static void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames, String[] passports) {
+        for (int i = 0; i < ticketsIds.length; i++) {
+            Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
+            ticketToUpdate.setPassengerName(passengerNames[i]);
+            ticketToUpdate.setPassport(passports[i]);
+            ts.update(ticketToUpdate);
+        }
     }
 
     public static String generateButtons(int i) {
@@ -314,6 +285,4 @@ public class StubUtils {
         }
         return flights;
     }
-
-
 }

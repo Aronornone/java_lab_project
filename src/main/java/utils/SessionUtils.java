@@ -6,7 +6,6 @@ import db.service.UserService;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
-import stubs.StubUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ public class SessionUtils {
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            StubUtils.revertSittingPlaces(tickets);
+            ServletUtils.revertSittingPlaces(tickets);
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.CANCELLED);
             is.update(invoice);
         }

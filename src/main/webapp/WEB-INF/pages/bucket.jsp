@@ -32,7 +32,7 @@
             <p class="error"> ${cartEmpty}</p>
             <div class="bucketTable">
                 <div class="flightList">
-                    <form id="payInvoice" name="payInvoice" action="ticketPay" method="post">
+                    <form id="payInvoice" name="payInvoice" action="invoicePay" method="post">
                         <div>
                             <c:forEach items="${requestScope.flights}" var="flight">
                                 <div class="flight">

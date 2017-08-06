@@ -1,9 +1,10 @@
-package stubs;
+package controller;
 
 import db.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
+import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +16,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы логина
 @WebServlet(urlPatterns = {"/doLogin"})
-public class StubDoLoginServlet extends HttpServlet {
+public class DoLoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
@@ -50,7 +51,7 @@ public class StubDoLoginServlet extends HttpServlet {
                 cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
                 response.addCookie(cookieUserId);
 
-                List<Airport> airports = StubUtils.getAirports();
+                List<Airport> airports = ServletUtils.getAirports();
                 request.setAttribute("departures", airports);
                 request.setAttribute("arrivals", airports);
 

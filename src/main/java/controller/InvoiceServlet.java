@@ -1,4 +1,4 @@
-package stubs;
+package controller;
 
 import db.service.FlightService;
 import db.service.InvoiceService;
@@ -7,6 +7,7 @@ import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -19,7 +20,7 @@ import java.util.ResourceBundle;
 
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
-public class StubInvoiceServlet extends HttpServlet {
+public class InvoiceServlet extends HttpServlet {
     private static FlightService fs = new FlightService();
     private static InvoiceService is = new InvoiceService();
     private static TicketService ts = new TicketService();
@@ -31,7 +32,6 @@ public class StubInvoiceServlet extends HttpServlet {
         SessionUtils.checkCookie(cookies, request, httpSession);
 
         User user = (User) httpSession.getAttribute("user");
-
         String dateFromString = (String) httpSession.getAttribute("dateFrom");
         String dateToString = (String) httpSession.getAttribute("dateTo");
         String departure = (String) httpSession.getAttribute("departureF");
@@ -39,7 +39,9 @@ public class StubInvoiceServlet extends HttpServlet {
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
         String[] checkBox = (String[]) httpSession.getAttribute("business");
 
-        System.out.println("checkbox:" + checkBox);
+        if (user == null) {
+            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+        }
 
         String redirectBackString;
         if (checkBox != null) {
@@ -52,12 +54,8 @@ public class StubInvoiceServlet extends HttpServlet {
                     "&numberTicketsFilter=" + numberTicketsFilterString;
         }
 
-        if (user == null) {
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
-        int numberTicketsFlight;
         String numberTicketsFlightString = request.getParameter("numberTicketsFlight");
-        numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
+        int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
 
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
@@ -76,11 +74,32 @@ public class StubInvoiceServlet extends HttpServlet {
             }
         }
 
-        //TODO: extract to method and optimise
-        // check if we have enough places for buy
+        Invoice invoice = getInvoiceForUser(request, response, err, user, redirectBackString, numberTicketsFlight, availableForClass);
 
+        if (numberTicketsFlight != 0) {
+            for (int i = 0; i < numberTicketsFlight; i++) {
+                //request for available places and reserve of them
+                int sittingPlace = ServletUtils.getRandomSittingPlace(flight.getFlightId(), business);
+                if (sittingPlace == 0) {
+                    request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
+                    request.getRequestDispatcher(redirectBackString).forward(request, response);
+                } else {
+                    //new Ticket to DB
+                    Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
+                            false, business, flight.getBaseCost());
+                    ts.create(ticket);
+                }
+            }
+            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
+            httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
+            request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
+        }
+        response.sendRedirect(redirectBackString);
+    }
+
+    private Invoice getInvoiceForUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err, User user,
+                                      String redirectBackString, int numberTicketsFlight, int availableForClass) throws ServletException, IOException {
         Invoice invoice = null;
-
         if (numberTicketsFlight > availableForClass) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
@@ -97,26 +116,7 @@ public class StubInvoiceServlet extends HttpServlet {
             }
         }
         invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
-
-        if (numberTicketsFlight != 0) {
-            for (int i = 0; i < numberTicketsFlight; i++) {
-                //request for available places and reserve of them
-                int sittingPlace = StubUtils.getRandomSittingPlace(flight.getFlightId(), business);
-                if (sittingPlace == 0) {
-                    request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
-                    request.getRequestDispatcher(redirectBackString).forward(request, response);
-                } else {
-                    //new Ticket to DB
-                    Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
-                            false, business, flight.getBaseCost());
-                    ts.create(ticket);
-                }
-            }
-            int ticketsInBucket = StubUtils.getNumberOfTicketsInInvoice(user);
-            httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
-        }
-        response.sendRedirect(redirectBackString);
+        return invoice;
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

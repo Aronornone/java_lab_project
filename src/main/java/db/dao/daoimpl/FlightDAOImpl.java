@@ -1,19 +1,18 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.FlightDAO;
+import db.dao.DataSource;
+import db.dao.interfaces.FlightDAO;
 import lombok.SneakyThrows;
 import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightService implements FlightDAO {
+public class FlightDAOImpl implements FlightDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
@@ -28,7 +27,7 @@ public class FlightService implements FlightDAO {
 
     @Override
     @SneakyThrows
-    public long create(Flight flight) {
+    public void add(Flight flight) {
         String sql = "INSERT INTO Flight (airplane_id, flight_number, departure_airport_id, arrival_airport_id, " +
             "base_cost, available_places_econom, available_places_business, flight_datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -44,17 +43,9 @@ public class FlightService implements FlightDAO {
             ps.setTimestamp (8, Timestamp.valueOf(flight.getDateTime()));
 
             ps.executeUpdate();
-
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    flight.setFlightId(generetedKeys.getLong(1));
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return flight.getFlightId();
     }
 
     @Override
@@ -103,7 +94,7 @@ public class FlightService implements FlightDAO {
 
     @Override
     @SneakyThrows
-    public void remove(Flight flight) {
+    public void delete(Flight flight) {
         String sql = "DELETE FROM Flight WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

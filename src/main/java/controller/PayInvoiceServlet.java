@@ -1,6 +1,6 @@
 package controller;
 
-import db.service.InvoiceService;
+import db.services.servicesimpl.InvoiceServiceImpl;
 import pojo.Invoice;
 import pojo.User;
 import utils.ServletUtils;
@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
-    private static InvoiceService is = new InvoiceService();
+    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

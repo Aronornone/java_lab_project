@@ -1,7 +1,7 @@
 package controller;
 
-import db.service.InvoiceService;
-import db.service.TicketService;
+import db.services.servicesimpl.InvoiceServiceImpl;
+import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
@@ -30,15 +30,15 @@ public class TicketPrintServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
 
-        InvoiceService invoiceService = new InvoiceService();
-        TicketService ticketService = new TicketService();
+        InvoiceServiceImpl invoiceServiceImpl = new InvoiceServiceImpl();
+        TicketServiceImpl ticketServiceImpl = new TicketServiceImpl();
 
-        List<Invoice> allPayedInvoices = invoiceService.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
+        List<Invoice> allPayedInvoices = invoiceServiceImpl.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
         List<Invoice> invoicesSortedForPrint = new ArrayList<>();
         if (!allPayedInvoices.isEmpty()) {
             List<Ticket> ticketsForPayedInvoice;
             for (Invoice invoice : allPayedInvoices) {
-                ticketsForPayedInvoice = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+                ticketsForPayedInvoice = ticketServiceImpl.getTicketsByInvoice(invoice.getInvoiceId());
                 invoice.setTickets(ticketsForPayedInvoice);
                 invoicesSortedForPrint.add(invoice);
             }

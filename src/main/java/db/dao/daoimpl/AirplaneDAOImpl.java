@@ -1,7 +1,7 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.AirplaneDAO;
+import db.dao.DataSource;
+import db.dao.interfaces.AirplaneDAO;
 import lombok.SneakyThrows;
 import pojo.Airplane;
 
@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirplaneService implements AirplaneDAO {
+public class AirplaneDAOImpl implements AirplaneDAO {
     private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
 
     @Override
     @SneakyThrows
-    public long create(Airplane airplane) {
+    public void add(Airplane airplane) {
         String sql = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
@@ -28,17 +28,9 @@ public class AirplaneService implements AirplaneDAO {
             ps.setInt   (3, airplane.getCapacityBusiness());
 
             ps.executeUpdate();
-
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    airplane.setAirplaneId(generetedKeys.getLong(1));
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return airplane.getAirplaneId();
     }
 
     @Override
@@ -81,7 +73,7 @@ public class AirplaneService implements AirplaneDAO {
 
     @Override
     @SneakyThrows
-    public void remove(Airplane airplane) {
+    public void delete(Airplane airplane) {
         String sql = "DELETE FROM Airplane WHERE id = ?";
 
         try (Connection connection = DataSource.getConnection();

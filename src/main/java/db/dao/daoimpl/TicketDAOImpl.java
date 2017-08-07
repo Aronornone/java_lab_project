@@ -1,7 +1,7 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.TicketDao;
+import db.dao.DataSource;
+import db.dao.interfaces.TicketDao;
 import lombok.SneakyThrows;
 import pojo.*;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TicketService implements TicketDao {
+public class TicketDAOImpl implements TicketDao {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  t.id, t.invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +
@@ -31,30 +31,9 @@ public class TicketService implements TicketDao {
             "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_FLIGHT_DATETIME = "ORDER BY f.flight_datetime";
 
-
-    @SneakyThrows
-    public List<Ticket> getTicketsByInvoice(long invoiceId) {
-        List<Ticket> tickets = new ArrayList<>();
-        String sql = SELECT_ALL + " WHERE t.invoice_id =? "
-                + ORDER_BY_FLIGHT_DATETIME;
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql);) {
-            ps.setLong(1, invoiceId);
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                tickets.add(createNewTicket(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return tickets;
-    }
-
     @Override
     @SneakyThrows
-    public long create(Ticket ticket) {
+    public void add(Ticket ticket) {
         String sql = "INSERT INTO Ticket (invoice_id, flight_id, passenger_name, passport, place, luggage, business_class, price) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -70,17 +49,9 @@ public class TicketService implements TicketDao {
             ps.setDouble(8, ticket.getPrice());
 
             ps.executeUpdate();
-/*
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    ticket.setTicketId(generetedKeys.getLong(1));
-                }
-            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return ticket.getTicketId();
     }
 
     @Override
@@ -101,6 +72,27 @@ public class TicketService implements TicketDao {
 
             return Optional.ofNullable(ticket);
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public List<Ticket> getTicketsByInvoice(long invoiceId) {
+        List<Ticket> tickets = new ArrayList<>();
+        String sql = SELECT_ALL + " WHERE t.invoice_id =? "
+                + ORDER_BY_FLIGHT_DATETIME;
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);) {
+            ps.setLong(1, invoiceId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                tickets.add(createNewTicket(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tickets;
     }
 
     @Override
@@ -129,7 +121,7 @@ public class TicketService implements TicketDao {
 
     @Override
     @SneakyThrows
-    public void remove(Ticket ticket) {
+    public void delete(Ticket ticket) {
         String sql = "DELETE FROM Ticket WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

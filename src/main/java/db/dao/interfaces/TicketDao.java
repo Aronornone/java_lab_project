@@ -1,4 +1,4 @@
-package db.dao;
+package db.dao.interfaces;
 
 import pojo.Ticket;
 
@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TicketDao {
-    long create(Ticket ticket);
+    void add(Ticket ticket);
     Optional<Ticket> get(long id);
+    List<Ticket> getTicketsByInvoice(long invoiceId);
     void update(Ticket ticket);
-    void remove(Ticket ticket);
+    void delete(Ticket ticket);
     List<Ticket> getAll();
 }

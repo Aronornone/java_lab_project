@@ -1,7 +1,7 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.UserDAO;
+import db.dao.DataSource;
+import db.dao.interfaces.UserDAO;
 import lombok.SneakyThrows;
 import pojo.User;
 
@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserService implements UserDAO {
+public class UserDAOImpl implements UserDAO {
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
     private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
 
     @Override
     @SneakyThrows
-    public long create(User user) {
+    public void add(User user) {
         String sql = "INSERT INTO Account (name, email, password_hash, registration_date) VALUES (?, ?, ?, ?)";
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -26,17 +26,9 @@ public class UserService implements UserDAO {
             ps.setTimestamp(4, Timestamp.valueOf(user.getRegistrationDate()));
 
             ps.executeUpdate();
-
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    user.setUserId(generetedKeys.getLong(1));
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return user.getUserId();
     }
 
     @Override
@@ -104,7 +96,7 @@ public class UserService implements UserDAO {
 
     @Override
     @SneakyThrows
-    public void remove(User user) {
+    public void delete(User user) {
         String sql = "DELETE FROM Account WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

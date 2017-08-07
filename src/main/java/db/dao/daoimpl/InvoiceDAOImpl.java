@@ -1,7 +1,7 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.InvoiceDAO;
+import db.dao.DataSource;
+import db.dao.interfaces.InvoiceDAO;
 import lombok.SneakyThrows;
 import pojo.Invoice;
 import pojo.User;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceService implements InvoiceDAO {
+public class InvoiceDAOImpl implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
                     "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +
@@ -21,7 +21,7 @@ public class InvoiceService implements InvoiceDAO {
 
     @Override
     @SneakyThrows
-    public long create(Invoice invoice) {
+    public void add(Invoice invoice) {
         String sql = "INSERT INTO Invoice (account_id, status, invoice_datetime) VALUES (?, ?, ?)";
 
         try (Connection connection = DataSource.getConnection();
@@ -31,17 +31,9 @@ public class InvoiceService implements InvoiceDAO {
             ps.setTimestamp(3, Timestamp.valueOf(invoice.getTimestamp()));
 
             ps.executeUpdate();
-/*
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    invoice.setInvoiceId(generetedKeys.getLong(1));
-                }
-            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return invoice.getInvoiceId();
     }
 
     @Override
@@ -64,6 +56,7 @@ public class InvoiceService implements InvoiceDAO {
         }
     }
 
+    @Override
     @SneakyThrows
     public Optional<Invoice> getInvoiceByUser(long userId, Invoice.InvoiceStatus status) {
         String sql = SELECT_ALL + "WHERE i.account_id = ? AND i.status = ?" + ORDER_BY_DATETIME;
@@ -105,7 +98,7 @@ public class InvoiceService implements InvoiceDAO {
 
     @Override
     @SneakyThrows
-    public void remove(Invoice invoice) {
+    public void delete(Invoice invoice) {
         String sql = "DELETE FROM Invoice WHERE id = ?";
 
         try (Connection connection = DataSource.getConnection();
@@ -135,6 +128,7 @@ public class InvoiceService implements InvoiceDAO {
         return invoices;
     }
 
+    @Override
     @SneakyThrows
     public List<Invoice> getAllInvoicesByUserAndStatus(long userId, Invoice.InvoiceStatus status) {
         String sql = SELECT_ALL + "WHERE i.account_id = ? and status =? " + ORDER_BY_DATETIME +" DESC";

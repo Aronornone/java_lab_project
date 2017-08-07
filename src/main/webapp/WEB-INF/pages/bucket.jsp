@@ -15,9 +15,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            //$('.passenger').hide();
             $(".flightInfo").click(function () {
-                //$('.passenger').hide();
                 $(this).nextAll('.passenger').toggle("slow");
             });
         });
@@ -69,8 +67,9 @@
                                                     ></td>
                                                     <td>
                                                         <div class="tableBucketField">
-                                                            <input class="checkbox" name="luggage" type="checkbox"
-                                                                   value="0">
+                                                            <input class="checkbox" type="checkbox"
+                                                            <c:if test="${ticket.luggage eq true}"> checked="checked" </c:if>
+                                                                   value="luggage" name="lugBox">
                                                         </div>
                                                     </td>
                                                     <td>

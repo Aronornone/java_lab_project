@@ -20,10 +20,8 @@ public class FlightsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute("lastServletPath",request.getServletPath());
-
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
-
 
         // Получаем путь до папки для логов
         String pathForLog=getServletContext().getRealPath("/");
@@ -57,7 +55,6 @@ public class FlightsServlet extends HttpServlet {
         List<Airport> airports = ServletUtils.getAirports();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
-
 
         request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
     }

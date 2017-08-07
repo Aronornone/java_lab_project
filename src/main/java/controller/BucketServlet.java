@@ -17,6 +17,8 @@ import java.util.*;
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
+    private static InvoiceService is = new InvoiceService();
+    private static TicketService ts = new TicketService();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -29,43 +31,38 @@ public class BucketServlet extends HttpServlet {
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
-        InvoiceService invoiceService = new InvoiceService();
-        TicketService ticketService = new TicketService();
+        httpSession.setAttribute("lastServletPath", request.getServletPath());
 
-        httpSession.setAttribute("lastServletPath",request.getServletPath());
-
-        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+        Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
-            httpSession.setAttribute("invoiceId",invoice.getInvoiceId());
-            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+            httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
+            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
 
-            if (tickets.size()==0) {
+            if (tickets.size() == 0) {
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             }
-
             Set<Flight> flights = new LinkedHashSet<>();
-            for(Ticket ticket: tickets) {
+            for (Ticket ticket : tickets) {
                 flights.add(ticket.getFlight());
             }
 
             LinkedHashSet<Ticket> ticketsForFlight;
-            for(Flight flight: flights) {
+            for (Flight flight : flights) {
                 ticketsForFlight = new LinkedHashSet<>();
-                for(Ticket ticket: tickets)
-                if(flight.getFlightId() == ticket.getFlight().getFlightId()) {
-                    ticketsForFlight.add(ticket);
-                }
+                for (Ticket ticket : tickets)
+                    if (flight.getFlightId() == ticket.getFlight().getFlightId()) {
+                        ticketsForFlight.add(ticket);
+                    }
                 flight.setTickets(ticketsForFlight);
             }
-
             request.setAttribute("flights", flights);
 
             double sumTotal = 0;
             // calc total Sum of all tickets in invoice
-            for(Ticket ticket: tickets) {
+            for (Ticket ticket : tickets) {
                 sumTotal = sumTotal + ticket.getPrice();
             }
             request.setAttribute("totalSum", sumTotal);

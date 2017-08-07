@@ -1,5 +1,6 @@
 package db.services.servicesimpl;
 
+import db.dao.daoimpl.AirportDAOImpl;
 import db.dao.interfaces.AirportDAO;
 import db.services.interfaces.AirportService;
 import pojo.Airport;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirportServiceImpl implements AirportService {
-    private AirportDAO dao = new db.dao.daoimpl.AirportServiceImpl();
+    private AirportDAO dao = new AirportDAOImpl();
 
     @Override
     public void add(Airport airport) {

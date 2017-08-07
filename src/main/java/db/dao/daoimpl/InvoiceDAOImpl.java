@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceServiceImpl implements InvoiceDAO {
+public class InvoiceDAOImpl implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
                     "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +

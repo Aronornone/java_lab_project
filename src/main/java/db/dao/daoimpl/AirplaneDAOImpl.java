@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirplaneServiceImpl implements AirplaneDAO {
+public class AirplaneDAOImpl implements AirplaneDAO {
     private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
 
     @Override

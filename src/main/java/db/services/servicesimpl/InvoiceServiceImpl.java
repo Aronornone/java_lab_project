@@ -1,5 +1,6 @@
 package db.services.servicesimpl;
 
+import db.dao.daoimpl.InvoiceDAOImpl;
 import db.dao.interfaces.InvoiceDAO;
 import db.services.interfaces.InvoiceService;
 import pojo.Invoice;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class InvoiceServiceImpl implements InvoiceService {
-    private InvoiceDAO dao = new db.dao.daoimpl.InvoiceServiceImpl();
+    private InvoiceDAO dao = new InvoiceDAOImpl();
 
     @Override
     public void add(Invoice invoice) {

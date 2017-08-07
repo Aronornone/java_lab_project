@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightServiceImpl implements FlightDAO {
+public class FlightDAOImpl implements FlightDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirportServiceImpl implements AirportDAO {
+public class AirportDAOImpl implements AirportDAO {
     private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
 
     @Override

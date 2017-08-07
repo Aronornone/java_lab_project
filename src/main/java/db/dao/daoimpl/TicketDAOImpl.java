@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TicketServiceImpl implements TicketDao {
+public class TicketDAOImpl implements TicketDao {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  t.id, t.invoice_id, i.account_id, a.name, a.email, a.password_hash, a.registration_date,\n" +

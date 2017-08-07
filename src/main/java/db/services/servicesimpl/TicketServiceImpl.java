@@ -1,5 +1,6 @@
 package db.services.servicesimpl;
 
+import db.dao.daoimpl.TicketDAOImpl;
 import db.dao.interfaces.TicketDao;
 import db.services.interfaces.TicketService;
 import pojo.*;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
-    private TicketDao dao = new db.dao.daoimpl.TicketServiceImpl();
+    private TicketDao dao = new TicketDAOImpl();
 
     @Override
     public void add(Ticket ticket) {

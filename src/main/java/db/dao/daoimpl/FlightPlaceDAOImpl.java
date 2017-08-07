@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightPlaceServiceImpl implements FlightPlaceDAO {
+public class FlightPlaceDAOImpl implements FlightPlaceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  fp.id, fp.flight_id, f.airplane_id, p.name, p.capacity_econom, p.capacity_business, f.flight_number,\n" +

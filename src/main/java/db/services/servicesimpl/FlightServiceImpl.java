@@ -1,5 +1,6 @@
 package db.services.servicesimpl;
 
+import db.dao.daoimpl.FlightDAOImpl;
 import db.dao.interfaces.FlightDAO;
 import db.services.interfaces.FlightService;
 import pojo.Flight;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FlightServiceImpl implements FlightService {
-    private FlightDAO dao = new db.dao.daoimpl.FlightServiceImpl();
+    private FlightDAO dao = new FlightDAOImpl();
 
     @Override
     public void add(Flight flight) {

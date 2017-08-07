@@ -17,8 +17,8 @@ import java.util.Optional;
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-   // private static FlightServiceImpl fs = new FlightServiceImpl();
-   // private static InvoiceServiceImpl is = new InvoiceServiceImpl();
+   // private static FlightDAOImpl fs = new FlightDAOImpl();
+   // private static InvoiceDAOImpl is = new InvoiceDAOImpl();
     private static TicketServiceImpl ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

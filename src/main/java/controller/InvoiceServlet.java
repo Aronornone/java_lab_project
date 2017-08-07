@@ -87,7 +87,7 @@ public class InvoiceServlet extends HttpServlet {
                     //new Ticket to DB
 
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
-                            false, business, flight.getBaseCost());
+                            false, business, (double)httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
                     ts.create(ticket);
                 }
             }

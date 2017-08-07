@@ -75,6 +75,7 @@ public class DoSearchServlet extends HttpServlet {
                 }
             }
 
+
             //TODO: Добавить в логгер информацию о поиске
             System.out.println("Searching for flight:" + dateFrom + " " + dateTo
                     + " " + departure + " " + arrival + " " + numberTicketsFilter
@@ -87,6 +88,7 @@ public class DoSearchServlet extends HttpServlet {
                 f.setArrivalAir(arr);
                 f.setDepartureAir(dep);
                 f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(),f.getDateTime(),business));
+                httpSession.setAttribute("ticketCost",f.getBaseCost());
             }
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {

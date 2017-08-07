@@ -19,10 +19,9 @@ public class PriceRecounterUnCheckedServlet extends HttpServlet {
         long ticketId = Long.parseLong(request.getParameter("ticketId"));
 
         Ticket ticket = ts.get(ticketId).get();
-        int percents = 20;
 
         double oldPrice = ticket.getPrice();
-        double newPrice = PriceRecounter.defectPriceByPercents(oldPrice,percents);
+        double newPrice = PriceRecounter.defectByLuggage(oldPrice);
         ticket.setLuggage(false);
         ticket.setPrice(newPrice);
         ts.update(ticket);

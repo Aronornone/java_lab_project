@@ -21,6 +21,10 @@ public class PriceRecounter {
         return basePrice+1000;
     }
 
+    public static double defectByLuggage(double basePrice){
+        return basePrice-1000;
+    }
+
     public static double affectPriceByPercents(double basePrice, int percents) {
         return basePrice * (1 + (double) percents / 100);
     }

@@ -19,9 +19,8 @@ public class PriceRecounterCheckedServlet extends HttpServlet {
         long ticketId = Long.parseLong(request.getParameter("ticketId"));
 
         Ticket ticket = ts.get(ticketId).get();
-        int percents = 20;
         double oldPrice = ticket.getPrice();
-        double newPrice = PriceRecounter.affectPriceByPercents(oldPrice,percents);
+        double newPrice = PriceRecounter.affectByLuggage(oldPrice);
         ticket.setLuggage(true);
         ticket.setPrice(newPrice);
         ts.update(ticket);

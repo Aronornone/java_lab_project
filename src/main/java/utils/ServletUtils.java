@@ -286,12 +286,12 @@ public class ServletUtils {
             } else {
                 checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
             }
-            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>'" + dateFrom +
-                    "'  AND flight_datetime<'" + dateTo + "' AND departure_airport_id=" +
+            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>='" + dateFrom +
+                    "'  AND flight_datetime<='" + dateTo + "' AND departure_airport_id=" +
                     departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
                     "AS tt ORDER BY flight_datetime LIMIT "
-                    + (numberOfPage - 1) * FLIGHTS_PER_PAGE + "," +
-                    numberOfPage * FLIGHTS_PER_PAGE;
+                    + (numberOfPage - 1)* FLIGHTS_PER_PAGE + "," +
+                    FLIGHTS_PER_PAGE;
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet result = ps.executeQuery();
 

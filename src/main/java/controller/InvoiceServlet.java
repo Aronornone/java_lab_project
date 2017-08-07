@@ -1,8 +1,8 @@
 package controller;
 
-import db.dao.daoimpl.FlightServiceImpl;
-import db.dao.daoimpl.InvoiceServiceImpl;
-import db.dao.daoimpl.TicketServiceImpl;
+import db.services.servicesimpl.FlightServiceImpl;
+import db.services.servicesimpl.InvoiceServiceImpl;
+import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;

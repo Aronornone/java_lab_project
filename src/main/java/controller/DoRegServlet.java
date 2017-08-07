@@ -1,6 +1,6 @@
 package controller;
 
-import db.dao.daoimpl.UserDAOImpl;
+import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.User;
 
@@ -49,14 +49,14 @@ public class DoRegServlet extends HttpServlet {
                 request.setAttribute("username", username);
                 request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
             } else {
-                UserDAOImpl userDAOImpl = new UserDAOImpl();
-                Optional<User> userOptional = userDAOImpl.get(email);
+                UserServiceImpl userServiceImpl = new UserServiceImpl();
+                Optional<User> userOptional = userServiceImpl.get(email);
                 if (userOptional.isPresent()) {
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
                     User user = new User(username, email, password1HashReq, registrationDate);
-                    userDAOImpl.add(user);
+                    userServiceImpl.add(user);
                     request.setAttribute("regSuccess", err.getString("regSuccess"));
                     request.setAttribute("email", email);
                     request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

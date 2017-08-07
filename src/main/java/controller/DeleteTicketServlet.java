@@ -1,6 +1,6 @@
 package controller;
 
-import db.dao.daoimpl.TicketServiceImpl;
+import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Ticket;
 import pojo.User;
 import utils.ServletUtils;

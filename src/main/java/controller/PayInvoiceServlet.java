@@ -1,6 +1,6 @@
 package controller;
 
-import db.dao.daoimpl.InvoiceServiceImpl;
+import db.services.servicesimpl.InvoiceServiceImpl;
 import pojo.Invoice;
 import pojo.User;
 import utils.ServletUtils;

@@ -1,6 +1,6 @@
 package controller;
 
-import db.dao.daoimpl.UserDAOImpl;
+import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
@@ -31,8 +31,8 @@ public class DoLoginServlet extends HttpServlet {
             String passwordHashDB = "";
             User user = null;
             String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
-            UserDAOImpl userDAOImpl = new UserDAOImpl();
-            Optional<User> userOptional = userDAOImpl.get(email);
+            UserServiceImpl userServiceImpl = new UserServiceImpl();
+            Optional<User> userOptional = userServiceImpl.get(email);
             if (userOptional.isPresent()) {
                 user = userOptional.get();
                 passwordHashDB = user.getPasswordHash();

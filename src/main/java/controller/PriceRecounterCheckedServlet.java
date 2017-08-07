@@ -1,6 +1,6 @@
 package controller;
 
-import db.service.TicketService;
+import db.dao.daoimpl.TicketServiceImpl;
 import pojo.Ticket;
 import utils.PriceRecounter;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/priceRecountChecked")
 public class PriceRecounterCheckedServlet extends HttpServlet {
-    private static TicketService ts = new TicketService();
+    private static TicketServiceImpl ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long ticketId = Long.parseLong(request.getParameter("ticketId"));

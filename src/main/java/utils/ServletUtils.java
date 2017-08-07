@@ -1,7 +1,7 @@
 package utils;
 
-import db.DataSource;
-import db.service.*;
+import db.dao.DataSource;
+import db.services.servicesimpl.*;
 import pojo.*;
 
 import java.sql.Connection;
@@ -14,12 +14,12 @@ import java.util.BitSet;
 import java.util.List;
 
 public class ServletUtils {
-    private static FlightPlaceService fps = new FlightPlaceService();
-    private static FlightService fs = new FlightService();
-    private static AirportService as = new AirportService();
-    private static AirplaneService aps = new AirplaneService();
-    private static TicketService ts = new TicketService();
-    private static InvoiceService is = new InvoiceService();
+    private static FlightPlaceServiceImpl fps = new FlightPlaceServiceImpl();
+    private static FlightServiceImpl fs = new FlightServiceImpl();
+    private static AirportServiceImpl as = new AirportServiceImpl();
+    private static AirplaneServiceImpl aps = new AirplaneServiceImpl();
+    private static TicketServiceImpl ts = new TicketServiceImpl();
+    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
 
     public static List<Airport> getAirports() {
         List<Airport> airports = as.getAll();
@@ -28,9 +28,9 @@ public class ServletUtils {
 
     /**
      * Method returns and reserved random place in airplane after user has add it to cart.
-     * Set bit for place with BitSet in FlightPlace and decrease available places of ticket class in Flight.
+     * Set bit for place with BitSet in FlightPlace and decrease available places of ticket class in FlightService.
      *
-     * @param flightId id of Flight to reserve.
+     * @param flightId id of FlightService to reserve.
      * @param business if true it will get random place from BitSet in business class and reserved it.
      * @return random reserved place for this flight in int
      */
@@ -127,7 +127,7 @@ public class ServletUtils {
             }
             fps.update(flightPlace);
             fs.update(flight);
-            ts.remove(ticket);
+            ts.delete(ticket);
         }
     }
 

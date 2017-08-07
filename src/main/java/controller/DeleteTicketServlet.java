@@ -1,6 +1,6 @@
 package controller;
 
-import db.service.TicketService;
+import db.dao.daoimpl.TicketServiceImpl;
 import pojo.Ticket;
 import pojo.User;
 import utils.ServletUtils;
@@ -14,9 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+//Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-    private static TicketService ts = new TicketService();
+   // private static FlightServiceImpl fs = new FlightServiceImpl();
+   // private static InvoiceServiceImpl is = new InvoiceServiceImpl();
+    private static TicketServiceImpl ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -24,6 +27,7 @@ public class DeleteTicketServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);

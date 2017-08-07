@@ -1,7 +1,7 @@
 package controller;
 
-import db.service.InvoiceService;
-import db.service.TicketService;
+import db.dao.daoimpl.InvoiceServiceImpl;
+import db.dao.daoimpl.TicketServiceImpl;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
@@ -16,8 +16,8 @@ import java.util.*;
 
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
-    private static InvoiceService is = new InvoiceService();
-    private static TicketService ts = new TicketService();
+    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
+    private static TicketServiceImpl ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

@@ -1,7 +1,7 @@
 package utils;
 
-import db.DataSource;
-import db.service.FlightService;
+import db.dao.DataSource;
+import db.services.servicesimpl.FlightServiceImpl;
 import lombok.SneakyThrows;
 import pojo.Flight;
 
@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.Collection;
 
 public class FlightPlacesInit {
-    static FlightService fs = new FlightService();
+    static FlightServiceImpl fs = new FlightServiceImpl();
 
     public static void main(String[] args) {
         initFlightPlaces();

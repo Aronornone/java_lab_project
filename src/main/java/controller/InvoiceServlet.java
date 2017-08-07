@@ -1,8 +1,8 @@
 package controller;
 
-import db.service.FlightService;
-import db.service.InvoiceService;
-import db.service.TicketService;
+import db.dao.daoimpl.FlightServiceImpl;
+import db.dao.daoimpl.InvoiceServiceImpl;
+import db.dao.daoimpl.TicketServiceImpl;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
@@ -20,9 +20,9 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
-    private static FlightService fs = new FlightService();
-    private static InvoiceService is = new InvoiceService();
-    private static TicketService ts = new TicketService();
+    private static FlightServiceImpl fs = new FlightServiceImpl();
+    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
+    private static TicketServiceImpl ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -87,7 +87,7 @@ public class InvoiceServlet extends HttpServlet {
 
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, business, (double)httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
-                    ts.create(ticket);
+                    ts.add(ticket);
                 }
             }
             int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
@@ -110,9 +110,9 @@ public class InvoiceServlet extends HttpServlet {
             if (invoiceOptional.isPresent()) {
                 invoice = invoiceOptional.get();
             } else {
-                //if invoice isn't created, create it
+                //if invoice isn't created, add it
                 invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
-                is.create(invoice);
+                is.add(invoice);
             }
         }
         invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();

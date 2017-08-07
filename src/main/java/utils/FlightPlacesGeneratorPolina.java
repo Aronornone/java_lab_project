@@ -1,7 +1,7 @@
 package utils;
 
-import db.service.FlightPlaceService;
-import db.service.FlightService;
+import db.services.servicesimpl.FlightPlaceServiceImpl;
+import db.services.servicesimpl.FlightServiceImpl;
 import lombok.SneakyThrows;
 import pojo.Flight;
 
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static db.DataSource.getConnection;
+import static db.dao.DataSource.getConnection;
 
 public class FlightPlacesGeneratorPolina {
 
@@ -19,8 +19,8 @@ public class FlightPlacesGeneratorPolina {
 
     @SneakyThrows
     private static void generateFlightPlaces() throws SQLException {
-        FlightService fs = new FlightService();
-        FlightPlaceService fps = new FlightPlaceService();
+        FlightServiceImpl fs = new FlightServiceImpl();
+        FlightPlaceServiceImpl fps = new FlightPlaceServiceImpl();
         List<Flight> flights = fs.getAll();
         int number = flights.size();
 

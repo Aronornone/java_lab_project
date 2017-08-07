@@ -1,7 +1,7 @@
-package db.service;
+package db.dao.daoimpl;
 
-import db.DataSource;
-import db.dao.AirportDAO;
+import db.dao.DataSource;
+import db.dao.interfaces.AirportDAO;
 import lombok.SneakyThrows;
 import pojo.Airport;
 
@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirportService implements AirportDAO {
+public class AirportServiceImpl implements AirportDAO {
     private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
 
     @Override
     @SneakyThrows
-    public long create(Airport airport) {
+    public void add(Airport airport) {
         String sql = "INSERT INTO Airport (code, city, airport_name, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
 
         try(Connection connection = DataSource.getConnection();
@@ -30,17 +30,9 @@ public class AirportService implements AirportDAO {
             ps.setDouble(5, airport.getLongitude());
 
             ps.executeUpdate();
-
-            try (ResultSet generetedKeys = ps.getGeneratedKeys()) {
-                if (generetedKeys.next()) {
-                    airport.setAirportId(generetedKeys.getLong(1));
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return airport.getAirportId();
     }
 
     @Override
@@ -85,7 +77,7 @@ public class AirportService implements AirportDAO {
 
     @Override
     @SneakyThrows
-    public void remove(Airport airport) {
+    public void delete(Airport airport) {
         String sql = "DELETE FROM Airport WHERE id = ?";
 
         try(Connection connection = DataSource.getConnection();

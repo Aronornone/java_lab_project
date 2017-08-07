@@ -1,21 +1,21 @@
 package utils;
 
-import db.service.AirplaneService;
-import db.service.AirportService;
+import db.services.servicesimpl.AirplaneServiceImpl;
+import db.services.servicesimpl.AirportServiceImpl;
 import lombok.SneakyThrows;
 
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static db.DataSource.getConnection;
+import static db.dao.DataSource.getConnection;
 import static java.lang.StrictMath.*;
 import static utils.FlightsGenerator.DistanceCounter.calculateDistance;
 import static utils.RandomGenerator.*;
 
 public class FlightsGenerator {
-    private static AirplaneService as = new AirplaneService();
-    private static AirportService aps = new AirportService();
+    private static AirplaneServiceImpl as = new AirplaneServiceImpl();
+    private static AirportServiceImpl aps = new AirportServiceImpl();
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {

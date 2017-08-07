@@ -10,18 +10,23 @@
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+
         $(document).ready(function () {
             var pageNum = 2;
+
+            var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" + pageNum + " #appendFlights tbody").html();
+            $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();
+
             $("#appendButton").click(function () {
-                //$("#appendFlights").append("<div></div>").load(" #appendFlights");
-                var divSome =$("#hiddenDiv").load(document.URL + "&pageNum="+pageNum);
-                var divInclude=divSome.find("#appendFlights");
-                $("#appendFlights").append('<div>'+divInclude+'</div>');
+                var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" + pageNum + " #appendFlights tbody").html();
+                $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();
+                if (pageNum >=${requestScope.numPages}) document.getElementById("appendButton").remove();
                 pageNum++;
             });
         });
+
     </script>
 </head>
 <body>
@@ -97,7 +102,8 @@
         </div>
 
         <div class="flightTable">
-            <table>
+            <table id="appendFlights">
+                <thead>
                 <tr>
                     <th><fmt:message key="tabFrom"/></th>
                     <th><fmt:message key="tabTo"/></th>
@@ -107,8 +113,11 @@
                     <th></th>
                     <th></th>
                 </tr>
-                <div id="appendFlights">
-                    <c:forEach items="${flights}" var="flight">
+                </thead>
+                <tbody>
+                <c:forEach items="${flights}" var="flight">
+                    <form name="form2" id="form2${flight.flightId}" class="addTickets" action="addFlightToInvoice"
+                          method="post">
                         <tr>
                             <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
                             <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
@@ -118,28 +127,30 @@
                             <td>
                                 <input id="num" class="fieldFilters" type="number" min="1"
                                        max="${sessionScope.numberTicketsFilter}" step="1"
-                                       value="${sessionScope.numberTicketsFilter}" name="numberTicketsFlight">
-                                <input type="hidden" name="flightId" value="${flight.flightId}">
+                                       value="${sessionScope.numberTicketsFilter}" form="form2${flight.flightId}"
+                                       name="numberTicketsFlight">
+                                <input type="hidden" name="flightId" form="form2${flight.flightId}"
+                                       value="${flight.flightId}">
                             </td>
                             <td>
-                                <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
+                                <input class="buttonBucket" form="form2${flight.flightId}" type="submit"
+                                       value="<fmt:message key="buyButton"/>"/>
                             </td>
                         </tr>
-                        <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
-                        </form>
-                    </c:forEach>
-                </div>
+                    </form>
+                </c:forEach>
+                </tbody>
             </table>
-
-            <div class="appendButton">
-                <c:if test="${requestScope.numPages!=null && (requestScope.pageNum<requestScope.numPages)}">
-                    <button id="appendButton"><fmt:message key="showMore"/>
-                    </button>
-                </c:if>
-            </div>
+        </div>
+        <div class="appendButton">
+            <c:if test="${requestScope.numPages!=null}">
+                <button id="appendButton"><fmt:message key="showMore"/>
+                </button>
+            </c:if>
         </div>
         <div id="hiddenDiv"></div>
     </div>
+
     <jsp:include page="/WEB-INF/pages/_footer.jsp"/>
 </div>
 

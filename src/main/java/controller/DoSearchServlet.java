@@ -5,7 +5,6 @@ import utils.FlightHelper;
 import utils.PriceRecounter;
 import utils.ServletUtils;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -102,9 +101,12 @@ public class DoSearchServlet extends HttpServlet {
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);
-            request.setAttribute("numPages", (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(), dateToPlusDay.toString()) / 10));
-            System.out.println(request.getAttribute("numPages"));
+
+            int numPages = (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(), dateToPlusDay.toString()) / 10);
+            request.setAttribute("numPages", numPages);
             request.setAttribute("pageNum", pageNum);
+            System.out.println(request.getAttribute("numPages"));
+            System.out.println(request.getAttribute("pageNum"));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
     }

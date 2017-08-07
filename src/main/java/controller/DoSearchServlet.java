@@ -5,6 +5,7 @@ import utils.FlightHelper;
 import utils.PriceRecounter;
 import utils.ServletUtils;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -67,13 +68,13 @@ public class DoSearchServlet extends HttpServlet {
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
-            Airport dep=new Airport();
-            Airport arr=new Airport();
-            for ( Airport a:airports) {
-                if( a.getCode().equals(departure)){
-                    dep=a;
-                } else if( a.getCode().equals(arrival)){
-                    arr=a;
+            Airport dep = new Airport();
+            Airport arr = new Airport();
+            for (Airport a : airports) {
+                if (a.getCode().equals(departure)) {
+                    dep = a;
+                } else if (a.getCode().equals(arrival)) {
+                    arr = a;
                 }
             }
 
@@ -83,23 +84,27 @@ public class DoSearchServlet extends HttpServlet {
                     + checkbox);
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
-            Integer pageNum=(Integer)request.getAttribute("pageNum");
-            if (pageNum==null) pageNum=1;
-            List<FlightHelper> foundFlights= ServletUtils.getFlights(dep.getAirportId(),arr.getAirportId(),
-                    dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, pageNum);
-            for ( FlightHelper f: foundFlights) {
+            Integer pageNum;
+            try {
+                pageNum = Integer.parseInt(request.getParameter("pageNum"));
+            } catch (NumberFormatException ex) {
+                pageNum = 1;
+            }
+            List<FlightHelper> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),
+                    dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
+            for (FlightHelper f : foundFlights) {
                 f.setArrivalAir(arr);
                 f.setDepartureAir(dep);
-                f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(),f.getDateTime(),business));
-                httpSession.setAttribute("ticketCost",f.getBaseCost());
+                f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(), f.getDateTime(), business));
+                httpSession.setAttribute("ticketCost", f.getBaseCost());
             }
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);
-            request.setAttribute("numPages", (int)ceil((double)ServletUtils.getAmountFlights(arr.getAirportId(),dep.getAirportId(),dateFrom.toString(),dateToPlusDay.toString())/10));
+            request.setAttribute("numPages", (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(), dateToPlusDay.toString()) / 10));
             System.out.println(request.getAttribute("numPages"));
-            request.setAttribute("pageNum",pageNum);
+            request.setAttribute("pageNum", pageNum);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
     }

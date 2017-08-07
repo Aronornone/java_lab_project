@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page pageEncoding="UTF-8"%>
+<%@ page pageEncoding="UTF-8" %>
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
 <fmt:setBundle basename="JSPBundle"/>
 <!DOCTYPE html>
@@ -19,6 +19,29 @@
                 $(this).nextAll('.passenger').toggle("slow");
             });
         });
+    </script>
+    <script>
+        function calc(ticketId) {
+            var luggageEl = document.getElementById('lug' + ticketId);
+            var oldPrice = document.getElementById('price' + ticketId).textContent;
+            var totalSum = document.getElementById('totalSum').textContent;
+            if (luggageEl.checked) {
+                $.get("priceRecountChecked", {ticketId: ticketId},
+                    function (price) {
+                        $('#price' + ticketId).text(price);
+                        totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
+                        document.getElementById('totalSum').textContent = totalSum;
+                    });
+            } else {
+                $.get("priceRecountUnChecked", {ticketId: ticketId},
+                    function (price) {
+                        $('#price' + ticketId).text(price);
+                        totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
+                        document.getElementById('totalSum').textContent = totalSum;
+                    });
+            }
+        }
+
     </script>
 </head>
 
@@ -68,19 +91,26 @@
                                                     <td>
                                                         <div class="tableBucketField">
                                                             <input class="checkbox" type="checkbox"
-                                                            <c:if test="${ticket.luggage eq true}"> checked="checked" </c:if>
-                                                                   value="luggage" name="lugBox">
+                                                            <c:if test="${ticket.luggage eq true}">
+                                                                   checked="checked" </c:if>
+                                                                   value="luggage" name="lugBox"
+                                                                   id="lug${ticket.ticketId}"
+                                                                   onclick="calc(${ticket.ticketId});">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="tableBucketField">${ticket.sittingPlace}</div>
                                                     </td>
                                                     <td>
-                                                        <div class="tableBucketField">${ticket.price}</div>
+                                                        <div class="tableBucketField">
+                                                            <p id="price${ticket.ticketId}">${ticket.price}</p>
+                                                        </div>
                                                     </td>
                                                     <td>
-                                                        <c:if test="${ticket.businessClass==true}" ><fmt:message key="yes"/></c:if>
-                                                        <c:if test="${ticket.businessClass==false}" ><fmt:message key="no"/></c:if>
+                                                        <c:if test="${ticket.businessClass==true}"><fmt:message
+                                                                key="yes"/></c:if>
+                                                        <c:if test="${ticket.businessClass==false}"><fmt:message
+                                                                key="no"/></c:if>
                                                     </td>
                                                     <td>
                                                         <div>
@@ -98,11 +128,12 @@
                             </c:forEach>
                         </div>
                         <c:if test="${ticketsInBucket != null && ticketsInBucket != 0}">
-                            <p class="error">${setFields} <p class="error">${changesSaved}</p>
+                            <p class="error">${setFields}
+                            <p class="error">${changesSaved}</p>
                             <p class="error"><fmt:message key="checkInfo"/></p>
                             <div class="butPay">
                                 <div class="pCostTotal"><fmt:message key="total"/> :</div>
-                                <div class="costTotal">${totalSum}</div>
+                                <div class="costTotal"><p id="totalSum">${totalSum}</p></div>
 
                                 <input class="buttonBucketPay" type="submit" value="<fmt:message key="pay"/> "
                                        form="payInvoice"/>

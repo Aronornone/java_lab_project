@@ -15,7 +15,7 @@ public class PriceRecounter {
     }
 
     public static double affectPriceByPercents(double basePrice, int percents) {
-        return basePrice * (1 + percents / 100);
+        return basePrice * (1 + (double)percents / 100);
     }
 
     //max price increase=basePrice*0.3(30%)
@@ -26,5 +26,9 @@ public class PriceRecounter {
             return basePrice;
         }
         return basePrice + 0.3 * basePrice * (1 - daysUntilDeparture / 120);
+    }
+
+    public static double defectPriceByPercents(double price, int percents) {
+        return price / (1 + (double)percents / 100);
     }
 }

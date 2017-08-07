@@ -88,7 +88,6 @@ public class DoSearchServlet extends HttpServlet {
                 f.setDepartureAir(dep);
                 f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(),f.getDateTime(),business));
             }
-
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));

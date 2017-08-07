@@ -171,7 +171,8 @@ public class ServletUtils {
      * @param passports      array of Strings passports
      * @return true if some of fields are empty, false if all fields are fill right.
      */
-    public static boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames, String[] passports) {
+    public static boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames,
+                                                 String[] passports, String[] luggages) {
         boolean empty = false;
         if (ticketsIds != null && passengerNames != null && passports != null) {
             List<String> ticketsList = Arrays.asList(ticketsIds);
@@ -187,7 +188,17 @@ public class ServletUtils {
             for (String string : passportsList) {
                 if (string.isEmpty()) empty = true;
             }
-            updateTicketWhilePay(ticketsIds, passengerNames, passports);
+
+            List<String> luggagesList;
+            boolean[] luggagesBoolean = new boolean[ticketsList.size()];
+
+            if (luggages != null) {
+                luggagesList = Arrays.asList(luggages);
+                for (int i = 0; i < luggagesList.size(); i++) {
+                    luggagesBoolean[i] = (luggagesList.get(i).equals("luggage"));
+                }
+            }
+            updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
         } else empty = true;
         return empty;
     }
@@ -199,11 +210,13 @@ public class ServletUtils {
      * @param passengerNames array of Strings passenger names
      * @param passports      array of Strings passports
      */
-    private static void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames, String[] passports) {
+    private static void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
+                                             String[] passports, boolean[] luggages) {
         for (int i = 0; i < ticketsIds.length; i++) {
             Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
             ticketToUpdate.setPassengerName(passengerNames[i]);
             ticketToUpdate.setPassport(passports[i]);
+            ticketToUpdate.setLuggage(luggages[i]);
             ts.update(ticketToUpdate);
         }
     }

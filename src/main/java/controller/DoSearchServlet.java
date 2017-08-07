@@ -1,7 +1,6 @@
 package controller;
 
 import pojo.Airport;
-import pojo.User;
 import utils.FlightHelper;
 import utils.PriceRecounter;
 import utils.ServletUtils;
@@ -25,7 +24,7 @@ public class DoSearchServlet extends HttpServlet {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
-        User user = (User) httpSession.getAttribute("user");
+        //User user = (User) httpSession.getAttribute("user");
         List<Airport> airports = ServletUtils.getAirports();
 
         request.setAttribute("departures", airports);

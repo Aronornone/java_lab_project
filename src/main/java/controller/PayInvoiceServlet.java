@@ -33,12 +33,9 @@ public class PayInvoiceServlet extends HttpServlet {
         String[] ticketsIds = request.getParameterValues("ticketId");
         String[] passengerNames = request.getParameterValues("passengerName");
         String[] passports = request.getParameterValues("passport");
+        String[] luggages = request.getParameterValues("lugBox");
 
-        httpSession.setAttribute("ticketsArray", ticketsIds);
-        httpSession.setAttribute("passengersArray", passengerNames);
-        httpSession.setAttribute("passportsArray", passports);
-
-        if (ServletUtils.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports)) {
+        if (ServletUtils.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
             request.setAttribute("setFields", err.getString("setFields"));
             request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);

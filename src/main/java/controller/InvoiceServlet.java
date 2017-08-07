@@ -85,6 +85,7 @@ public class InvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
                 } else {
                     //new Ticket to DB
+
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, business, flight.getBaseCost());
                     ts.create(ticket);

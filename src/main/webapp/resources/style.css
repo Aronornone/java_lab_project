@@ -151,6 +151,9 @@ a:active {
     color: white;
     padding: 10px 20px;
 }
+#hiddenDiv{
+    display: none;
+}
 
 #appendButton {
     font-size: 14pt;

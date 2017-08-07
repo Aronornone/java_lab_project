@@ -15,9 +15,10 @@
         $(document).ready(function () {
             var pageNum = 2;
             $("#appendButton").click(function () {
-                var pathHref = window.location.href;
-                $("#appendFlights").append("<div></div>").load(pathHref + "&pageNum=" + pageNum);
-                alert(pathHref + "&pageNum=" + pageNum);
+                //$("#appendFlights").append("<div></div>").load(" #appendFlights");
+                var divSome =$("#hiddenDiv").load(document.URL + "&pageNum="+pageNum);
+                var divInclude=divSome.find("#appendFlights");
+                $("#appendFlights").append('<div>'+divInclude+'</div>');
                 pageNum++;
             });
         });
@@ -106,28 +107,28 @@
                     <th></th>
                     <th></th>
                 </tr>
-                <c:forEach items="${flights}" var="flight">
-                    <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
-                        <div id="appendFlights">
-                            <tr>
-                                <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
-                                <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
-                                <td>${flight.dateTime}</td>
-                                <td>${flight.flightNumber}</td>
-                                <td>${flight.baseCost}</td>
-                                <td>
-                                    <input id="num" class="fieldFilters" type="number" min="1"
-                                           max="${sessionScope.numberTicketsFilter}" step="1"
-                                           value="${sessionScope.numberTicketsFilter}" name="numberTicketsFlight">
-                                    <input type="hidden" name="flightId" value="${flight.flightId}">
-                                </td>
-                                <td>
-                                    <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
-                                </td>
-                            </tr>
-                        </div>
-                    </form>
-                </c:forEach>
+                <div id="appendFlights">
+                    <c:forEach items="${flights}" var="flight">
+                        <tr>
+                            <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
+                            <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
+                            <td>${flight.dateTime}</td>
+                            <td>${flight.flightNumber}</td>
+                            <td>${flight.baseCost}</td>
+                            <td>
+                                <input id="num" class="fieldFilters" type="number" min="1"
+                                       max="${sessionScope.numberTicketsFilter}" step="1"
+                                       value="${sessionScope.numberTicketsFilter}" name="numberTicketsFlight">
+                                <input type="hidden" name="flightId" value="${flight.flightId}">
+                            </td>
+                            <td>
+                                <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
+                            </td>
+                        </tr>
+                        <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
+                        </form>
+                    </c:forEach>
+                </div>
             </table>
 
             <div class="appendButton">
@@ -137,7 +138,7 @@
                 </c:if>
             </div>
         </div>
-
+        <div id="hiddenDiv"></div>
     </div>
     <jsp:include page="/WEB-INF/pages/_footer.jsp"/>
 </div>

@@ -5,6 +5,7 @@ import utils.FlightHelper;
 import utils.PriceRecounter;
 import utils.ServletUtils;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import static java.lang.StrictMath.ceil;
 
 //Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
@@ -81,8 +84,10 @@ public class DoSearchServlet extends HttpServlet {
                     + checkbox);
 
             //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
+            Integer pageNum=(Integer)request.getAttribute("pageNum");
+            if (pageNum==null) pageNum=1;
             List<FlightHelper> foundFlights= ServletUtils.getFlights(dep.getAirportId(),arr.getAirportId(),
-                    dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, 1);
+                    dateFrom.toString(),dateToPlusDay.toString(),numberTicketsFilter,business, pageNum);
             for ( FlightHelper f: foundFlights) {
                 f.setArrivalAir(arr);
                 f.setDepartureAir(dep);
@@ -93,7 +98,8 @@ public class DoSearchServlet extends HttpServlet {
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);
-
+            request.setAttribute("numPages", (int)ceil((double)ServletUtils.getAmountFlights(arr.getAirportId(),dep.getAirportId(),dateFrom.toString(),dateToPlusDay.toString())/10));
+            System.out.println(request.getAttribute("numPages"));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
     }

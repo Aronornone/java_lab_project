@@ -238,15 +238,19 @@ public class ServletUtils {
         return sb.toString();
     }
 
-    public static int getAmountFlights(String arrival, String departure) {
+    public static int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo) {
         Connection con = DataSource.getConnection();
         int i = 0;
         try {
             String sql = "SELECT COUNT(*) AS tt FROM flight " +
                     "WHERE " +
-                    "arrival_airport_id=(SELECT id FROM airport WHERE airport_name='" + arrival + "') " +
+                    "arrival_airport_id="+arrival+" "+
                     "AND " +
-                    "departure_airport_id=(SELECT id FROM airport WHERE airport_name='" + departure + "')";
+                    "departure_airport_id="+departure+" "+
+                    "AND " +
+                    "flight_datetime>'" + dateFrom + "' " +
+                    "AND " +
+                    "flight_datetime<'" + dateTo + "'";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -270,6 +274,8 @@ public class ServletUtils {
      */
     public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo,
                                                 int requiredSeats, boolean business, int numberOfPage) {
+
+        System.out.println("Found results (how many): "+getAmountFlights(arrival, departure, dateFrom, dateTo));
         Connection con = DataSource.getConnection();
         int FLIGHTS_PER_PAGE = 10;
         List<FlightHelper> flights = new ArrayList<>();

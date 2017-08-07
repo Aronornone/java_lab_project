@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы оплаты
-
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
     private static InvoiceService is = new InvoiceService();

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы логина
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

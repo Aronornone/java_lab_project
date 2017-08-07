@@ -75,7 +75,6 @@ public class DoSearchServlet extends HttpServlet {
                 }
             }
 
-
             //TODO: Добавить в логгер информацию о поиске
             System.out.println("Searching for flight:" + dateFrom + " " + dateTo
                     + " " + departure + " " + arrival + " " + numberTicketsFilter

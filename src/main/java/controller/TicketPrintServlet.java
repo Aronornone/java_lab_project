@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
 

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
     private static FlightService fs = new FlightService();

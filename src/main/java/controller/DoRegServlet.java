@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы регистрации
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

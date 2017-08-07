@@ -152,9 +152,22 @@ a:active {
     padding: 10px 20px;
 }
 
+#appendButton {
+    font-size: 14pt;
+    background-color: #3f669f;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+
 .buttonSearch:hover, .buttonBucketPay:hover, .buttonBucketSave:hover,
 .buttonBucket:hover, .buttonBucketMenu:hover,.buttonLogout:hover, .buttonLogReg:hover, a.buttonDelete:hover,
-.goBackBut:hover, .menuButton:hover, .flightInfo, .invoiceToggle, .buttonMenu:hover, .buttonLogin:hover {
+.goBackBut:hover, .menuButton:hover, .flightInfo, .invoiceToggle, #appendButton:hover, .buttonMenu:hover, .buttonLogin:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 

@@ -10,6 +10,17 @@
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var pageNum=1;
+            $("#appendButton").click(function (e) {
+                var pathHref = window.location.href;
+                $("#appendFlights").append("<div></div>").load(pathHref + "&pageNum=" + pageNum);
+                pageNum++;
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="body">
@@ -64,9 +75,9 @@
                         </c:if>
                     </p>
                     <p class="filter"><fmt:message key="busClass"/>
-                    <input class="fieldFilters" type="checkbox"
-                    <c:if test="${sessionScope.business !=null}"> checked="checked" </c:if>
-                                   value="business" name="box">
+                        <input class="fieldFilters" type="checkbox"
+                        <c:if test="${sessionScope.business !=null}"> checked="checked" </c:if>
+                               value="business" name="box">
                     </p>
                 </div>
                 <p class="error">${requestScope.nothingFound}</p>
@@ -82,8 +93,8 @@
 
             <hr class="headerLine">
         </div>
-        <div class="flightTable">
 
+        <div class="flightTable">
             <table>
                 <tr>
                     <th><fmt:message key="tabFrom"/></th>
@@ -94,39 +105,38 @@
                     <th></th>
                     <th></th>
                 </tr>
+                <div id="appendFlights">
+                    <c:forEach items="${flights}" var="flight">
+                        <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
+                            <tr>
+                                <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
+                                <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
+                                <td>${flight.dateTime}</td>
+                                <td>${flight.flightNumber}</td>
+                                <td>${flight.baseCost}</td>
+                                <td>
+                                    <input id="num" class="fieldFilters" type="number" min="1"
+                                           max="${sessionScope.numberTicketsFilter}" step="1"
+                                           value="${sessionScope.numberTicketsFilter}" name="numberTicketsFlight">
+                                    <input type="hidden" name="flightId" value="${flight.flightId}">
 
-                <c:forEach items="${flights}" var="flight">
-                    <form name="form2" class="addTickets" action="addFlightToInvoice" method="post">
-                        <tr>
-                            <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
-                            <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
-                            <td>${flight.dateTime}</td>
-                            <td>${flight.flightNumber}</td>
-                            <td>${flight.baseCost}</td>
-                            <td>
-                                <input id="num" class="fieldFilters" type="number" min="1"
-                                       max="${sessionScope.numberTicketsFilter}" step="1"
-                                       value="${sessionScope.numberTicketsFilter}" name="numberTicketsFlight">
-                                <input type="hidden" name="flightId" value="${flight.flightId}">
+                                </td>
+                                <td>
+                                    <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
 
-                            </td>
-                            <td>
-                                <input class="buttonBucket" type="submit" value="<fmt:message key="buyButton"/>"/>
-
-                            </td>
-                        </tr>
-                    </form>
-                </c:forEach>
-
-
+                                </td>
+                            </tr>
+                        </form>
+                    </c:forEach>
+                </div>
             </table>
-            <div>
-                ${button}
-            </div>
-            <div>
-                ${button1}
-            </div>
 
+            <div class="appendButton">
+                <%--<c:if test="${requestScope.numPages!=null && (requestScope.pageNum*10<requestScope.numPages)}">--%>
+                <button id="appendButton"><fmt:message key="showMore"/>
+                </button>
+                <%--</c:if>--%>
+            </div>
         </div>
 
     </div>

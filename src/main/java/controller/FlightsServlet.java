@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-//Заглушка для страницы поиска
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

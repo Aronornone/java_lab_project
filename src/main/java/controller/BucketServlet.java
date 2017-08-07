@@ -14,7 +14,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
-//Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
     private static InvoiceService is = new InvoiceService();

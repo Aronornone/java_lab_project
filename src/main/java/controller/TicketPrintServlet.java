@@ -25,14 +25,8 @@ public class TicketPrintServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
-        Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
         httpSession.setAttribute("lastServletPath", request.getServletPath());
-
-        if (user == null) {
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
 
         List<Invoice> allPayedInvoices = is.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
         List<Invoice> invoicesSortedForPrint = new ArrayList<>();

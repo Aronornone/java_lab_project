@@ -21,8 +21,6 @@ public class PayInvoiceServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
-        Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         request.setCharacterEncoding("UTF-8");

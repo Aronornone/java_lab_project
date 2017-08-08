@@ -31,13 +31,8 @@ public class DeleteTicketServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
-        Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
 
-        if (user == null) {
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
         String ticketId = request.getParameter("ticketId");
         Optional<Ticket> ticketOptional = ts.get(Long.parseLong(ticketId));
         if (ticketOptional.isPresent()) {

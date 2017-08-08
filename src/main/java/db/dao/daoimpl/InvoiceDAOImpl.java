@@ -11,13 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceDAOImpl implements InvoiceDAO {
+public final class InvoiceDAOImpl implements InvoiceDAO {
     private static final String SELECT_ALL =
             "SELECT\n" +
                     "  i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime\n" +
                     "FROM Invoice i\n" +
                     "  JOIN Account a ON a.id = i.account_id\n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
+
+    private final static InvoiceDAO instance = new InvoiceDAOImpl();
+
+    public static InvoiceDAO getInstance() {
+        return instance;
+    }
+
+    private InvoiceDAOImpl() {
+    }
 
     @Override
     @SneakyThrows
@@ -131,7 +140,7 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     @Override
     @SneakyThrows
     public List<Invoice> getAllInvoicesByUserAndStatus(long userId, Invoice.InvoiceStatus status) {
-        String sql = SELECT_ALL + "WHERE i.account_id = ? and status =? " + ORDER_BY_DATETIME +" DESC";
+        String sql = SELECT_ALL + "WHERE i.account_id = ? and status =? " + ORDER_BY_DATETIME + " DESC";
         List<Invoice> invoices = new ArrayList<>();
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -147,7 +156,6 @@ public class InvoiceDAOImpl implements InvoiceDAO {
         }
         return invoices;
     }
-
 
 
     @SneakyThrows

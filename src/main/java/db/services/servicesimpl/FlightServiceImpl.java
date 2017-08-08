@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightServiceImpl implements FlightService {
-    private FlightDAO dao = new FlightDAOImpl();
+    private FlightDAO dao = FlightDAOImpl.getInstance();
 
-    private final static FlightServiceImpl instance = new FlightServiceImpl();
-    public static FlightServiceImpl getInstance() {
+    private final static FlightService instance = new FlightServiceImpl();
+
+    public static FlightService getInstance() {
         return instance;
     }
-    private FlightServiceImpl(){
+
+    private FlightServiceImpl() {
     }
 
     @Override
@@ -45,11 +47,11 @@ public final class FlightServiceImpl implements FlightService {
 
     @Override
     public List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
-        return dao.getFlights(departure,arrival,dateFrom,dateTo,requiredSeats,business,numberOfPage);
+        return dao.getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage);
     }
 
     @Override
     public int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo, int requiredSeats, boolean business) {
-        return dao.getAmountFlights(arrival,departure,dateFrom,dateTo,requiredSeats,business);
+        return dao.getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business);
     }
 }

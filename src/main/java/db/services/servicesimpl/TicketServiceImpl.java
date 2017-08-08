@@ -1,7 +1,7 @@
 package db.services.servicesimpl;
 
 import db.dao.daoimpl.TicketDAOImpl;
-import db.dao.interfaces.TicketDao;
+import db.dao.interfaces.TicketDAO;
 import db.services.interfaces.TicketService;
 import pojo.Ticket;
 
@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public final class TicketServiceImpl implements TicketService {
-    private TicketDao dao = new TicketDAOImpl();
+    private TicketDAO dao = TicketDAOImpl.getInstance();
 
-    private final static TicketServiceImpl instance = new TicketServiceImpl();
-    public static TicketServiceImpl getInstance() {
+    private final static TicketService instance = new TicketServiceImpl();
+
+    public static TicketService getInstance() {
         return instance;
     }
-    private TicketServiceImpl(){
+
+    private TicketServiceImpl() {
     }
 
     @Override

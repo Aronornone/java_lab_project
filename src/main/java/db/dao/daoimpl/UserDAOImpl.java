@@ -10,19 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserDAOImpl implements UserDAO {
+public final class UserDAOImpl implements UserDAO {
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
     private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
+
+    private final static UserDAO instance = new UserDAOImpl();
+
+    public static UserDAO getInstance() {
+        return instance;
+    }
+
+    private UserDAOImpl() {
+    }
 
     @Override
     @SneakyThrows
     public void add(User user) {
         String sql = "INSERT INTO Account (name, email, password_hash, registration_date) VALUES (?, ?, ?, ?)";
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString   (1, user.getName());
-            ps.setString   (2, user.getEmail());
-            ps.setString   (3, user.getPasswordHash());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPasswordHash());
             ps.setTimestamp(4, Timestamp.valueOf(user.getRegistrationDate()));
 
             ps.executeUpdate();
@@ -36,8 +45,8 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -55,8 +64,8 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> get(String email) {
         String sql = SELECT_ALL + "WHERE email = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();
@@ -64,10 +73,10 @@ public class UserDAOImpl implements UserDAO {
             User user = null;
             while (rs.next()) {
                 user = new User(
-                        rs.getLong     ("id"),
-                        rs.getString   ("name"),
+                        rs.getLong("id"),
+                        rs.getString("name"),
                         email,
-                        rs.getString   ("password_hash"),
+                        rs.getString("password_hash"),
                         rs.getTimestamp("registration_date").toLocalDateTime());
             }
 
@@ -80,13 +89,13 @@ public class UserDAOImpl implements UserDAO {
     public void update(User user) {
         String sql = "UPDATE Account SET name = ?, email = ?, password_hash = ?, registration_date = ? WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString   (1, user.getName());
-            ps.setString   (2, user.getEmail());
-            ps.setString   (3, user.getPasswordHash());
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPasswordHash());
             ps.setTimestamp(3, Timestamp.valueOf(user.getRegistrationDate()));
-            ps.setLong     (4, user.getUserId());
+            ps.setLong(4, user.getUserId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -99,8 +108,8 @@ public class UserDAOImpl implements UserDAO {
     public void delete(User user) {
         String sql = "DELETE FROM Account WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, user.getUserId());
 
             ps.executeUpdate();
@@ -113,9 +122,9 @@ public class UserDAOImpl implements UserDAO {
     @SneakyThrows
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_REG_DATE);
-            ResultSet rs = statement.executeQuery()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_REG_DATE);
+             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 users.add(createNewUser(rs));
             }
@@ -129,10 +138,10 @@ public class UserDAOImpl implements UserDAO {
     @SneakyThrows
     private User createNewUser(ResultSet rs) {
         return new User(
-                rs.getLong     ("id"),
-                rs.getString   ("name"),
-                rs.getString   ("email"),
-                rs.getString   ("password_hash"),
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("password_hash"),
                 rs.getTimestamp("registration_date").toLocalDateTime()
         );
     }

@@ -13,16 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirportDAOImpl implements AirportDAO {
+public final class AirportDAOImpl implements AirportDAO {
     private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
+
+    private final static AirportDAO instance = new AirportDAOImpl();
+
+    public static AirportDAO getInstance() {
+        return instance;
+    }
+
+    private AirportDAOImpl() {
+    }
 
     @Override
     @SneakyThrows
     public void add(Airport airport) {
         String sql = "INSERT INTO Airport (code, city, airport_name, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airport.getCode());
             ps.setString(2, airport.getCity());
             ps.setString(3, airport.getAirportName());
@@ -40,8 +49,8 @@ public class AirportDAOImpl implements AirportDAO {
     public Optional<Airport> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -60,14 +69,14 @@ public class AirportDAOImpl implements AirportDAO {
     public void update(Airport airport) {
         String sql = "UPDATE Airport SET code = ?, city = ?, airport_name = ?, latitude = ?, longitude = ? WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airport.getCode());
             ps.setString(2, airport.getCity());
             ps.setString(3, airport.getAirportName());
             ps.setDouble(4, airport.getLatitude());
             ps.setDouble(5, airport.getLongitude());
-            ps.setLong  (6, airport.getAirportId());
+            ps.setLong(6, airport.getAirportId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -80,8 +89,8 @@ public class AirportDAOImpl implements AirportDAO {
     public void delete(Airport airport) {
         String sql = "DELETE FROM Airport WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, airport.getAirportId());
 
             ps.executeUpdate();
@@ -109,7 +118,7 @@ public class AirportDAOImpl implements AirportDAO {
 
     private Airport createNewAirport(ResultSet result) throws SQLException {
         return new Airport(
-                result.getLong  ("id"),
+                result.getLong("id"),
                 result.getString("code"),
                 result.getString("city"),
                 result.getString("airport_name"),

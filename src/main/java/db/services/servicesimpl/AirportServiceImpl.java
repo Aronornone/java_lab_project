@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirportServiceImpl implements AirportService {
-    private AirportDAO dao = new AirportDAOImpl();
+    private AirportDAO dao = AirportDAOImpl.getInstance();
 
-    private final static AirportServiceImpl instance = new AirportServiceImpl();
-    public static AirportServiceImpl getInstance() {
+    private final static AirportService instance = new AirportServiceImpl();
+
+    public static AirportService getInstance() {
         return instance;
     }
-    private AirportServiceImpl(){
+
+    private AirportServiceImpl() {
     }
 
     @Override

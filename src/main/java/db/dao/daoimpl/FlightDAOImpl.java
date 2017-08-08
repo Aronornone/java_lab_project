@@ -122,6 +122,65 @@ public class FlightDAOImpl implements FlightDAO {
         }
     }
 
+    @Override
+    public List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
+
+        int FLIGHTS_PER_PAGE = 10;
+        List<Flight> flights = new ArrayList<>();
+        try (Connection con = DataSource.getConnection()){
+            String checkSeats;
+            if (business) {
+                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+            } else {
+                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+            }
+            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>='" + dateFrom +
+                    "'  AND flight_datetime<='" + dateTo + "' AND departure_airport_id=" +
+                    departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
+                    "AS tt ORDER BY flight_datetime LIMIT "
+                    + (numberOfPage) * FLIGHTS_PER_PAGE + "," +
+                    FLIGHTS_PER_PAGE;
+            System.out.println(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                flights.add(new Flight(result.getLong("id"), result.getString("flight_number"), result.getDouble("base_cost"),result.getTimestamp("flight_datetime").toLocalDateTime(),departure, arrival));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return flights;
+
+    }
+
+    @Override
+    public int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo, int requiredSeats, boolean business) {
+        int i = 0;
+        try (Connection con = DataSource.getConnection();){
+            String checkSeats;
+            if (business) {
+                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+            } else {
+                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+            }
+            String sql = "SELECT COUNT(*) AS tt FROM flight " +
+                    "WHERE arrival_airport_id=" + arrival + " " +
+                    "AND departure_airport_id=" + departure + " " +
+                    "AND flight_datetime>'" + dateFrom + "' " +
+                    "AND flight_datetime<'" + dateTo + "' " +
+                    checkSeats + ";";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            i = rs.getInt("tt");
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
     @SneakyThrows
     private Flight createNewFlight(ResultSet rs) {
         return new Flight(

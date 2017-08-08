@@ -35,4 +35,14 @@ public class FlightServiceImpl implements FlightService {
     public List<Flight> getAll() {
         return dao.getAll();
     }
+
+    @Override
+    public List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
+        return dao.getFlights(departure,arrival,dateFrom,dateTo,requiredSeats,business,numberOfPage);
+    }
+
+    @Override
+    public int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo, int requiredSeats, boolean business) {
+        return dao.getAmountFlights(arrival,departure,dateFrom,dateTo,requiredSeats,business);
+    }
 }

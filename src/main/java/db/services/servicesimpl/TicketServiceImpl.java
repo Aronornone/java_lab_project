@@ -8,8 +8,15 @@ import pojo.Ticket;
 import java.util.List;
 import java.util.Optional;
 
-public class TicketServiceImpl implements TicketService {
+public final class TicketServiceImpl implements TicketService {
     private TicketDao dao = new TicketDAOImpl();
+
+    private final static TicketServiceImpl instance = new TicketServiceImpl();
+    public static TicketServiceImpl getInstance() {
+        return instance;
+    }
+    private TicketServiceImpl(){
+    }
 
     @Override
     public void add(Ticket ticket) {
@@ -42,7 +49,7 @@ public class TicketServiceImpl implements TicketService {
     public void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
                                      String[] passports, boolean[] luggages) {
         for (int i = 0; i < ticketsIds.length; i++) {
-            TicketService ts = new TicketServiceImpl();
+            TicketService ts = TicketServiceImpl.getInstance();
             Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
             ticketToUpdate.setPassengerName(passengerNames[i]);
             ticketToUpdate.setPassport(passports[i]);

@@ -8,8 +8,15 @@ import pojo.Airport;
 import java.util.List;
 import java.util.Optional;
 
-public class AirportServiceImpl implements AirportService {
+public final class AirportServiceImpl implements AirportService {
     private AirportDAO dao = new AirportDAOImpl();
+
+    private final static AirportServiceImpl instance = new AirportServiceImpl();
+    public static AirportServiceImpl getInstance() {
+        return instance;
+    }
+    private AirportServiceImpl(){
+    }
 
     @Override
     public void add(Airport airport) {

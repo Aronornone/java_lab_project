@@ -1,5 +1,7 @@
-package utils;
+package utils.generator;
 
+import db.services.interfaces.AirplaneService;
+import db.services.interfaces.AirportService;
 import db.services.servicesimpl.AirplaneServiceImpl;
 import db.services.servicesimpl.AirportServiceImpl;
 import lombok.SneakyThrows;
@@ -10,12 +12,12 @@ import java.util.List;
 
 import static db.dao.DataSource.getConnection;
 import static java.lang.StrictMath.*;
-import static utils.FlightsGenerator.DistanceCounter.calculateDistance;
-import static utils.RandomGenerator.*;
+import static utils.generator.FlightsGenerator.DistanceCounter.calculateDistance;
+import static utils.generator.RandomGenerator.*;
 
 public class FlightsGenerator {
-    private static AirplaneServiceImpl as = new AirplaneServiceImpl();
-    private static AirportServiceImpl aps = new AirportServiceImpl();
+    private static AirplaneService as = AirplaneServiceImpl.getInstance();
+    private static AirportService aps = AirportServiceImpl.getInstance();
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
@@ -139,6 +141,4 @@ public class FlightsGenerator {
             return sin(phi / 2) * sin(phi / 2) + cos(phi1) * cos(phi2) * sin(lambda / 2) * sin(lambda / 2);
         }
     }
-
-
 }

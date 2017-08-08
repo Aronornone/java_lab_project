@@ -11,8 +11,15 @@ import pojo.User;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceServiceImpl implements InvoiceService {
+public final class InvoiceServiceImpl implements InvoiceService {
     private InvoiceDAO dao = new InvoiceDAOImpl();
+
+    private final static InvoiceServiceImpl instance = new InvoiceServiceImpl();
+    public static InvoiceServiceImpl getInstance() {
+        return instance;
+    }
+    private InvoiceServiceImpl(){
+    }
 
     @Override
     public void add(Invoice invoice) {
@@ -39,8 +46,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     public int getNumberOfTicketsInInvoice(User user) {
         Invoice invoice;
         int numberOfTicketsInInvoice = 0;
-        InvoiceService is = new InvoiceServiceImpl();
-        TicketService ts = new TicketServiceImpl();
+        InvoiceService is = InvoiceServiceImpl.getInstance();
+        TicketService ts = TicketServiceImpl.getInstance();
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
@@ -48,7 +55,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         return numberOfTicketsInInvoice;
     }
-
 
     @Override
     public void update(Invoice invoice) {

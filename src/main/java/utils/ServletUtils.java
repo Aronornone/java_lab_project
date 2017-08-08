@@ -4,6 +4,7 @@ import db.dao.DataSource;
 import db.services.interfaces.TicketService;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Flight;
+import pojo.OurBitSet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +16,7 @@ import java.util.BitSet;
 import java.util.List;
 
 public class ServletUtils {
-    private static TicketService ts = new TicketServiceImpl();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     /**
      * Util method for ease work with BitSet from Mysql. Convert String to OurBitSet object.

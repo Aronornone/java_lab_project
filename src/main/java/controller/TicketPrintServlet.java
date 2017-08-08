@@ -19,8 +19,8 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
-    private static InvoiceService is = new InvoiceServiceImpl();
-    private static TicketService ts = new TicketServiceImpl();
+    private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

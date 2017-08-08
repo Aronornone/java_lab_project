@@ -20,9 +20,9 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
-    private static InvoiceService is = new InvoiceServiceImpl();
-    private static TicketService ts = new TicketServiceImpl();
+    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
+    private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);

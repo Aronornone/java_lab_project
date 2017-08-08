@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/priceRecountUnChecked")
 public class PriceRecounterUnCheckedServlet extends HttpServlet {
-    private static TicketService ts = new TicketServiceImpl();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long ticketId = Long.parseLong(request.getParameter("ticketId"));

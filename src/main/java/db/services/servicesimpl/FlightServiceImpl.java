@@ -8,8 +8,15 @@ import pojo.Flight;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightServiceImpl implements FlightService {
+public final class FlightServiceImpl implements FlightService {
     private FlightDAO dao = new FlightDAOImpl();
+
+    private final static FlightServiceImpl instance = new FlightServiceImpl();
+    public static FlightServiceImpl getInstance() {
+        return instance;
+    }
+    private FlightServiceImpl(){
+    }
 
     @Override
     public void add(Flight flight) {

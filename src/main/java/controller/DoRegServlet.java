@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
-    private static UserService us = new UserServiceImpl();
+    private static UserService us = UserServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

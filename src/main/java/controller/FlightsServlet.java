@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
-    private static AirportService aps = new AirportServiceImpl();
+    private static AirportService aps = AirportServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();

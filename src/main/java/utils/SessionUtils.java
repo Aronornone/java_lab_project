@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SessionUtils {
-    private static InvoiceService is = new InvoiceServiceImpl();
-    private static TicketService ts = new TicketServiceImpl();
-    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
+    private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
+    private static UserService us = UserServiceImpl.getInstance();
 
     /**
      * Method for invalidate userSession if it destroyed by Logout or timeout
@@ -37,7 +38,7 @@ public class SessionUtils {
     public static void invalidateSession(HttpSession httpSession) {
 
         User user = (User) httpSession.getAttribute("user");
-        Invoice invoice = null;
+        Invoice invoice;
 
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
@@ -55,8 +56,7 @@ public class SessionUtils {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("userId")) {
-                    UserService userService = new UserServiceImpl();
-                    Optional<User> userOptional = userService.get(Long.parseLong(cookie.getValue()));
+                    Optional<User> userOptional = us.get(Long.parseLong(cookie.getValue()));
                     if (userOptional.isPresent()) {
                         user = userOptional.get();
                         httpSession.setAttribute("user", user);
@@ -65,5 +65,4 @@ public class SessionUtils {
             }
         }
     }
-
 }

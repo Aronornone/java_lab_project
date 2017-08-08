@@ -18,8 +18,8 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
-    private static AirportService aps = new AirportServiceImpl();
-    private static UserService us = new UserServiceImpl();
+    private static AirportService aps = AirportServiceImpl.getInstance();
+    private static UserService us = UserServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");

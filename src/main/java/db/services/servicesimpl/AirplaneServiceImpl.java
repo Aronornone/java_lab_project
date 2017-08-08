@@ -8,8 +8,15 @@ import pojo.Airplane;
 import java.util.List;
 import java.util.Optional;
 
-public class AirplaneServiceImpl implements AirplaneService {
+public final class AirplaneServiceImpl implements AirplaneService {
     private AirplaneDAO dao = new AirplaneDAOImpl();
+
+    private final static AirplaneServiceImpl instance = new AirplaneServiceImpl();
+    public static AirplaneServiceImpl getInstance() {
+        return instance;
+    }
+    private AirplaneServiceImpl(){
+    }
 
     @Override
     public void add(Airplane airplane) {

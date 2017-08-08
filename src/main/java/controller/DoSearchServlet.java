@@ -7,7 +7,6 @@ import db.services.servicesimpl.FlightServiceImpl;
 import pojo.Airport;
 import pojo.Flight;
 import utils.PriceRecounter;
-import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,8 +24,8 @@ import static java.lang.StrictMath.ceil;
 
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
-    private static AirportService aps = new AirportServiceImpl();
-    private static FlightService fl=new FlightServiceImpl();
+    private static FlightService fl = FlightServiceImpl.getInstance();
+    private static AirportService aps = AirportServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -90,7 +89,7 @@ public class DoSearchServlet extends HttpServlet {
             Integer pageNum;
             try {
                 pageNum = Integer.parseInt(request.getParameter("pageNum"));
-                System.out.println("try + pagenum" +pageNum);
+                System.out.println("try + pagenum" + pageNum);
             } catch (NumberFormatException ex) {
                 pageNum = 0;
                 System.out.println("catch");

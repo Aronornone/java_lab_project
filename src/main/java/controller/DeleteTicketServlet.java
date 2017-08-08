@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
     private static FlightPlaceService fps = new FlightPlaceServiceImpl();

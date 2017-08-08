@@ -1,5 +1,9 @@
 package utils;
 
+import db.services.interfaces.FlightPlaceService;
+import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
+import db.services.servicesimpl.FlightPlaceServiceImpl;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
 import db.services.servicesimpl.UserServiceImpl;
@@ -14,8 +18,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class SessionUtils {
-    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
-    private static TicketServiceImpl ts = new TicketServiceImpl();
+    private static InvoiceService is = new InvoiceServiceImpl();
+    private static TicketService ts = new TicketServiceImpl();
+    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
 
     /**
      * Method for invalidate userSession if it destroyed by Logout or timeout
@@ -36,7 +41,7 @@ public class SessionUtils {
         if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
             invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
             List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            ServletUtils.revertSittingPlaces(tickets);
+            fps.revertSittingPlaces(tickets);
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.CANCELLED);
             is.update(invoice);
         }

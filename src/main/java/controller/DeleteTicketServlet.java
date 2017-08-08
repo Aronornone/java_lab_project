@@ -1,9 +1,13 @@
 package controller;
 
+import db.services.interfaces.FlightPlaceService;
+import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
+import db.services.servicesimpl.FlightPlaceServiceImpl;
+import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Ticket;
 import pojo.User;
-import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -17,9 +21,9 @@ import java.util.Optional;
 //Заглушка для страницы корзины
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-   // private static FlightDAOImpl fs = new FlightDAOImpl();
-   // private static InvoiceDAOImpl is = new InvoiceDAOImpl();
-    private static TicketServiceImpl ts = new TicketServiceImpl();
+    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
+    private static InvoiceService is = new InvoiceServiceImpl();
+    private static TicketService ts = new TicketServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -27,7 +31,6 @@ public class DeleteTicketServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
@@ -42,8 +45,8 @@ public class DeleteTicketServlet extends HttpServlet {
             Ticket ticket = ticketOptional.get();
             List<Ticket> tickets = new ArrayList<>();
             tickets.add(ticket);
-            ServletUtils.revertSittingPlaces(tickets);
-            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
+            fps.revertSittingPlaces(tickets);
+            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }
         String redirectBackString = "/bucket";

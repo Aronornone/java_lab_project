@@ -12,13 +12,16 @@
           href="<c:url value='resources/style.css'/>">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+        //$('<div></div>').load(document.URL + "&pageNum=0 #appendFlights tbody").html();
+
+        //var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=0 #appendFlights tbody").html();
+
         $(document).ready(function () {
-            var pageNum = 2;
+            var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=0 #appendFlights tbody").html();
+            $('#appendFlights').html('<tbody>' + divLoad + '</tbody>');
+
+            var pageNum = 1;
             if (pageNum >${requestScope.numPages}) document.getElementById("appendButton").remove();
-
-            var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" + pageNum + " #appendFlights tbody").html();
-            $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();
-
             $("#appendButton").click(function () {
                 var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" + pageNum + " #appendFlights tbody").html();
                 $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();

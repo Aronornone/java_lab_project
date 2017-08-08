@@ -1,8 +1,8 @@
 package utils;
 
 import db.dao.DataSource;
-import db.services.servicesimpl.*;
-import pojo.*;
+import db.services.interfaces.TicketService;
+import db.services.servicesimpl.TicketServiceImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,122 +14,7 @@ import java.util.BitSet;
 import java.util.List;
 
 public class ServletUtils {
-    private static FlightPlaceServiceImpl fps = new FlightPlaceServiceImpl();
-    private static FlightServiceImpl fs = new FlightServiceImpl();
-    private static AirportServiceImpl as = new AirportServiceImpl();
-    private static AirplaneServiceImpl aps = new AirplaneServiceImpl();
-    private static TicketServiceImpl ts = new TicketServiceImpl();
-    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
-
-    public static List<Airport> getAirports() {
-        List<Airport> airports = as.getAll();
-        return airports;
-    }
-
-    /**
-     * Method returns and reserved random place in airplane after user has add it to cart.
-     * Set bit for place with BitSet in FlightPlace and decrease available places of ticket class in FlightService.
-     *
-     * @param flightId id of FlightService to reserve.
-     * @param business if true it will get random place from BitSet in business class and reserved it.
-     * @return random reserved place for this flight in int
-     */
-    public static int getRandomSittingPlace(long flightId, boolean business) {
-        FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
-        Flight flight = fs.get((int) flightId).get();
-
-        OurBitSet placesBitSet;
-        int availablePlacesInClass;
-
-        if (business) {
-            placesBitSet = flightPlace.getBitPlacesBusiness();
-            availablePlacesInClass = flight.getAvailablePlacesBusiness();
-        } else {
-            placesBitSet = flightPlace.getBitPlacesEconom();
-            availablePlacesInClass = flight.getAvailablePlacesEconom();
-        }
-
-        int lengthPlacesBitSet = placesBitSet.length();
-        int reservedPlace = 0;
-        while (true) {
-            if (availablePlacesInClass == 0) {
-                //TODO: logging
-                System.out.println("Not enough placesBitSet");
-                break;
-            }
-            reservedPlace = RandomGenerator.createNumber(1, lengthPlacesBitSet);
-            if (placesBitSet.get(reservedPlace)) {
-                continue;
-            }
-            placesBitSet.set(reservedPlace);
-            if (business) {
-                flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() - 1);
-            } else {
-                flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() - 1);
-            }
-            fs.update(flight);
-            flight = fs.get((int) flightId).get();
-            flightPlace = fps.getByFlightId((int) flight.getFlightId()).get();
-            if (business) {
-                flightPlace.setBitPlacesBusiness(placesBitSet);
-            } else {
-                flightPlace.setBitPlacesEconom(placesBitSet);
-            }
-            fps.update(flightPlace);
-            break;
-        }
-        return reservedPlace;
-    }
-
-    /**
-     * Method for getting number of tickets in created invoice of user (exactly bucket)
-     *
-     * @param user user for whom we check number of tickets in invoice to view in bucket
-     * @return
-     */
-    public static int getNumberOfTicketsInInvoice(User user) {
-        Invoice invoice;
-        int numberOfTicketsInInvoice = 0;
-
-        if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
-            invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
-            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            numberOfTicketsInInvoice = tickets.size();
-        }
-        return numberOfTicketsInInvoice;
-    }
-
-    /**
-     * Method for revert places to flights if session of user is ended and he doesn't pay for invoice.
-     * If you use it for reset places in ticket from econom to business and conversely,
-     * you must first revert places, then change ticket class (to business\econom).
-     * After reverting tickets are deleted.
-     *
-     * @param tickets List of tickets on which we must update sitting places to flight and bitsetFlightPlace
-     */
-    public static void revertSittingPlaces(List<Ticket> tickets) {
-        Flight flight;
-        for (Ticket ticket : tickets) {
-            long flightId = ticket.getFlight().getFlightId();
-            FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
-            flight = fs.get((int) flightId).get();
-            OurBitSet newPlacesBitSet;
-            if (ticket.isBusinessClass()) {
-                flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() + 1);
-                newPlacesBitSet = flightPlace.getBitPlacesBusiness();
-                newPlacesBitSet.clear(ticket.getSittingPlace());
-                flightPlace.setBitPlacesBusiness(newPlacesBitSet);
-            } else {
-                flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() + 1);
-                newPlacesBitSet = flightPlace.getBitPlacesEconom();
-                newPlacesBitSet.clear(ticket.getSittingPlace());
-                flightPlace.setBitPlacesEconom(newPlacesBitSet);
-            }
-            fps.update(flightPlace);
-            fs.update(flight);
-            ts.delete(ticket);
-        }
-    }
+    private static TicketService ts = new TicketServiceImpl();
 
     /**
      * Util method for ease work with BitSet from Mysql. Convert String to OurBitSet object.
@@ -198,27 +83,9 @@ public class ServletUtils {
                     luggagesBoolean[i] = (luggagesList.get(i).equals("luggage"));
                 }
             }
-            updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
+            ts.updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
         } else empty = true;
         return empty;
-    }
-
-    /**
-     * Method for update information of ticket based on what client set in fields
-     *
-     * @param ticketsIds     array of Strings tickets ids
-     * @param passengerNames array of Strings passenger names
-     * @param passports      array of Strings passports
-     */
-    private static void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
-                                             String[] passports, boolean[] luggages) {
-        for (int i = 0; i < ticketsIds.length; i++) {
-            Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
-            ticketToUpdate.setPassengerName(passengerNames[i]);
-            ticketToUpdate.setPassport(passports[i]);
-            ticketToUpdate.setLuggage(luggages[i]);
-            ts.update(ticketToUpdate);
-        }
     }
 
     public static String generateButtons(int i) {
@@ -239,7 +106,7 @@ public class ServletUtils {
     }
 
     public static int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo,
-                                      int requiredSeats, boolean business) {
+                                       int requiredSeats, boolean business) {
         Connection con = DataSource.getConnection();
         int i = 0;
         String checkSeats;
@@ -250,8 +117,8 @@ public class ServletUtils {
                 checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
             }
             String sql = "SELECT COUNT(*) AS tt FROM flight " +
-                    "WHERE arrival_airport_id="+arrival+" "+
-                    "AND departure_airport_id="+departure+" "+
+                    "WHERE arrival_airport_id=" + arrival + " " +
+                    "AND departure_airport_id=" + departure + " " +
                     "AND flight_datetime>'" + dateFrom + "' " +
                     "AND flight_datetime<'" + dateTo + "' " +
                     checkSeats + ";";
@@ -279,7 +146,7 @@ public class ServletUtils {
     public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo,
                                                 int requiredSeats, boolean business, int numberOfPage) {
 
-        System.out.println("Found results (how many): "+getAmountFlights(arrival, departure, dateFrom, dateTo,requiredSeats,business));
+        System.out.println("Found results (how many): " + getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business));
         Connection con = DataSource.getConnection();
         int FLIGHTS_PER_PAGE = 10;
         List<FlightHelper> flights = new ArrayList<>();
@@ -294,8 +161,9 @@ public class ServletUtils {
                     "'  AND flight_datetime<='" + dateTo + "' AND departure_airport_id=" +
                     departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
                     "AS tt ORDER BY flight_datetime LIMIT "
-                    + (numberOfPage - 1)* FLIGHTS_PER_PAGE + "," +
+                    + (numberOfPage) * FLIGHTS_PER_PAGE + "," +
                     FLIGHTS_PER_PAGE;
+            System.out.println(sql);
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet result = ps.executeQuery();
 

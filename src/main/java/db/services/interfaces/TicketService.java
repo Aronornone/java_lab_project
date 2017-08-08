@@ -10,6 +10,8 @@ public interface TicketService {
     Optional<Ticket> get(long id);
     List<Ticket> getTicketsByInvoice(long invoiceId);
     void update(Ticket ticket);
+    void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
+                              String[] passports, boolean[] luggages);
     void delete(Ticket ticket);
     List<Ticket> getAll();
 }

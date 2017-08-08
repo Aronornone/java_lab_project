@@ -1,10 +1,11 @@
 package controller;
 
+import db.services.interfaces.AirportService;
+import db.services.servicesimpl.AirportServiceImpl;
 import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.Airport;
 import pojo.User;
-import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +17,8 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
+    private static AirportService aps = new AirportServiceImpl();
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
@@ -50,7 +53,7 @@ public class DoLoginServlet extends HttpServlet {
                 cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
                 response.addCookie(cookieUserId);
 
-                List<Airport> airports = ServletUtils.getAirports();
+                List<Airport> airports = aps.getAll();
                 request.setAttribute("departures", airports);
                 request.setAttribute("arrivals", airports);
 
@@ -67,10 +70,10 @@ public class DoLoginServlet extends HttpServlet {
                         (arrival == null) ||
                         (numberTicketsFilterString == null)) {
                     response.sendRedirect("/");
-                } else if (checkBox!=null){
+                } else if (checkBox != null) {
                     String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
                             "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                            "&numberTicketsFilter=" + numberTicketsFilterString + "&box="+checkBox[0];
+                            "&numberTicketsFilter=" + numberTicketsFilterString + "&box=" + checkBox[0];
                     response.sendRedirect(redirectBackString);
                 } else {
                     String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +

@@ -1,5 +1,6 @@
 package controller;
 
+import db.services.interfaces.InvoiceService;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import pojo.Invoice;
 import pojo.User;
@@ -15,7 +16,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
-    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
+    private static InvoiceService is = new InvoiceServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -41,7 +42,7 @@ public class PayInvoiceServlet extends HttpServlet {
             Invoice invoice = invoiceOptional.get();
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
             is.update(invoice);
-            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
+            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             httpSession.setAttribute("invoiceView", null);
             request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);

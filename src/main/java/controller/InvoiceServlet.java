@@ -1,5 +1,10 @@
 package controller;
 
+import db.services.interfaces.FlightPlaceService;
+import db.services.interfaces.FlightService;
+import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
+import db.services.servicesimpl.FlightPlaceServiceImpl;
 import db.services.servicesimpl.FlightServiceImpl;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
@@ -7,7 +12,6 @@ import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
-import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -20,9 +24,10 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
-    private static FlightServiceImpl fs = new FlightServiceImpl();
-    private static InvoiceServiceImpl is = new InvoiceServiceImpl();
-    private static TicketServiceImpl ts = new TicketServiceImpl();
+    private static FlightService fs = new FlightServiceImpl();
+    private static InvoiceService is = new InvoiceServiceImpl();
+    private static TicketService ts = new TicketServiceImpl();
+    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -78,7 +83,7 @@ public class InvoiceServlet extends HttpServlet {
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
-                int sittingPlace = ServletUtils.getRandomSittingPlace(flight.getFlightId(), business);
+                int sittingPlace = fps.getRandomSittingPlace(flight.getFlightId(), business);
                 if (sittingPlace == 0) {
                     request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
@@ -90,7 +95,7 @@ public class InvoiceServlet extends HttpServlet {
                     ts.add(ticket);
                 }
             }
-            int ticketsInBucket = ServletUtils.getNumberOfTicketsInInvoice(user);
+            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }

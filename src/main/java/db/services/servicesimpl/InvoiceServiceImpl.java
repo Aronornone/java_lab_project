@@ -3,7 +3,10 @@ package db.services.servicesimpl;
 import db.dao.daoimpl.InvoiceDAOImpl;
 import db.dao.interfaces.InvoiceDAO;
 import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
 import pojo.Invoice;
+import pojo.Ticket;
+import pojo.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,27 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Optional<Invoice> getInvoiceByUser(long userId, Invoice.InvoiceStatus status) {
         return dao.getInvoiceByUser(userId, status);
     }
+
+    /**
+     * Method for getting number of tickets in created invoice of user (exactly bucket)
+     *
+     * @param user user for whom we check number of tickets in invoice to view in bucket
+     * @return
+     */
+    @Override
+    public int getNumberOfTicketsInInvoice(User user) {
+        Invoice invoice;
+        int numberOfTicketsInInvoice = 0;
+        InvoiceService is = new InvoiceServiceImpl();
+        TicketService ts = new TicketServiceImpl();
+        if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
+            invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
+            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
+            numberOfTicketsInInvoice = tickets.size();
+        }
+        return numberOfTicketsInInvoice;
+    }
+
 
     @Override
     public void update(Invoice invoice) {

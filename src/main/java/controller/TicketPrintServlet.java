@@ -1,5 +1,7 @@
 package controller;
 
+import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Invoice;
@@ -18,6 +20,9 @@ import java.util.ResourceBundle;
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
 
+    private static InvoiceService is = new InvoiceServiceImpl();
+    private static TicketService ts = new TicketServiceImpl();
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
@@ -30,15 +35,12 @@ public class TicketPrintServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
 
-        InvoiceServiceImpl invoiceServiceImpl = new InvoiceServiceImpl();
-        TicketServiceImpl ticketServiceImpl = new TicketServiceImpl();
-
-        List<Invoice> allPayedInvoices = invoiceServiceImpl.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
+        List<Invoice> allPayedInvoices = is.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
         List<Invoice> invoicesSortedForPrint = new ArrayList<>();
         if (!allPayedInvoices.isEmpty()) {
             List<Ticket> ticketsForPayedInvoice;
             for (Invoice invoice : allPayedInvoices) {
-                ticketsForPayedInvoice = ticketServiceImpl.getTicketsByInvoice(invoice.getInvoiceId());
+                ticketsForPayedInvoice = ts.getTicketsByInvoice(invoice.getInvoiceId());
                 invoice.setTickets(ticketsForPayedInvoice);
                 invoicesSortedForPrint.add(invoice);
             }

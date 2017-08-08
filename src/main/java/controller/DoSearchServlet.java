@@ -1,5 +1,7 @@
 package controller;
 
+import db.services.interfaces.AirportService;
+import db.services.servicesimpl.AirportServiceImpl;
 import pojo.Airport;
 import utils.FlightHelper;
 import utils.PriceRecounter;
@@ -22,12 +24,13 @@ import static java.lang.StrictMath.ceil;
 //Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
+    private static AirportService aps = new AirportServiceImpl();
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
-        //User user = (User) httpSession.getAttribute("user");
-        List<Airport> airports = ServletUtils.getAirports();
+        List<Airport> airports = aps.getAll();
 
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
@@ -102,11 +105,9 @@ public class DoSearchServlet extends HttpServlet {
             } else request.setAttribute("flights", foundFlights);
 
             int numPages = (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
-                    dateToPlusDay.toString(),numberTicketsFilter,business) / 10);
-            System.out.println("numPages:" + numPages + " pageNum:"+pageNum);
+                    dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
             request.setAttribute("numPages", numPages);
             request.setAttribute("pageNum", pageNum);
-            httpSession.setAttribute("pageNum", pageNum);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
     }

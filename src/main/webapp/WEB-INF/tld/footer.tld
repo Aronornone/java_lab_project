@@ -1,0 +1,14 @@
+<taglib version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xsi:schemalocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+<tlib-version>2.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>footer</short-name>
+
+    <tag>
+        <description>Include footer in all pages except login and reg
+        </description>
+        <name>show</name>
+        <tag-class>utils.FooterCustomTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+</taglib>
+

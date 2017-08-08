@@ -5,7 +5,7 @@ import pojo.Ticket;
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketDao {
+public interface TicketDAO {
     void add(Ticket ticket);
     Optional<Ticket> get(long id);
     List<Ticket> getTicketsByInvoice(long invoiceId);

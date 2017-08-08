@@ -7,15 +7,24 @@ import db.services.interfaces.FlightService;
 import db.services.interfaces.TicketService;
 import pojo.Flight;
 import pojo.FlightPlace;
+import pojo.OurBitSet;
 import pojo.Ticket;
-import utils.OurBitSet;
-import utils.RandomGenerator;
+import utils.generator.RandomGenerator;
 
 import java.util.List;
 import java.util.Optional;
 
-public class FlightPlaceServiceImpl implements FlightPlaceService {
-    private FlightPlaceDAO dao = new FlightPlaceDAOImpl();
+public final class FlightPlaceServiceImpl implements FlightPlaceService {
+    private FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
+
+    private final static FlightPlaceService instance = new FlightPlaceServiceImpl();
+
+    public static FlightPlaceService getInstance() {
+        return instance;
+    }
+
+    private FlightPlaceServiceImpl() {
+    }
 
     @Override
     public void add(FlightPlace flightPlaces) {
@@ -58,9 +67,9 @@ public class FlightPlaceServiceImpl implements FlightPlaceService {
     @Override
     public void revertSittingPlaces(List<Ticket> tickets) {
         Flight flight;
-        FlightPlaceService fps = new FlightPlaceServiceImpl();
-        FlightService fs = new FlightServiceImpl();
-        TicketService ts = new TicketServiceImpl();
+        FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
+        FlightService fs = FlightServiceImpl.getInstance();
+        TicketService ts = TicketServiceImpl.getInstance();
         for (Ticket ticket : tickets) {
             long flightId = ticket.getFlight().getFlightId();
             FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
@@ -93,8 +102,8 @@ public class FlightPlaceServiceImpl implements FlightPlaceService {
      */
     @Override
     public int getRandomSittingPlace(long flightId, boolean business) {
-        FlightService fs = new FlightServiceImpl();
-        FlightPlaceService fps = new FlightPlaceServiceImpl();
+        FlightService fs = FlightServiceImpl.getInstance();
+        FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
         FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
         Flight flight = fs.get((int) flightId).get();
 

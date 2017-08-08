@@ -1,6 +1,7 @@
-package utils;
+package utils.generator;
 
 import db.dao.DataSource;
+import db.services.interfaces.FlightService;
 import db.services.servicesimpl.FlightServiceImpl;
 import lombok.SneakyThrows;
 import pojo.Flight;
@@ -9,7 +10,7 @@ import java.sql.Statement;
 import java.util.Collection;
 
 public class FlightPlacesInit {
-    static FlightServiceImpl fs = new FlightServiceImpl();
+    private static FlightService fs = FlightServiceImpl.getInstance();
 
     public static void main(String[] args) {
         initFlightPlaces();
@@ -36,13 +37,11 @@ public class FlightPlacesInit {
     }
 
     private static String genEmptyPlaces(int numberOfPlaces) {
-        if (numberOfPlaces==0) return "NULL";
+        if (numberOfPlaces == 0) return "NULL";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numberOfPlaces; i++) {
             sb.append(0);
         }
         return sb.toString();
     }
-
-
 }

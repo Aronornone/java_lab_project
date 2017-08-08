@@ -24,4 +24,15 @@
         <param-name>dbUserPwd</param-name>
         <param-value>mysql_pwd</param-value>
     </context-param>
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>
+                /WEB-INF/tld/footer.tld
+            </taglib-uri>
+            <taglib-location>
+                /WEB-INF/tld/footer.tld
+            </taglib-location>
+        </taglib>
+    </jsp-config>
 </web-app>

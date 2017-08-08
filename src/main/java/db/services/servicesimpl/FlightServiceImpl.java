@@ -8,8 +8,17 @@ import pojo.Flight;
 import java.util.List;
 import java.util.Optional;
 
-public class FlightServiceImpl implements FlightService {
-    private FlightDAO dao = new FlightDAOImpl();
+public final class FlightServiceImpl implements FlightService {
+    private FlightDAO dao = FlightDAOImpl.getInstance();
+
+    private final static FlightService instance = new FlightServiceImpl();
+
+    public static FlightService getInstance() {
+        return instance;
+    }
+
+    private FlightServiceImpl() {
+    }
 
     @Override
     public void add(Flight flight) {
@@ -34,5 +43,15 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public List<Flight> getAll() {
         return dao.getAll();
+    }
+
+    @Override
+    public List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
+        return dao.getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage);
+    }
+
+    @Override
+    public int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo, int requiredSeats, boolean business) {
+        return dao.getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business);
     }
 }

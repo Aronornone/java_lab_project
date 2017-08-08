@@ -4,6 +4,7 @@ import db.dao.DataSource;
 import db.services.interfaces.TicketService;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Flight;
+import pojo.OurBitSet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +16,7 @@ import java.util.BitSet;
 import java.util.List;
 
 public class ServletUtils {
-    private static TicketService ts = new TicketServiceImpl();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     /**
      * Util method for ease work with BitSet from Mysql. Convert String to OurBitSet object.
@@ -89,91 +90,4 @@ public class ServletUtils {
         return empty;
     }
 
-    public static String generateButtons(int i) {
-        int FLIGHTS_PER_PAGE = 2;
-        int pages = 2;
-        StringBuilder sb = new StringBuilder();
-        while (i - 2 >= 0) {
-            sb.append(generateOneButton(pages++)).append(" ");
-            i -= 2;
-        }
-        return sb.toString();
-    }
-
-    public static String generateOneButton(int number) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href=\"/\"").append(number).append("\\\">").append(number).append("</a>");
-        return sb.toString();
-    }
-
-    public static int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo,
-                                       int requiredSeats, boolean business) {
-        Connection con = DataSource.getConnection();
-        int i = 0;
-        String checkSeats;
-        try {
-            if (business) {
-                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
-            } else {
-                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
-            }
-            String sql = "SELECT COUNT(*) AS tt FROM flight " +
-                    "WHERE arrival_airport_id=" + arrival + " " +
-                    "AND departure_airport_id=" + departure + " " +
-                    "AND flight_datetime>'" + dateFrom + "' " +
-                    "AND flight_datetime<'" + dateTo + "' " +
-                    checkSeats + ";";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            i = rs.getInt("tt");
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return i;
-    }
-
-    /**
-     * @param departure     id departured airport
-     * @param arrival       id arrival airport
-     * @param dateFrom      date to departure
-     * @param dateTo        date till departure need to be done
-     * @param requiredSeats
-     * @param business
-     * @param numberOfPage
-     * @return
-     */
-    public static List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo,
-                                                int requiredSeats, boolean business, int numberOfPage) {
-
-        System.out.println("Found results (how many): " + getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business));
-        Connection con = DataSource.getConnection();
-        int FLIGHTS_PER_PAGE = 10;
-        List<Flight> flights = new ArrayList<>();
-        try {
-            String checkSeats = "";
-            if (business) {
-                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
-            } else {
-                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
-            }
-            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>='" + dateFrom +
-                    "'  AND flight_datetime<='" + dateTo + "' AND departure_airport_id=" +
-                    departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
-                    "AS tt ORDER BY flight_datetime LIMIT "
-                    + (numberOfPage) * FLIGHTS_PER_PAGE + "," +
-                    FLIGHTS_PER_PAGE;
-            System.out.println(sql);
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet result = ps.executeQuery();
-
-            while (result.next()) {
-                flights.add(new Flight(result.getLong("id"), result.getString("flight_number"), result.getDouble("base_cost"),result.getTimestamp("flight_datetime").toLocalDateTime(),departure, arrival));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return flights;
-    }
 }

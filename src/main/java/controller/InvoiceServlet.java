@@ -24,16 +24,14 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
-    private static FlightService fs = new FlightServiceImpl();
-    private static InvoiceService is = new InvoiceServiceImpl();
-    private static TicketService ts = new TicketServiceImpl();
-    private static FlightPlaceService fps = new FlightPlaceServiceImpl();
+    private static FlightService fs = FlightServiceImpl.getInstance();
+    private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
-        Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
 
         User user = (User) httpSession.getAttribute("user");
         String dateFromString = (String) httpSession.getAttribute("dateFrom");
@@ -42,10 +40,6 @@ public class InvoiceServlet extends HttpServlet {
         String arrival = (String) httpSession.getAttribute("arrivalF");
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
         String[] checkBox = (String[]) httpSession.getAttribute("business");
-
-        if (user == null) {
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
 
         String redirectBackString;
         if (checkBox != null) {

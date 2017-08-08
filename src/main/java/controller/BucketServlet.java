@@ -18,20 +18,14 @@ import java.util.*;
 
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
-    private static InvoiceService is = new InvoiceServiceImpl();
-    private static TicketService ts = new TicketServiceImpl();
+    private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
-        Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
         User user = (User) httpSession.getAttribute("user");
         request.setCharacterEncoding("UTF-8");
-
-        if (user == null) {
-            request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-        }
         httpSession.setAttribute("lastServletPath", request.getServletPath());
 
         Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),

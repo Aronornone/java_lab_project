@@ -8,8 +8,17 @@ import pojo.User;
 import java.util.List;
 import java.util.Optional;
 
-public class UserServiceImpl implements UserService {
-    private UserDAO dao = new UserDAOImpl();
+public final class UserServiceImpl implements UserService {
+    private UserDAO dao = UserDAOImpl.getInstance();
+
+    private final static UserService instance = new UserServiceImpl();
+
+    public static UserService getInstance() {
+        return instance;
+    }
+
+    private UserServiceImpl() {
+    }
 
     @Override
     public void add(User user) {

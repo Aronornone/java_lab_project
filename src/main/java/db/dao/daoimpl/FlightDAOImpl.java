@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightDAOImpl implements FlightDAO {
+    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
@@ -26,7 +27,6 @@ public final class FlightDAOImpl implements FlightDAO {
             "  JOIN Airport  d ON d.id = f.departure_airport_id\n" +
             "  JOIN Airport  a ON a.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_DATETIME_AND_BASECOST = "ORDER BY flight_datetime, base_cost";
-    private static final Logger log = ServletLog.getLgDB();
 
     private final static FlightDAO instance = new FlightDAOImpl();
 
@@ -78,12 +78,12 @@ public final class FlightDAOImpl implements FlightDAO {
             log.info("get(id): Putting 'id' = " + id + " into its PreparedStatement position.");
             ps.setLong(1, id);
 
-            log.info("get(id): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet rs = ps.executeQuery();
-
-            log.info("get(id): Creating a 'flight' object from ResultSet.");
-            while (rs.next()) {
-                flight = createNewFlight(rs);
+            log.info("get(id): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("get(id): Creating a 'flight' object from ResultSet.");
+                while (rs.next()) {
+                    flight = createNewFlight(rs);
+                }
             }
         } catch (SQLException e) {
             log.error("get(id): SQL exception!\n" + e);
@@ -162,87 +162,87 @@ public final class FlightDAOImpl implements FlightDAO {
     }
 
     @Override
+    @SneakyThrows
     public List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo, int requiredSeats, boolean business, int numberOfPage) {
-        log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Initializing 'FLIGHTS_PER_PAGE' variable.");
+        log.info("getFlights(...): Initializing 'FLIGHTS_PER_PAGE' variable.");
         int FLIGHTS_PER_PAGE = 10;
-        log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Creating an empty list of flights.");
+        log.info("getFlights(...): Creating an empty list of flights.");
+
+        log.info("getFlights(...): Declaring 'checkSeats' string variable.");
+        String checkSeats;
+        log.info("getFlights(...): Checking if 'business' = true.");
+        if (business) {
+            log.info("getFlights(...): Creating a part of sql query for available business places.");
+            checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+        } else {
+            log.info("getFlights(...): Creating a part of sql query for available econom places.");
+            checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+        }
+        log.info("getFlights(...): Initializing an 'sql' variable.");
+        String sql = "SELECT * FROM (SELECT * FROM Flight " +
+                "WHERE flight_datetime >= '" + dateFrom + "' AND flight_datetime <= '" + dateTo + "' " +
+                "AND departure_airport_id = " + departure + " AND arrival_airport_id = " + arrival + checkSeats + ") " +
+                "AS tt ORDER BY flight_datetime LIMIT " + (numberOfPage) * FLIGHTS_PER_PAGE + "," + FLIGHTS_PER_PAGE;
+
+        log.info("getFlights(...): Creating an empty list of flights.");
         List<Flight> flights = new ArrayList<>();
-
-        log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Trying to create a connection to a data source.");
-        try (Connection connection = DataSource.getConnection()){
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Declaring 'checkSeats' string variable.");
-            String checkSeats;
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Checking if 'business' = true.");
-            if (business) {
-                log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Creating an sql query for available business places.");
-                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
-            } else {
-                log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Creating an sql query for available econom places.");
-                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
-            }
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Initializing an 'sql' variable.");
-            String sql = "SELECT  * FROM   (SELECT * FROM Flight WHERE flight_datetime>='" + dateFrom +
-                    "'  AND flight_datetime<='" + dateTo + "' AND departure_airport_id=" +
-                    departure + " AND arrival_airport_id=" + arrival + checkSeats + ") " +
-                    "AS tt ORDER BY flight_datetime LIMIT "
-                    + (numberOfPage) * FLIGHTS_PER_PAGE + "," +
-                    FLIGHTS_PER_PAGE;
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Printing 'sql' query in a console.");
-            System.out.println(sql);
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Preparing a PreparedStatement query.");
-            PreparedStatement ps = connection.prepareStatement(sql);
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet result = ps.executeQuery();
-
-            log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Adding flights from ResultSet to the list.");
-            while (result.next()) {
-                flights.add(new Flight(result.getLong("id"), result.getString("flight_number"), result.getDouble("base_cost"),result.getTimestamp("flight_datetime").toLocalDateTime(),departure, arrival));
+        log.info("getFlights(...): Trying to create a connection to a data source, prepare a query.");
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)) {
+            log.info("getFlights(...): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("getFlights(...): Adding flights from ResultSet to the list.");
+                while (rs.next()) {
+                    flights.add(new Flight(rs.getLong("id"), rs.getString("flight_number"), rs.getDouble("base_cost"), rs.getTimestamp("flight_datetime").toLocalDateTime(), departure, arrival));
+                }
             }
         } catch (SQLException e) {
-            log.error("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): SQL exception!\n" + e);
-        } //TODO: закрыть PreparedStatement и ResultSet.
+            log.error("getFlights(...): SQL exception!\n" + e);
+        }
 
-        log.info("getFlights(departure, arrival, dateFrom, dateTo, requiredSeats, business, numberOfPage): Returning the list of flights.");
+        log.info("getFlights(...): Returning the list of flights.");
         return flights;
     }
 
     @Override
+    @SneakyThrows
     public int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo, int requiredSeats, boolean business) {
-        log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Initializing 'i' variable.");
+        log.info("getAmountFlights(...): Initializing 'i' variable.");
         int i = 0;
-        log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Trying to create a connection to a data source.");
-        try (Connection connection = DataSource.getConnection();){
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Declaring 'checkSeats' string variable.");
-            String checkSeats;
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Checking if 'business' = true.");
-            if (business) {
-                log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Creating an sql query for available business places.");
-                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
-            } else {
-                log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Creating an sql query for available econom places.");
-                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
-            }
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Initializing an 'sql' variable.");
-            String sql = "SELECT COUNT(*) AS tt FROM flight " +
-                    "WHERE arrival_airport_id=" + arrival + " " +
-                    "AND departure_airport_id=" + departure + " " +
-                    "AND flight_datetime>'" + dateFrom + "' " +
-                    "AND flight_datetime<'" + dateTo + "' " +
-                    checkSeats + ";";
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Preparing a PreparedStatement query.");
-            PreparedStatement ps = connection.prepareStatement(sql);
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet rs = ps.executeQuery();
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Executing rs.next()");
-            rs.next();
-            log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Initializing 'i' variable with rs.getInt(\"tt\")");
-            i = rs.getInt("tt");
-            //rs.close();
-        } catch (SQLException e) {
-            log.error("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): SQL exception!\n" + e);
-        } //TODO: закрыть PreparedStatement и ResultSet.
 
-        log.info("getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business): Returning amount of flights.");
+        log.info("getAmountFlights(...): Declaring 'checkSeats' string variable.");
+        String checkSeats;
+        log.info("getAmountFlights(...): Checking if 'business' = true.");
+        if (business) {
+            log.info("getAmountFlights(...): Creating a part of sql query for available business places.");
+            checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+        } else {
+            log.info("getAmountFlights(...): Creating a part of sql query for available econom places.");
+            checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+        }
+        log.info("getAmountFlights(...): Initializing an 'sql' variable.");
+        String sql = "SELECT COUNT(*) AS tt FROM flight " +
+                "WHERE arrival_airport_id=" + arrival + " " +
+                "AND departure_airport_id=" + departure + " " +
+                "AND flight_datetime>'" + dateFrom + "' " +
+                "AND flight_datetime<'" + dateTo + "' " +
+                checkSeats + ";";
+
+        log.info("getAmountFlights(...): Trying to create a connection to a data source, prepare a query.");
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)){
+            log.info("getAmountFlights(...): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("getAmountFlights(...): Executing rs.next()");
+                rs.next();
+                log.info("getAmountFlights(...): Initializing 'i' variable with rs.getInt(\"tt\")");
+                i = rs.getInt("tt");
+            }
+        } catch (SQLException e) {
+            log.error("getAmountFlights(...): SQL exception!\n" + e);
+        }
+
+        log.info("getAmountFlights(...): Returning amount of flights.");
         return i;
     }
 

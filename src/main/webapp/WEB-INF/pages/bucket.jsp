@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="foot" uri="/WEB-INF/tld/footer.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page pageEncoding="UTF-8" %>
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
@@ -143,7 +144,7 @@
             </div>
         </div>
     </div>
-    <jsp:include page="/WEB-INF/pages/_footer.jsp"/>
+    <foot:show/>
 </div>
 </body>
 </html>

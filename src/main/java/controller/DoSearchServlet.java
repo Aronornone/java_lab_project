@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import db.services.interfaces.AirportService;
 import db.services.interfaces.FlightService;
 import db.services.servicesimpl.AirportServiceImpl;
@@ -24,8 +25,8 @@ import static java.lang.StrictMath.ceil;
 
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
-    private static FlightService fl = FlightServiceImpl.getInstance();
     private static AirportService aps = AirportServiceImpl.getInstance();
+    private static FlightService fl = FlightServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -88,8 +89,8 @@ public class DoSearchServlet extends HttpServlet {
 
             Integer pageNum;
             try {
-                pageNum = Integer.parseInt(request.getParameter("pageNum"));
-                System.out.println("try + pagenum" + pageNum);
+                pageNum = Integer.parseInt(request.getParameter("page"));
+                System.out.println("try + pagenum:" +pageNum);
             } catch (NumberFormatException ex) {
                 pageNum = 0;
                 System.out.println("catch");
@@ -102,16 +103,26 @@ public class DoSearchServlet extends HttpServlet {
                 f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(), f.getDateTime(), business));
                 httpSession.setAttribute("ticketCost", f.getBaseCost());
             }
+
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
-            } else request.setAttribute("flights", foundFlights);
 
-            int numPages = (int) ceil((double) fl.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
-                    dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
-            request.setAttribute("numPages", numPages);
-            request.setAttribute("pageNum", pageNum);
-            request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
+            } else if (pageNum==0){ // if first page, foundFlights are sent as attribute, also number of found pages is sent
+                request.setAttribute("flights", foundFlights);
+                int numPages = (int) ceil((double) fl.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
+                        dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
+                request.setAttribute("numPages", numPages);
+                System.out.println("required number of pages:"+numPages);
+                request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
+            }else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
+
+                String json= new Gson().toJson(foundFlights);
+                response.setContentType("json");
+                response.setCharacterEncoding("UTF-8");
+                System.out.println(json);
+                response.getWriter().write(json);
+            }
         }
     }
 

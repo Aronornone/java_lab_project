@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="foot" uri="/WEB-INF/tld/footer.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="${sessionScope.currentLocale}"/>
 <fmt:setBundle basename="JSPBundle"/>
@@ -21,7 +22,7 @@
             <p><fmt:message key="or"/> <a href="ticketsPrint"><fmt:message key="ticketsPrint"/></a></p>
         </div>
     </div>
-    <jsp:include page="/WEB-INF/pages/_footer.jsp"/>
+    <foot:show/>
 </div>
 </body>
 </html>

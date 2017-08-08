@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
-
     private static InvoiceService is = new InvoiceServiceImpl();
     private static TicketService ts = new TicketServiceImpl();
 

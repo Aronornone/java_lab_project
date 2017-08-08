@@ -1,5 +1,6 @@
 package controller;
 
+import db.services.interfaces.UserService;
 import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import pojo.User;
@@ -16,6 +17,8 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
+    private static UserService us = new UserServiceImpl();
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
@@ -49,14 +52,13 @@ public class DoRegServlet extends HttpServlet {
                 request.setAttribute("username", username);
                 request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
             } else {
-                UserServiceImpl userServiceImpl = new UserServiceImpl();
-                Optional<User> userOptional = userServiceImpl.get(email);
+                Optional<User> userOptional = us.get(email);
                 if (userOptional.isPresent()) {
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
                     User user = new User(username, email, password1HashReq, registrationDate);
-                    userServiceImpl.add(user);
+                    us.add(user);
                     request.setAttribute("regSuccess", err.getString("regSuccess"));
                     request.setAttribute("email", email);
                     request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

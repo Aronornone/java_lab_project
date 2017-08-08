@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/addFlightToInvoice","/bucket","/ticketsPrint","/ticketDelete"})
+@WebFilter(urlPatterns = {"/addFlightToInvoice","/ticketDelete","/invoicePay","/bucket","/addFlightToInvoice"})
 public class LoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -23,6 +23,5 @@ public class LoginFilter implements Filter {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }
         chain.doFilter(request,response);
-
     }
 }

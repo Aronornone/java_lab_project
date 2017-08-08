@@ -2,11 +2,12 @@ package controller;
 
 import com.google.gson.Gson;
 import db.services.interfaces.AirportService;
+import db.services.interfaces.FlightService;
 import db.services.servicesimpl.AirportServiceImpl;
+import db.services.servicesimpl.FlightServiceImpl;
 import pojo.Airport;
 import pojo.Flight;
 import utils.PriceRecounter;
-import utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,8 @@ import static java.lang.StrictMath.ceil;
 
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
-    private static AirportService aps = new AirportServiceImpl();
+    private static AirportService aps = AirportServiceImpl.getInstance();
+    private static FlightService fl = FlightServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -93,7 +95,7 @@ public class DoSearchServlet extends HttpServlet {
                 pageNum = 0;
                 System.out.println("catch");
             }
-            List<Flight> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),
+            List<Flight> foundFlights = fl.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
             for (Flight f : foundFlights) {
                 f.setArrivalAirport(arr);
@@ -108,7 +110,7 @@ public class DoSearchServlet extends HttpServlet {
 
             } else if (pageNum==0){ // if first page, foundFlights are sent as attribute, also number of found pages is sent
                 request.setAttribute("flights", foundFlights);
-                int numPages = (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
+                int numPages = (int) ceil((double) fl.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
                         dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
                 request.setAttribute("numPages", numPages);
                 System.out.println("required number of pages:"+numPages);

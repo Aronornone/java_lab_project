@@ -12,11 +12,13 @@ import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
-import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -98,7 +100,7 @@ public class InvoiceServlet extends HttpServlet {
 
     private Invoice getInvoiceForUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err, User user,
                                       String redirectBackString, int numberTicketsFlight, int availableForClass) throws ServletException, IOException {
-        Invoice invoice = null;
+        Invoice invoice;
         if (numberTicketsFlight > availableForClass) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);

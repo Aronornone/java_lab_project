@@ -1,10 +1,11 @@
 package controller;
 
 import db.services.interfaces.InvoiceService;
+import db.services.interfaces.TicketService;
 import db.services.servicesimpl.InvoiceServiceImpl;
+import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Invoice;
 import pojo.User;
-import utils.ServletUtils;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import java.util.ResourceBundle;
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
     private static InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static TicketService ts = TicketServiceImpl.getInstance();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -34,7 +36,7 @@ public class PayInvoiceServlet extends HttpServlet {
         String[] passports = request.getParameterValues("passport");
         String[] luggages = request.getParameterValues("lugBox");
 
-        if (ServletUtils.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
+        if (ts.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
             request.setAttribute("setFields", err.getString("setFields"));
             request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);

@@ -12,6 +12,8 @@ public interface TicketService {
     void update(Ticket ticket);
     void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
                               String[] passports, boolean[] luggages);
+    boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames,
+                                   String[] passports, String[] luggages);
     void delete(Ticket ticket);
     List<Ticket> getAll();
 }

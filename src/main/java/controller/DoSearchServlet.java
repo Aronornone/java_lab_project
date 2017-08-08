@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 
 import static java.lang.StrictMath.ceil;
 
-//Заглушка для страницы рейсов
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
     private static AirportService aps = new AirportServiceImpl();
@@ -88,8 +87,10 @@ public class DoSearchServlet extends HttpServlet {
             Integer pageNum;
             try {
                 pageNum = Integer.parseInt(request.getParameter("pageNum"));
+                System.out.println("try");
             } catch (NumberFormatException ex) {
                 pageNum = 1;
+                System.out.println("catch");
             }
             List<FlightHelper> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);

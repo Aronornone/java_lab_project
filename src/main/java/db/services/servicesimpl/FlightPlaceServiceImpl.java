@@ -7,22 +7,25 @@ import db.services.interfaces.FlightService;
 import db.services.interfaces.TicketService;
 import pojo.Flight;
 import pojo.FlightPlace;
-import pojo.Ticket;
 import pojo.OurBitSet;
+import pojo.Ticket;
 import utils.generator.RandomGenerator;
 
 import java.util.List;
 import java.util.Optional;
 
 public final class FlightPlaceServiceImpl implements FlightPlaceService {
-    private FlightPlaceDAO dao = new FlightPlaceDAOImpl();
+    private FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
 
-    private final static FlightPlaceServiceImpl instance = new FlightPlaceServiceImpl();
-    public static FlightPlaceServiceImpl getInstance() {
+    private final static FlightPlaceService instance = new FlightPlaceServiceImpl();
+
+    public static FlightPlaceService getInstance() {
         return instance;
     }
-    private FlightPlaceServiceImpl(){
+
+    private FlightPlaceServiceImpl() {
     }
+
     @Override
     public void add(FlightPlace flightPlaces) {
         dao.add(flightPlaces);

@@ -13,19 +13,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AirplaneDAOImpl implements AirplaneDAO {
+public final class AirplaneDAOImpl implements AirplaneDAO {
     private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
+
+    private final static AirplaneDAO instance = new AirplaneDAOImpl();
+
+    public static AirplaneDAO getInstance() {
+        return instance;
+    }
+
+    private AirplaneDAOImpl() {
+    }
 
     @Override
     @SneakyThrows
     public void add(Airplane airplane) {
         String sql = "INSERT INTO Airplane (name, capacity_econom, capacity_business) VALUES (?, ?, ?)";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airplane.getName());
-            ps.setInt   (2, airplane.getCapacityEconom());
-            ps.setInt   (3, airplane.getCapacityBusiness());
+            ps.setInt(2, airplane.getCapacityEconom());
+            ps.setInt(3, airplane.getCapacityBusiness());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -38,8 +47,8 @@ public class AirplaneDAOImpl implements AirplaneDAO {
     public Optional<Airplane> get(long id) {
         String sql = SELECT_ALL + "WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -58,12 +67,12 @@ public class AirplaneDAOImpl implements AirplaneDAO {
     public void update(Airplane airplane) {
         String sql = "UPDATE Airplane SET name = ?, capacity_econom = ?, capacity_business = ? WHERE id = ?";
 
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, airplane.getName());
-            ps.setInt   (2, airplane.getCapacityEconom());
-            ps.setInt   (3, airplane.getCapacityBusiness());
-            ps.setLong  (4, airplane.getAirplaneId());
+            ps.setInt(2, airplane.getCapacityEconom());
+            ps.setInt(3, airplane.getCapacityBusiness());
+            ps.setLong(4, airplane.getAirplaneId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -89,9 +98,9 @@ public class AirplaneDAOImpl implements AirplaneDAO {
     @Override
     public List<Airplane> getAll() {
         List<Airplane> airplanes = new ArrayList<>();
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
-            ResultSet rs = statement.executeQuery()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
+             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 airplanes.add(createNewAirplane(rs));
             }

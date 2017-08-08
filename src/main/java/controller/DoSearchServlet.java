@@ -87,9 +87,9 @@ public class DoSearchServlet extends HttpServlet {
             Integer pageNum;
             try {
                 pageNum = Integer.parseInt(request.getParameter("pageNum"));
-                System.out.println("try");
+                System.out.println("try + pagenum" +pageNum);
             } catch (NumberFormatException ex) {
-                pageNum = 1;
+                pageNum = 0;
                 System.out.println("catch");
             }
             List<Flight> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),

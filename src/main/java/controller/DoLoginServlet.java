@@ -1,6 +1,7 @@
 package controller;
 
 import db.services.interfaces.AirportService;
+import db.services.interfaces.UserService;
 import db.services.servicesimpl.AirportServiceImpl;
 import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -18,6 +19,7 @@ import java.util.ResourceBundle;
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
     private static AirportService aps = new AirportServiceImpl();
+    private static UserService us = new UserServiceImpl();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -34,8 +36,7 @@ public class DoLoginServlet extends HttpServlet {
             String passwordHashDB = "";
             User user = null;
             String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
-            UserServiceImpl userServiceImpl = new UserServiceImpl();
-            Optional<User> userOptional = userServiceImpl.get(email);
+            Optional<User> userOptional = us.get(email);
             if (userOptional.isPresent()) {
                 user = userOptional.get();
                 passwordHashDB = user.getPasswordHash();

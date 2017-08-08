@@ -3,6 +3,7 @@ package utils;
 import db.services.interfaces.FlightPlaceService;
 import db.services.interfaces.InvoiceService;
 import db.services.interfaces.TicketService;
+import db.services.interfaces.UserService;
 import db.services.servicesimpl.FlightPlaceServiceImpl;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
@@ -54,8 +55,8 @@ public class SessionUtils {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("userId")) {
-                    UserServiceImpl userServiceImpl = new UserServiceImpl();
-                    Optional<User> userOptional = userServiceImpl.get(Long.parseLong(cookie.getValue()));
+                    UserService userService = new UserServiceImpl();
+                    Optional<User> userOptional = userService.get(Long.parseLong(cookie.getValue()));
                     if (userOptional.isPresent()) {
                         user = userOptional.get();
                         httpSession.setAttribute("user", user);

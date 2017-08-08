@@ -21,7 +21,7 @@
             var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" +pageNum + "#appendFlights tbody").html();
             $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();
 
-            if (pageNum >${requestScope.numPages}) document.getElementById("appendButton").remove();
+            if (pageNum >=${requestScope.numPages}) document.getElementById("appendButton").remove();
 
             $("#appendButton").click(function () {
                 pageNum++;

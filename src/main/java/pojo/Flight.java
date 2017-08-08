@@ -20,6 +20,9 @@ public class Flight {
     private LocalDateTime dateTime;
     private Set<Ticket> tickets;
 
+    private long departureAirportId;
+    private long arrivalAirportId;
+
     public Flight(Airplane airplane, String flightNumber, Airport departureAirport,
                   Airport arrivalAirport, Double baseCost, int availablePlacesEconom,
                   int availablePlacesBusiness, LocalDateTime dateTime) {
@@ -44,5 +47,14 @@ public class Flight {
         this.availablePlacesEconom = availablePlacesEconom;
         this.availablePlacesBusiness = availablePlacesBusiness;
         this.dateTime = dateTime;
+    }
+
+    public Flight(long flightId, String flightNumber, Double baseCost, LocalDateTime dateTime, long departureAirportId, long arrivalAirportId) {
+        this.flightId = flightId;
+        this.flightNumber = flightNumber;
+        this.baseCost = baseCost;
+        this.dateTime = dateTime;
+        this.departureAirportId = departureAirportId;
+        this.arrivalAirportId = arrivalAirportId;
     }
 }

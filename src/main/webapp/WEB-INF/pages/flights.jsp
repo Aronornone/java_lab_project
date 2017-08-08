@@ -122,8 +122,8 @@
                     <form name="form2" id="form2${flight.flightId}" class="addTickets" action="addFlightToInvoice"
                           method="post">
                         <tr>
-                            <td>${flight.departureAir.code} (${flight.departureAir.city})</td>
-                            <td>${flight.arrivalAir.code} (${flight.arrivalAir.city})</td>
+                            <td>${flight.departureAirport.code} (${flight.departureAirport.city})</td>
+                            <td>${flight.arrivalAirport.code} (${flight.arrivalAirport.city})</td>
                             <td>${flight.dateTime}</td>
                             <td>${flight.flightNumber}</td>
                             <td>${flight.baseCost}</td>

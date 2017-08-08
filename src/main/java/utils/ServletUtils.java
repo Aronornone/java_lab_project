@@ -3,6 +3,7 @@ package utils;
 import db.dao.DataSource;
 import db.services.interfaces.TicketService;
 import db.services.servicesimpl.TicketServiceImpl;
+import pojo.Flight;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -143,13 +144,13 @@ public class ServletUtils {
      * @param numberOfPage
      * @return
      */
-    public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo,
+    public static List<Flight> getFlights(long departure, long arrival, String dateFrom, String dateTo,
                                                 int requiredSeats, boolean business, int numberOfPage) {
 
         System.out.println("Found results (how many): " + getAmountFlights(arrival, departure, dateFrom, dateTo, requiredSeats, business));
         Connection con = DataSource.getConnection();
         int FLIGHTS_PER_PAGE = 10;
-        List<FlightHelper> flights = new ArrayList<>();
+        List<Flight> flights = new ArrayList<>();
         try {
             String checkSeats = "";
             if (business) {
@@ -168,8 +169,7 @@ public class ServletUtils {
             ResultSet result = ps.executeQuery();
 
             while (result.next()) {
-                flights.add(new FlightHelper(result.getLong("id"),
-                        result.getDouble("base_cost"), result.getString("flight_number"), departure, arrival, result.getTimestamp("flight_datetime").toLocalDateTime()));
+                flights.add(new Flight(result.getLong("id"), result.getString("flight_number"), result.getDouble("base_cost"),result.getTimestamp("flight_datetime").toLocalDateTime(),departure, arrival));
             }
         } catch (SQLException e) {
             e.printStackTrace();

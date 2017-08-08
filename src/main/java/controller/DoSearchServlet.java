@@ -3,7 +3,7 @@ package controller;
 import db.services.interfaces.AirportService;
 import db.services.servicesimpl.AirportServiceImpl;
 import pojo.Airport;
-import utils.FlightHelper;
+import pojo.Flight;
 import utils.PriceRecounter;
 import utils.ServletUtils;
 
@@ -91,11 +91,11 @@ public class DoSearchServlet extends HttpServlet {
             } catch (NumberFormatException ex) {
                 pageNum = 1;
             }
-            List<FlightHelper> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),
+            List<Flight> foundFlights = ServletUtils.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
-            for (FlightHelper f : foundFlights) {
-                f.setArrivalAir(arr);
-                f.setDepartureAir(dep);
+            for (Flight f : foundFlights) {
+                f.setArrivalAirport(arr);
+                f.setDepartureAirport(dep);
                 f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(), f.getDateTime(), business));
                 httpSession.setAttribute("ticketCost", f.getBaseCost());
             }

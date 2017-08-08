@@ -124,7 +124,6 @@ public final class AirportDAOImpl implements AirportDAO {
     }
 
     @Override
-    @SneakyThrows
     public List<Airport> getAll() {
         log.info("getAll(): Creating an empty list of airports.");
         List<Airport> airports = new ArrayList<>();
@@ -144,7 +143,8 @@ public final class AirportDAOImpl implements AirportDAO {
         return airports;
     }
 
-    private Airport createNewAirport(ResultSet rs) throws SQLException {
+    @SneakyThrows
+    private Airport createNewAirport(ResultSet rs) {
         return new Airport(
                 rs.getLong  ("id"),
                 rs.getString("code"),

@@ -82,7 +82,6 @@ public class DoSearchServlet extends HttpServlet {
                     + " " + departure + " " + arrival + " " + numberTicketsFilter
                     + checkbox);
 
-            //Формируем список подходящих рейсов, TODO: надо сделать получением постранично!
             Integer pageNum;
             try {
                 pageNum = Integer.parseInt(request.getParameter("pageNum"));
@@ -102,11 +101,12 @@ public class DoSearchServlet extends HttpServlet {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
             } else request.setAttribute("flights", foundFlights);
 
-            int numPages = (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(), dateToPlusDay.toString()) / 10);
+            int numPages = (int) ceil((double) ServletUtils.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
+                    dateToPlusDay.toString(),numberTicketsFilter,business) / 10);
+            System.out.println("numPages:" + numPages + " pageNum:"+pageNum);
             request.setAttribute("numPages", numPages);
             request.setAttribute("pageNum", pageNum);
-            System.out.println(request.getAttribute("numPages"));
-            System.out.println(request.getAttribute("pageNum"));
+            httpSession.setAttribute("pageNum", pageNum);
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
         }
     }

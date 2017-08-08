@@ -12,9 +12,9 @@
           href="<c:url value='resources/style.css'/>">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-
         $(document).ready(function () {
             var pageNum = 2;
+            if (pageNum >${requestScope.numPages}) document.getElementById("appendButton").remove();
 
             var divLoad = $('#hiddenDiv').load(document.URL + "&pageNum=" + pageNum + " #appendFlights tbody").html();
             $('#appendFlights').append('<tbody>' + divLoad + '</tbody>').html();

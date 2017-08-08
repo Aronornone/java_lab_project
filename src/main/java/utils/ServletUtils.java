@@ -238,19 +238,23 @@ public class ServletUtils {
         return sb.toString();
     }
 
-    public static int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo) {
+    public static int getAmountFlights(long arrival, long departure, String dateFrom, String dateTo,
+                                      int requiredSeats, boolean business) {
         Connection con = DataSource.getConnection();
         int i = 0;
+        String checkSeats;
         try {
+            if (business) {
+                checkSeats = " AND available_places_business>=" + requiredSeats + " ";
+            } else {
+                checkSeats = " AND available_places_econom>=" + requiredSeats + " ";
+            }
             String sql = "SELECT COUNT(*) AS tt FROM flight " +
-                    "WHERE " +
-                    "arrival_airport_id="+arrival+" "+
-                    "AND " +
-                    "departure_airport_id="+departure+" "+
-                    "AND " +
-                    "flight_datetime>'" + dateFrom + "' " +
-                    "AND " +
-                    "flight_datetime<'" + dateTo + "'";
+                    "WHERE arrival_airport_id="+arrival+" "+
+                    "AND departure_airport_id="+departure+" "+
+                    "AND flight_datetime>'" + dateFrom + "' " +
+                    "AND flight_datetime<'" + dateTo + "' " +
+                    checkSeats + ";";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -275,7 +279,7 @@ public class ServletUtils {
     public static List<FlightHelper> getFlights(long departure, long arrival, String dateFrom, String dateTo,
                                                 int requiredSeats, boolean business, int numberOfPage) {
 
-        System.out.println("Found results (how many): "+getAmountFlights(arrival, departure, dateFrom, dateTo));
+        System.out.println("Found results (how many): "+getAmountFlights(arrival, departure, dateFrom, dateTo,requiredSeats,business));
         Connection con = DataSource.getConnection();
         int FLIGHTS_PER_PAGE = 10;
         List<FlightHelper> flights = new ArrayList<>();

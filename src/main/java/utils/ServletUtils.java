@@ -1,14 +1,10 @@
 package utils;
 
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.TicketServiceImpl;
 import pojo.OurBitSet;
 
 import java.util.BitSet;
 
 public class ServletUtils {
-    private static TicketService ts = TicketServiceImpl.getInstance();
-
     /**
      * Util method for ease work with BitSet from Mysql. Convert String to OurBitSet object.
      *
@@ -40,6 +36,4 @@ public class ServletUtils {
         }
         return stringBuilder.toString();
     }
-
-
 }

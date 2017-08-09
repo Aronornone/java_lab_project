@@ -5,40 +5,24 @@
 <fmt:setBundle basename="JSPBundle"/>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.menu li').hover(
-                function () {
-                    $('ul', this).slideDown("fast");
-                },
-                function () {
-                    $('ul', this).slideUp("fast");
-                }
-            );
-        });
-    </script>
+    <script src="resources/js/_header.js"></script>
 </head>
 <!DOCTYPE html>
 <div class="header">
     <div class="logged">
         <div class="flagesLogged">
-            <%
-                String pageName = (String) session.getAttribute("lastServletPath");
-            %>
             <form action="language" method="post">
                 <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_en_small.png"
                                                                           alt="en"></a>
                 <input type="hidden" name="locale" value="enLocale">
-                <input type="hidden" name="backPage" value="<%=pageName%>">
+                <input type="hidden" name="backPage" value="${sessionScope.lastServletPath}">
             </form>
             <form action="language" method="post">
                 <a href="javascript:" onclick="parentNode.submit();"><img src="resources/images/flag_ru_small.png"
                                                                           alt="ru"></a>
                 <input type="hidden" name="locale" value="ruLocale">
-                <input type="hidden" name="backPage" value="<%=pageName%>">
+                <input type="hidden" name="backPage" value="${sessionScope.lastServletPath}">
             </form>
-
         </div>
 
         <div class="rightHeader">

@@ -2,7 +2,6 @@ package db.dao;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
-import utils.ServletLog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +19,7 @@ public class DataSource {
     private static final int MIN_IDLE_CONNECTIONS;
     private static final int MAX_IDLE_CONNECTIONS;
     private static final int MAX_OPENED_PREP_STMTS;
+    private static Logger log = Logger.getLogger("DBLog");
 
     private static BasicDataSource dataSource;
     private static Connection connection;

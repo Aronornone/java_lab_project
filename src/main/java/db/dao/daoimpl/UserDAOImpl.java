@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 public final class UserDAOImpl implements UserDAO {
+    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
     private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
-    private static final Logger log = ServletLog.getLgDB();
 
     private final static UserDAO instance = new UserDAOImpl();
 
@@ -44,7 +44,7 @@ public final class UserDAOImpl implements UserDAO {
             log.info("add(user): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("add(user): SQL exception!\n" + e);
+            log.error("add(user): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -70,10 +70,10 @@ public final class UserDAOImpl implements UserDAO {
                 user = createNewUser(rs);
             }
         } catch (SQLException e) {
-            log.error("get(id): SQL exception!\n" + e);
+            log.error("get(id): SQL exception code: " + e.getErrorCode());
         }
 
-        log.info("get(id): Returning 'user'): " + user);
+        log.info("get(id): Returning a 'user' object: " + user);
         return Optional.ofNullable(user);
     }
 
@@ -91,18 +91,18 @@ public final class UserDAOImpl implements UserDAO {
             log.info("get(email): Putting 'email' = " + email + " into its PreparedStatement position.");
             ps.setString(1, email);
 
-            log.info("get(email): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet rs = ps.executeQuery();
-
-            log.info("get(email): Putting ResultSet to 'user' object");
-            while (rs.next()) {
-                user = createNewUser(rs);
+            log.info("get(email): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("get(email): Putting ResultSet to 'user' object");
+                while (rs.next()) {
+                    user = createNewUser(rs);
+                }
             }
         } catch (SQLException e) {
-            log.error("get(email): SQL exception!\n" + e);
+            log.error("get(email): SQL exception code: " + e.getErrorCode());
         }
 
-        log.info("get(email): Returning 'user'): " + user);
+        log.info("get(id): Returning a 'user' object: " + user);
         return Optional.ofNullable(user);
     }
 
@@ -125,7 +125,7 @@ public final class UserDAOImpl implements UserDAO {
             log.info("update(user): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("update(user): SQL exception!\n" + e);
+            log.error("update(user): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -144,7 +144,7 @@ public final class UserDAOImpl implements UserDAO {
             log.info("delete(user): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("delete(user): SQL exception!\n" + e);
+            log.error("delete(user): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -162,7 +162,7 @@ public final class UserDAOImpl implements UserDAO {
                 users.add(createNewUser(rs));
             }
         } catch (SQLException e) {
-            log.error("getAll(): SQL exception!\n" + e);
+            log.error("getAll(): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getAll(): Returning the list of users.");

@@ -1,6 +1,7 @@
 package db.dao;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,20 +19,23 @@ public class DataSource {
     private static final int MIN_IDLE_CONNECTIONS;
     private static final int MAX_IDLE_CONNECTIONS;
     private static final int MAX_OPENED_PREP_STMTS;
+    private static Logger log = Logger.getLogger("DBLog");
 
     private static BasicDataSource dataSource;
     private static Connection connection;
 
     static {
+        log.info("static block: Initiazling empty properties.");
         Properties properties = new Properties();
 
+        log.info("static block: Trying to read properties from 'db.properties'.");
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                     Thread.currentThread().getContextClassLoader()
                     .getResourceAsStream("db.properties")))) {
             properties.load(br);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("static block: " + e);
         }
 
         DRIVER_CLASS_NAME = properties.getProperty("driver");
@@ -45,6 +49,7 @@ public class DataSource {
     }
 
     private static void getDataSource() {
+        log.info("getDataSource(): Initializing dataSource field (of BasicDataSource apache class).");
         BasicDataSource bds = new BasicDataSource();
         bds.setDriverClassName(DRIVER_CLASS_NAME);
         bds.setUrl(DB_URL);
@@ -58,15 +63,19 @@ public class DataSource {
     }
 
     public static Connection getConnection() {
+        log.info("getConnection(): Trying to initialize connection.");
         try {
             if (connection == null || connection.isClosed()) {
-                if (dataSource == null) DataSource.getDataSource();
+                if (dataSource == null) {
+                    DataSource.getDataSource();
+                }
                 connection = dataSource.getConnection();
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            log.error("getConnection(): SQLException code: " + e.getErrorCode());
         }
 
+        log.info("getConnection(): Returning connection variable.");
         return connection;
     }
 }

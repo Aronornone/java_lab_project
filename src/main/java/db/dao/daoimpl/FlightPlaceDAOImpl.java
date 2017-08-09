@@ -8,7 +8,6 @@ import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
 import pojo.FlightPlace;
-import utils.ServletLog;
 import utils.ServletUtils;
 
 import java.sql.*;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightPlaceDAOImpl implements FlightPlaceDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL =
             "SELECT\n" +
             " fp.id, fp.flight_id, f.airplane_id, p.name, p.capacity_econom, p.capacity_business, f.flight_number,\n" +
@@ -31,6 +29,7 @@ public final class FlightPlaceDAOImpl implements FlightPlaceDAO {
             " JOIN Airport  d ON d.id = f.departure_airport_id\n" +
             " JOIN Airport  a ON a.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_DATETIME = " ORDER BY f.flight_datetime ";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static FlightPlaceDAO instance = new FlightPlaceDAOImpl();
 

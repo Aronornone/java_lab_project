@@ -3,7 +3,6 @@ package controller;
 import db.services.interfaces.TicketService;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Ticket;
-import utils.PriceRecounter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +24,7 @@ public class PriceRecounterUnCheckedServlet extends HttpServlet {
         Ticket ticket = ticketService.get(ticketId).get();
 
         double oldPrice = ticket.getPrice();
-        double newPrice = PriceRecounter.defectByLuggage(oldPrice);
+        double newPrice = ticketService.defectByLuggage(oldPrice);
         ticket.setLuggage(false);
         ticket.setPrice(newPrice);
         ticketService.update(ticket);

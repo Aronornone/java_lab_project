@@ -5,7 +5,6 @@ import db.dao.interfaces.AirplaneDAO;
 import lombok.SneakyThrows;
 import org.apache.log4j.Logger;
 import pojo.Airplane;
-import utils.ServletLog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirplaneDAOImpl implements AirplaneDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static AirplaneDAO instance = new AirplaneDAOImpl();
 
@@ -142,9 +141,10 @@ public class AirplaneDAOImpl implements AirplaneDAO {
     @SneakyThrows
     private Airplane createNewAirplane(ResultSet rs) {
         return new Airplane(
-                rs.getLong("id"),
+                rs.getLong  ("id"),
                 rs.getString("name"),
-                rs.getInt("capacity_econom"),
-                rs.getInt("capacity_business"));
+                rs.getInt   ("capacity_econom"),
+                rs.getInt   ("capacity_business")
+        );
     }
 }

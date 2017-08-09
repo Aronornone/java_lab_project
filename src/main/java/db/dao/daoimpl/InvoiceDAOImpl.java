@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import org.apache.log4j.Logger;
 import pojo.Invoice;
 import pojo.User;
-import utils.ServletLog;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,13 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 public final class InvoiceDAOImpl implements InvoiceDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL =
             "SELECT\n" +
             " i.id, account_id, a.name, a.email, a.password_hash, a.registration_date, status, invoice_datetime \n" +
             "FROM Invoice i \n" +
             " JOIN Account a ON a.id = i.account_id \n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static InvoiceDAO instance = new InvoiceDAOImpl();
 

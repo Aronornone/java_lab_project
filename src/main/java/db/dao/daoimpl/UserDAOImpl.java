@@ -5,7 +5,6 @@ import db.dao.interfaces.UserDAO;
 import lombok.SneakyThrows;
 import org.apache.log4j.Logger;
 import pojo.User;
-import utils.ServletLog;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public final class UserDAOImpl implements UserDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
     private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static UserDAO instance = new UserDAOImpl();
 

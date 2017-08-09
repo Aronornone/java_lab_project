@@ -5,6 +5,8 @@ import db.dao.interfaces.TicketDAO;
 import db.services.interfaces.TicketService;
 import pojo.Ticket;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +105,46 @@ public final class TicketServiceImpl implements TicketService {
         }
     }
 
+    public double recountPrice(double basePrice, LocalDateTime dateTime, boolean business) {
+        double result = basePrice;
+        if (business) {
+            result = affectByBusiness(basePrice);
+        }
+        result = affectPriceByDate(result, dateTime);
+        return (int) result; // casting int for simplicity
+    }
+
+    @Override
+    public double affectByBusiness(double basePrice) {
+        return affectPriceByPercents(basePrice, 30);
+    }
+
+    @Override
+    public double affectByLuggage(double basePrice) {
+        return basePrice + 1000;
+    }
+
+    @Override
+    public double defectByLuggage(double basePrice) {
+        return basePrice - 1000;
+    }
+
+    @Override
+    public double affectPriceByPercents(double basePrice, int percents) {
+        return basePrice * (1 + (double) percents / 100);
+    }
+
+    //max price increase=basePrice*0.3(30%)
+    //price increases only if days until departure<120 days
+    @Override
+    public double affectPriceByDate(double basePrice, LocalDateTime dateTime) {
+        long daysUntilDeparture = LocalDateTime.from(LocalDateTime.now()).until(dateTime, ChronoUnit.DAYS);
+        if (daysUntilDeparture > 120) {
+            return basePrice;
+        }
+        return basePrice + 0.3 * basePrice * (1 - daysUntilDeparture / 120);
+    }
+
     @Override
     public void delete(Ticket ticket) {
         dao.delete(ticket);
@@ -112,4 +154,5 @@ public final class TicketServiceImpl implements TicketService {
     public List<Ticket> getAll() {
         return dao.getAll();
     }
+
 }

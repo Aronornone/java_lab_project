@@ -26,10 +26,18 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
-    private static FlightService fs = FlightServiceImpl.getInstance();
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
-    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
+    private static FlightService flightService;
+    private static InvoiceService invoiceService;
+    private static TicketService ticketService;
+    private static FlightPlaceService flightPlaceService;
+
+    public void init() {
+        flightService = FlightServiceImpl.getInstance();
+        invoiceService = InvoiceServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
+        flightPlaceService = FlightPlaceServiceImpl.getInstance();
+
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -56,11 +64,11 @@ public class InvoiceServlet extends HttpServlet {
         int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
 
         int pageNum = (int) httpSession.getAttribute("pageLast");
-        httpSession.setAttribute("pageToLoad",pageNum);
+        httpSession.setAttribute("pageToLoad", pageNum);
 
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
-        Optional<Flight> flightOptional = fs.get(Long.parseLong(flightIdString));
+        Optional<Flight> flightOptional = flightService.get(Long.parseLong(flightIdString));
         if (flightOptional.isPresent()) {
             flight = flightOptional.get();
         }
@@ -80,7 +88,7 @@ public class InvoiceServlet extends HttpServlet {
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
                 //request for available places and reserve of them
-                int sittingPlace = fps.getRandomSittingPlace(flight.getFlightId(), business);
+                int sittingPlace = flightPlaceService.getRandomSittingPlace(flight.getFlightId(), business);
                 if (sittingPlace == 0) {
                     request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
@@ -88,11 +96,11 @@ public class InvoiceServlet extends HttpServlet {
                     //new Ticket to DB
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, business, (double) httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
-                    ts.add(ticket);
-                    httpSession.setAttribute("boughtFlightId",flight.getFlightId());
+                    ticketService.add(ticket);
+                    httpSession.setAttribute("boughtFlightId", flight.getFlightId());
                 }
             }
-            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
+            int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             //request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }
@@ -107,17 +115,17 @@ public class InvoiceServlet extends HttpServlet {
             request.getRequestDispatcher(redirectBackString).forward(request, response);
         } else {
             //check if invoice already created in status Created for this user
-            Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
+            Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                     Invoice.InvoiceStatus.CREATED);
             if (invoiceOptional.isPresent()) {
                 invoice = invoiceOptional.get();
             } else {
                 //if invoice isn't created, add it
                 invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
-                is.add(invoice);
+                invoiceService.add(invoice);
             }
         }
-        invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
+        invoice = invoiceService.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
         return invoice;
     }
 

@@ -17,8 +17,11 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
-    private static UserService us = UserServiceImpl.getInstance();
+    private static UserService userService;
 
+    public void init() {
+        userService = UserServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
@@ -52,13 +55,13 @@ public class DoRegServlet extends HttpServlet {
                 request.setAttribute("username", username);
                 request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
             } else {
-                Optional<User> userOptional = us.get(email);
+                Optional<User> userOptional = userService.get(email);
                 if (userOptional.isPresent()) {
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
                     User user = new User(username, email, password1HashReq, registrationDate);
-                    us.add(user);
+                    userService.add(user);
                     request.setAttribute("regSuccess", err.getString("regSuccess"));
                     request.setAttribute("email", email);
                     request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

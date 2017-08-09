@@ -17,8 +17,13 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static InvoiceService invoiceService;
+    private static TicketService ticketService;
+
+    public void init() {
+        invoiceService = InvoiceServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -29,22 +34,22 @@ public class PayInvoiceServlet extends HttpServlet {
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         request.setCharacterEncoding("UTF-8");
 
-        Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
+        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
         String[] ticketsIds = request.getParameterValues("ticketId");
         String[] passengerNames = request.getParameterValues("passengerName");
         String[] passports = request.getParameterValues("passport");
         String[] luggages = request.getParameterValues("lugBox");
 
-        if (ts.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
+        if (ticketService.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
             request.setAttribute("setFields", err.getString("setFields"));
             request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);
         } else if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
-            is.update(invoice);
-            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
+            invoiceService.update(invoice);
+            int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             httpSession.setAttribute("invoiceView", null);
             request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);

@@ -8,11 +8,13 @@ import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Ticket;
 import pojo.User;
-import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +22,15 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static FlightPlaceService flightPlaceService;
+    private static InvoiceService invoiceService;
+    private static TicketService ticketService;
+
+    public void init() {
+        flightPlaceService = FlightPlaceServiceImpl.getInstance();
+        invoiceService = InvoiceServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -34,13 +42,13 @@ public class DeleteTicketServlet extends HttpServlet {
         User user = (User) httpSession.getAttribute("user");
 
         String ticketId = request.getParameter("ticketId");
-        Optional<Ticket> ticketOptional = ts.get(Long.parseLong(ticketId));
+        Optional<Ticket> ticketOptional = ticketService.get(Long.parseLong(ticketId));
         if (ticketOptional.isPresent()) {
             Ticket ticket = ticketOptional.get();
             List<Ticket> tickets = new ArrayList<>();
             tickets.add(ticket);
-            fps.revertSittingPlaces(tickets);
-            int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
+            flightPlaceService.revertSittingPlaces(tickets);
+            int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         }
         String redirectBackString = "/bucket";

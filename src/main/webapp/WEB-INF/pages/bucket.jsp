@@ -14,35 +14,7 @@
           type="text/css"
           href="<c:url value='resources/style.css'/>">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".flightInfo").click(function () {
-                $(this).nextAll('.passenger').toggle("slow");
-            });
-        });
-    </script>
-    <script>
-        function calc(ticketId) {
-            var luggageEl = document.getElementById('lug' + ticketId);
-            var oldPrice = document.getElementById('price' + ticketId).textContent;
-            var totalSum = document.getElementById('totalSum').textContent;
-            if (luggageEl.checked) {
-                $.get("priceRecountChecked", {ticketId: ticketId},
-                    function (price) {
-                        $('#price' + ticketId).text(price);
-                        totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
-                        document.getElementById('totalSum').textContent = totalSum;
-                    });
-            } else {
-                $.get("priceRecountUnChecked", {ticketId: ticketId},
-                    function (price) {
-                        $('#price' + ticketId).text(price);
-                        totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
-                        document.getElementById('totalSum').textContent = totalSum;
-                    });
-            }
-        }
-    </script>
+    <script src="resources/js/bucket.js"> </script>
 </head>
 
 <body>

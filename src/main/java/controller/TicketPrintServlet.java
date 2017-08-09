@@ -7,11 +7,13 @@ import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
-import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +21,25 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static InvoiceService invoiceService;
+    private static TicketService ticketService;
 
+    public void init() {
+        invoiceService = InvoiceServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
         httpSession.setAttribute("lastServletPath", request.getServletPath());
 
-        List<Invoice> allPayedInvoices = is.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
+        List<Invoice> allPayedInvoices = invoiceService.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
         List<Invoice> invoicesSortedForPrint = new ArrayList<>();
         if (!allPayedInvoices.isEmpty()) {
             List<Ticket> ticketsForPayedInvoice;
             for (Invoice invoice : allPayedInvoices) {
-                ticketsForPayedInvoice = ts.getTicketsByInvoice(invoice.getInvoiceId());
+                ticketsForPayedInvoice = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
                 invoice.setTickets(ticketsForPayedInvoice);
                 invoicesSortedForPrint.add(invoice);
             }

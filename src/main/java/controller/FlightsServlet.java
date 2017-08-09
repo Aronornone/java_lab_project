@@ -4,7 +4,6 @@ import db.services.interfaces.AirportService;
 import db.services.servicesimpl.AirportServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Airport;
-import utils.ServletLog;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -18,6 +17,7 @@ import java.util.ResourceBundle;
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
     private static AirportService airportService;
+    private final static Logger LOG=Logger.getLogger("servLog");
 
     public void init() {
         airportService = AirportServiceImpl.getInstance();
@@ -27,28 +27,6 @@ public class FlightsServlet extends HttpServlet {
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
-
-        // Получаем путь до папки для логов
-        String pathForLog = getServletContext().getRealPath("/");
-        System.out.println(pathForLog);
-        // Устанавливаем динамические значения для log4j.properties
-        System.setProperty("pathReg", pathForLog + "reg.log");
-        System.setProperty("pathServ", pathForLog + "serv.log");
-        System.setProperty("pathDB", pathForLog + "db.log");
-        // Инициализируем логгеры
-        Logger logDB = ServletLog.getLgDB();
-        Logger logServ = ServletLog.getLgServ();
-        Logger logREG = ServletLog.getLgReg();
-
-        // Устанавливаем логгеры для всех сервлетов
-        getServletContext().setAttribute("logREG", logREG);
-        getServletContext().setAttribute("logServ", logServ);
-        getServletContext().setAttribute("logDB", logDB);
-//        Для вызова из других сервлетов:
-//        Logger log=(Logger)getServletContext().getAttribute("logREG");
-//        log.error("Registration failed");
-//        Logger log=(Logger)getServletContext().getAttribute("logDB");
-//        log.info("DB started");
 
         if (httpSession.getAttribute("currentLocale") == null) {
             httpSession.setAttribute("currentLocale", Locale.getDefault());

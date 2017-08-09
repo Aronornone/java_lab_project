@@ -19,6 +19,7 @@ public final class UserDAOImpl implements UserDAO {
     private final static UserDAO instance = new UserDAOImpl();
 
     public static UserDAO getInstance() {
+        log.info("getInstance(): Returning instance of UserDAOImpl.");
         return instance;
     }
 

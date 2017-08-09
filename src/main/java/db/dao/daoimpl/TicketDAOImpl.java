@@ -36,6 +36,7 @@ public final class TicketDAOImpl implements TicketDAO {
     private final static TicketDAO instance = new TicketDAOImpl();
 
     public static TicketDAO getInstance() {
+        log.info("getInstance(): Returning instance of TicketDAOImpl.");
         return instance;
     }
 

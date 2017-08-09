@@ -34,6 +34,7 @@ public final class FlightPlaceDAOImpl implements FlightPlaceDAO {
     private final static FlightPlaceDAO instance = new FlightPlaceDAOImpl();
 
     public static FlightPlaceDAO getInstance() {
+        log.info("getInstance(): Returning instance of FlightPlaceDAOImpl.");
         return instance;
     }
 

@@ -21,6 +21,7 @@ public final class AirportDAOImpl implements AirportDAO {
     private final static AirportDAO instance = new AirportDAOImpl();
 
     public static AirportDAO getInstance() {
+        log.info("getInstance(): Returning instance of AirportDAOImpl.");
         return instance;
     }
 

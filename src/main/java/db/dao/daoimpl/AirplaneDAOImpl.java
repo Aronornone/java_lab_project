@@ -21,6 +21,7 @@ public class AirplaneDAOImpl implements AirplaneDAO {
     private final static AirplaneDAO instance = new AirplaneDAOImpl();
 
     public static AirplaneDAO getInstance() {
+        log.info("getInstance(): Returning instance of AirplaneDAOImpl.");
         return instance;
     }
 

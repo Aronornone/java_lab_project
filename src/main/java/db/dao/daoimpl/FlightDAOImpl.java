@@ -30,6 +30,7 @@ public final class FlightDAOImpl implements FlightDAO {
     private final static FlightDAO instance = new FlightDAOImpl();
 
     public static FlightDAO getInstance() {
+        log.info("getInstance(): Returning instance of FlightDAOImpl.");
         return instance;
     }
 

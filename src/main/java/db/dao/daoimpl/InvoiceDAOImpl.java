@@ -24,6 +24,7 @@ public final class InvoiceDAOImpl implements InvoiceDAO {
     private final static InvoiceDAO instance = new InvoiceDAOImpl();
 
     public static InvoiceDAO getInstance() {
+        log.info("getInstance(): Returning instance of InvoiceDAOImpl.");
         return instance;
     }
 

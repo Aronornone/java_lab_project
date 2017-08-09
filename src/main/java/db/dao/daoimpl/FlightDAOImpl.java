@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import pojo.Airplane;
 import pojo.Airport;
 import pojo.Flight;
-import utils.ServletLog;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightDAOImpl implements FlightDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL =
             "SELECT\n" +
             "  f.id, airplane_id, p.name, p.capacity_econom, p.capacity_business, flight_number, " +
@@ -27,6 +25,7 @@ public final class FlightDAOImpl implements FlightDAO {
             "  JOIN Airport  d ON d.id = f.departure_airport_id\n" +
             "  JOIN Airport  a ON a.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_DATETIME_AND_BASECOST = "ORDER BY flight_datetime, base_cost";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static FlightDAO instance = new FlightDAOImpl();
 

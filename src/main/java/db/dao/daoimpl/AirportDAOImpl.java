@@ -5,7 +5,6 @@ import db.dao.interfaces.AirportDAO;
 import lombok.SneakyThrows;
 import org.apache.log4j.Logger;
 import pojo.Airport;
-import utils.ServletLog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirportDAOImpl implements AirportDAO {
-    private static final Logger log = ServletLog.getLgDB();
     private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
+    private static Logger log = Logger.getLogger("DBLog");
 
     private final static AirportDAO instance = new AirportDAOImpl();
 
@@ -151,6 +150,7 @@ public final class AirportDAOImpl implements AirportDAO {
                 rs.getString("city"),
                 rs.getString("airport_name"),
                 rs.getDouble("latitude"),
-                rs.getDouble("longitude"));
+                rs.getDouble("longitude")
+        );
     }
 }

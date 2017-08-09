@@ -17,8 +17,11 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
-    private static AirportService aps = AirportServiceImpl.getInstance();
+    private static AirportService airportService;
 
+    public void init() {
+        airportService = AirportServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute("lastServletPath", request.getServletPath());
@@ -53,7 +56,7 @@ public class FlightsServlet extends HttpServlet {
                     getBundle("ErrorsBundle", Locale.getDefault()));
         }
 
-        List<Airport> airports = aps.getAll();
+        List<Airport> airports = airportService.getAll();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
 

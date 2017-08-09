@@ -18,9 +18,13 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
-    private static AirportService aps = AirportServiceImpl.getInstance();
-    private static UserService us = UserServiceImpl.getInstance();
+    private static AirportService airportService;
+    private static UserService userService;
 
+    public void init() {
+        airportService = AirportServiceImpl.getInstance();
+        userService = UserServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
@@ -36,7 +40,7 @@ public class DoLoginServlet extends HttpServlet {
             String passwordHashDB = "";
             User user = null;
             String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
-            Optional<User> userOptional = us.get(email);
+            Optional<User> userOptional = userService.get(email);
             if (userOptional.isPresent()) {
                 user = userOptional.get();
                 passwordHashDB = user.getPasswordHash();
@@ -54,7 +58,7 @@ public class DoLoginServlet extends HttpServlet {
                 cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
                 response.addCookie(cookieUserId);
 
-                List<Airport> airports = aps.getAll();
+                List<Airport> airports = airportService.getAll();
                 request.setAttribute("departures", airports);
                 request.setAttribute("arrivals", airports);
 

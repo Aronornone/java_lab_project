@@ -8,19 +8,25 @@ import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
-import utils.SessionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static InvoiceService invoiceService;
+    private static TicketService ticketService;
 
+    public void init() {
+        invoiceService = InvoiceServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
@@ -28,13 +34,13 @@ public class BucketServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         httpSession.setAttribute("lastServletPath", request.getServletPath());
 
-        Optional<Invoice> invoiceOptional = is.getInvoiceByUser(user.getUserId(),
+        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
             httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
-            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
+            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
 
             if (tickets.size() == 0) {
                 request.setAttribute("cartEmpty", err.getString("cartEmpty"));

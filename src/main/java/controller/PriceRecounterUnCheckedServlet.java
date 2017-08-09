@@ -14,18 +14,21 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/priceRecountUnChecked")
 public class PriceRecounterUnCheckedServlet extends HttpServlet {
-    private static TicketService ts = TicketServiceImpl.getInstance();
+    private static TicketService ticketService;
 
+    public void init() {
+        ticketService = TicketServiceImpl.getInstance();
+    }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long ticketId = Long.parseLong(request.getParameter("ticketId"));
 
-        Ticket ticket = ts.get(ticketId).get();
+        Ticket ticket = ticketService.get(ticketId).get();
 
         double oldPrice = ticket.getPrice();
         double newPrice = PriceRecounter.defectByLuggage(oldPrice);
         ticket.setLuggage(false);
         ticket.setPrice(newPrice);
-        ts.update(ticket);
+        ticketService.update(ticket);
 
         response.setContentType("text/plain");
         response.getWriter().write(String.valueOf(newPrice));

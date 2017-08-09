@@ -40,10 +40,10 @@
                                 if (minute < 10) minute = '0' + minute;
                                 var cdatetime = year + '-' + month + '-' + day + 'T' + hour + ':' + minute;
 
-                                var toappend =  '<tbody><form name="form2" id="form2'+v.flightId+
+                                var toappend = '<tbody><form name="form2" id="form2' + v.flightId +
                                     '" class="addTickets" action="addFlightToInvoice"' +
                                     'method="post">'
-                                    +'<tr>'
+                                    + '<tr>'
                                     + '<td>' + v.departureAirport.code + ' ' + v.departureAirport.city + '</td>'
                                     + '<td>' + v.arrivalAirport.code + ' ' + v.arrivalAirport.city + '</td>'
                                     + '<td>' + cdatetime + '</td>'
@@ -60,6 +60,68 @@
                 );
                 counter++;
             });
+
+            if (${sessionScope.pageToLoad!=null}) {
+                var page = parseInt(${sessionScope.pageToLoad});
+                for (var i = 1; i <= page; i++) {
+                    createAppend(i);
+                }
+            }
+
+            if (${sessionScope.boughtFlightId!=null}) {
+                var flightId = parseInt(${sessionScope.boughtFlightId});
+                var container = $('body'),
+                    scrollTo = $('#form2' + flightId);
+                container.animate({
+                    scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+                });
+            }
+
+
+            function createAppend(i) {
+                if ((i + 1) == numPages) {
+                    document.getElementById("appendButton").remove();
+                }
+                $.ajax({
+                        url: document.URL,
+                        data: {page: i},
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            $.each(data, function (k, v) {
+//                                may create function
+                                var year = v.dateTime.date.year;
+                                var month = v.dateTime.date.month;
+                                if (month < 10) month = '0' + month;
+                                var day = v.dateTime.date.day;
+                                if (day < 10) day = '0' + day;
+
+                                var hour = v.dateTime.time.hour;
+                                if (hour < 10) hour = '0' + hour;
+                                var minute = v.dateTime.time.minute;
+                                if (minute < 10) minute = '0' + minute;
+                                var cdatetime = year + '-' + month + '-' + day + 'T' + hour + ':' + minute;
+
+                                var toappend = '<tbody><form name="form2" id="form2' + v.flightId +
+                                    '" class="addTickets" action="addFlightToInvoice"' +
+                                    'method="post">'
+                                    + '<tr>'
+                                    + '<td>' + v.departureAirport.code + ' ' + v.departureAirport.city + '</td>'
+                                    + '<td>' + v.arrivalAirport.code + ' ' + v.arrivalAirport.city + '</td>'
+                                    + '<td>' + cdatetime + '</td>'
+                                    + '<td>' + v.flightNumber + '</td>'
+                                    + '<td>' + v.baseCost + '.0' + '</td>'
+                                    + '<td><input id="num" class="fieldFilters" type="number" min="1"max="${sessionScope.numberTicketsFilter}" step="1"value="${sessionScope.numberTicketsFilter}" form="form2' + v.flightId + '"name="numberTicketsFlight"><input type="hidden" name="flightId" form="form2' + v.flightId + '"value="' + v.flightId + '"></td>'
+                                    + '<td><input class="buttonBucket" form="form2' + v.flightId + '" type="submit" value="<fmt:message key="buyButton"/>"></td>'
+                                    + '</tr> </form></tbody>';
+                                //$('#appendFlights').find('tbody').append(toappend);
+                                $('#appendFlights').append(toappend);
+                            });
+                        }
+                    }
+                );
+            }
+
         });
 
     </script>
@@ -168,7 +230,8 @@
                                        value="${flight.flightId}">
                             </td>
                             <td>
-                                <input class="buttonBucket" form="form2${flight.flightId}" type="submit"
+                                <input class="buttonBucket" form="form2${flight.flightId}"
+                                       type="submit"
                                        value="<fmt:message key="buyButton"/>"/>
                             </td>
                         </tr>

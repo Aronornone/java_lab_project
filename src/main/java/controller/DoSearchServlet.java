@@ -95,6 +95,8 @@ public class DoSearchServlet extends HttpServlet {
                 pageNum = 0;
                 System.out.println("catch");
             }
+            httpSession.setAttribute("pageLast",pageNum);
+
             List<Flight> foundFlights = fl.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
             for (Flight f : foundFlights) {

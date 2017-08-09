@@ -65,24 +65,24 @@ public class DoLoginServlet extends HttpServlet {
                 String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
                 String[] checkBox = (String[]) httpSession.getAttribute("business");
 
+                StringBuilder redirectBackStringBuilder = new StringBuilder();
+                redirectBackStringBuilder.append("/doSearch?dateFrom=").append(dateFromString).append("&dateTo=").
+                        append(dateToString).append("&selectedDeparture=").append(departure).append("&selectedArrival=").
+                        append(arrival).append("&numberTicketsFilter=").append(numberTicketsFilterString);
+                if (checkBox != null) {
+                    redirectBackStringBuilder.append("&box=").append(checkBox[0]);
+                }
+
+                String redirectBackString = redirectBackStringBuilder.toString();
+
                 if ((dateFromString == null) ||
                         (dateToString == null) ||
                         (departure == null) ||
                         (arrival == null) ||
                         (numberTicketsFilterString == null)) {
                     response.sendRedirect("/");
-                } else if (checkBox != null) {
-                    String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
-                            "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                            "&numberTicketsFilter=" + numberTicketsFilterString + "&box=" + checkBox[0];
-                    response.sendRedirect(redirectBackString);
-                } else {
-                    String redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
-                            "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                            "&numberTicketsFilter=" + numberTicketsFilterString;
-                    response.sendRedirect(redirectBackString);
-
                 }
+                response.sendRedirect(redirectBackString);
             } else {
                 request.setAttribute("loginFailed", err.getString("loginFailed"));
                 request.setAttribute("email", email);

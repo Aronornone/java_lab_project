@@ -43,19 +43,20 @@ public class InvoiceServlet extends HttpServlet {
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
         String[] checkBox = (String[]) httpSession.getAttribute("business");
 
-        String redirectBackString;
+        StringBuilder redirectBackStringBuilder = new StringBuilder();
+        redirectBackStringBuilder.append("/doSearch?dateFrom=").append(dateFromString).append("&dateTo=").
+                append(dateToString).append("&selectedDeparture=").append(departure).append("&selectedArrival=").
+                append(arrival).append("&numberTicketsFilter=").append(numberTicketsFilterString);
         if (checkBox != null) {
-            redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
-                    "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                    "&numberTicketsFilter=" + numberTicketsFilterString + "&box=" + checkBox[0];
-        } else {
-            redirectBackString = "/doSearch?dateFrom=" + dateFromString + "&dateTo=" + dateToString +
-                    "&selectedDeparture=" + departure + "&selectedArrival=" + arrival +
-                    "&numberTicketsFilter=" + numberTicketsFilterString;
+            redirectBackStringBuilder.append("&box=").append(checkBox[0]);
         }
+        String redirectBackString = redirectBackStringBuilder.toString();
 
         String numberTicketsFlightString = request.getParameter("numberTicketsFlight");
         int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
+
+        int pageNum = (int) httpSession.getAttribute("pageLast");
+        httpSession.setAttribute("pageToLoad",pageNum);
 
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
@@ -85,15 +86,15 @@ public class InvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
                 } else {
                     //new Ticket to DB
-
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, business, (double) httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
                     ts.add(ticket);
+                    httpSession.setAttribute("boughtFlightId",flight.getFlightId());
                 }
             }
             int ticketsInBucket = is.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
+            //request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }
         response.sendRedirect(redirectBackString);
     }

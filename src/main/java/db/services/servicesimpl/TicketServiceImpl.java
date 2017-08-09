@@ -3,6 +3,7 @@ package db.services.servicesimpl;
 import db.dao.daoimpl.TicketDAOImpl;
 import db.dao.interfaces.TicketDAO;
 import db.services.interfaces.TicketService;
+import org.apache.log4j.Logger;
 import pojo.Ticket;
 
 import java.time.LocalDateTime;
@@ -11,11 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 public final class TicketServiceImpl implements TicketService {
+    private static Logger log = Logger.getLogger("DBLog");
     private final TicketDAO dao = TicketDAOImpl.getInstance();
 
     private final static TicketService instance = new TicketServiceImpl();
 
     public static TicketService getInstance() {
+        log.info("getInstance(): Returning instance of TicketServiceImpl");
         return instance;
     }
 
@@ -24,21 +27,25 @@ public final class TicketServiceImpl implements TicketService {
 
     @Override
     public void add(Ticket ticket) {
+        log.info("add(ticket): Delegating an 'add ticket' query to DAO with the following 'ticket' object: " + ticket);
         dao.add(ticket);
     }
 
     @Override
     public Optional<Ticket> get(long id) {
+        log.info("get(id): Delegating a 'get ticket by id' query to DAO with the following 'id' = " + id);
         return dao.get(id);
     }
 
     @Override
     public List<Ticket> getTicketsByInvoice(long invoiceId) {
+        log.info("getTicketsByInvoice(invoiceId): Delegating a 'get ticket by invoice id' query to DAO with the following 'invoiceId' = " + invoiceId);
         return dao.getTicketsByInvoice(invoiceId);
     }
 
     @Override
     public void update(Ticket ticket) {
+        log.info("update(ticket): Delegating an 'update ticket' query to DAO with the following 'ticket' object: " + ticket);
         dao.update(ticket);
     }
 
@@ -53,8 +60,10 @@ public final class TicketServiceImpl implements TicketService {
     @Override
     public boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames,
                                           String[] passports, String[] luggages) {
-        TicketService ts = TicketServiceImpl.getInstance();
+        log.info("isEmptyWhilePayAndSave(...): Getting an instance of TicketServiceImpl.");
+        TicketService ticketService = TicketServiceImpl.getInstance();
         boolean empty = false;
+        log.info("isEmptyWhilePayAndSave(...): Checking method arguments.");
         if (ticketsIds != null && passengerNames != null && passports != null) {
             for (String ticketsId : ticketsIds) {
                 if (ticketsId.isEmpty()) {
@@ -71,6 +80,7 @@ public final class TicketServiceImpl implements TicketService {
                     empty = true;
                 }
             }
+            log.info("isEmptyWhilePayAndSave(...): Creating an array of luggages.");
             boolean[] luggagesBoolean = new boolean[ticketsIds.length];
 
             if (luggages != null) {
@@ -78,10 +88,14 @@ public final class TicketServiceImpl implements TicketService {
                     luggagesBoolean[i] = (luggages[i].equals("luggage"));
                 }
             }
-            ts.updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
+            log.info("isEmptyWhilePayAndSave(...): Updating a ticket information.");
+            ticketService.updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
         } else {
+            log.info("isEmptyWhilePayAndSave(...): 'empty' = false");
             empty = true;
         }
+
+        log.info("isEmptyWhilePayAndSave(...): Returning an 'empty' variable: " + empty);
         return empty;
     }
 
@@ -95,13 +109,14 @@ public final class TicketServiceImpl implements TicketService {
     @Override
     public void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
                                      String[] passports, boolean[] luggages) {
+        log.info("updateTicketWhilePay(...): Getting instances of TicketServiceImpl and updating them.");
         for (int i = 0; i < ticketsIds.length; i++) {
-            TicketService ts = TicketServiceImpl.getInstance();
-            Ticket ticketToUpdate = ts.get(Long.parseLong(ticketsIds[i])).get();
+            TicketService ticketService = TicketServiceImpl.getInstance();
+            Ticket ticketToUpdate = ticketService.get(Long.parseLong(ticketsIds[i])).get();
             ticketToUpdate.setPassengerName(passengerNames[i]);
             ticketToUpdate.setPassport(passports[i]);
             ticketToUpdate.setLuggage(luggages[i]);
-            ts.update(ticketToUpdate);
+            ticketService.update(ticketToUpdate);
         }
     }
 
@@ -147,11 +162,13 @@ public final class TicketServiceImpl implements TicketService {
 
     @Override
     public void delete(Ticket ticket) {
+        log.info("delete(ticket): Delegating a 'delete ticket' query to DAO with the following 'ticket' object: " + ticket);
         dao.delete(ticket);
     }
 
     @Override
     public List<Ticket> getAll() {
+        log.info("getAll(): Delegating a 'get all tickets' query to DAO.");
         return dao.getAll();
     }
 

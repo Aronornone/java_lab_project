@@ -5,6 +5,7 @@ import db.dao.interfaces.FlightPlaceDAO;
 import db.services.interfaces.FlightPlaceService;
 import db.services.interfaces.FlightService;
 import db.services.interfaces.TicketService;
+import org.apache.log4j.Logger;
 import pojo.Flight;
 import pojo.FlightPlace;
 import pojo.OurBitSet;
@@ -15,11 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightPlaceServiceImpl implements FlightPlaceService {
+    private static Logger log = Logger.getLogger("DBLog");
     private final FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
 
     private final static FlightPlaceService instance = new FlightPlaceServiceImpl();
 
     public static FlightPlaceService getInstance() {
+        log.info("getInstance(): Returning instance of FlightPlaceServiceImpl");
         return instance;
     }
 
@@ -28,31 +31,37 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
 
     @Override
     public void add(FlightPlace flightPlaces) {
+        log.info("add(airport): Delegating an 'add flight places' query to DAO with the following 'flightPlaces' object: " + flightPlaces);
         dao.add(flightPlaces);
     }
 
     @Override
     public Optional<FlightPlace> get(long id) {
+        log.info("get(id): Delegating a 'get flight places by id' query to DAO with the following 'id' = " + id);
         return dao.get(id);
     }
 
     @Override
     public Optional<FlightPlace> getByFlightId(long flightId) {
+        log.info("getByFlightId(flightId): Delegating a 'get flight places by flight id' query to DAO with the following 'id' = " + flightId);
         return dao.getByFlightId(flightId);
     }
 
     @Override
     public void update(FlightPlace flightPlaces) {
+        log.info("update(flightPlaces): Delegating an 'update flight places' query to DAO with the following 'flightPlaces' object: " + flightPlaces);
         dao.update(flightPlaces);
     }
 
     @Override
     public void delete(FlightPlace flightPlaces) {
+        log.info("delete(flightPlaces): Delegating a 'delete flight places' query to DAO with the following 'flightPlaces' object: " + flightPlaces);
         dao.delete(flightPlaces);
     }
 
     @Override
     public List<FlightPlace> getAll() {
+        log.info("getAll(): Delegating a 'get all flight places' query to DAO.");
         return dao.getAll();
     }
 
@@ -66,14 +75,17 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
      */
     @Override
     public void revertSittingPlaces(List<Ticket> tickets) {
+        log.info("revertSittingPlaces(tickets): Starting to execute the method.");
         Flight flight;
-        FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
-        FlightService fs = FlightServiceImpl.getInstance();
-        TicketService ts = TicketServiceImpl.getInstance();
+        log.info("revertSittingPlaces(tickets): Getting instances of FlightPlaceServiceImpl, FlightServiceImpl, TicketServiceImpl.");
+        FlightPlaceService flightPlaceService = FlightPlaceServiceImpl.getInstance();
+        FlightService flightService = FlightServiceImpl.getInstance();
+        TicketService ticketService = TicketServiceImpl.getInstance();
+        log.info("revertSittingPlaces(tickets): Starting to revert places.");
         for (Ticket ticket : tickets) {
             long flightId = ticket.getFlight().getFlightId();
-            FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
-            flight = fs.get((int) flightId).get();
+            FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).get();
+            flight = flightService.get((int) flightId).get();
             OurBitSet newPlacesBitSet;
             if (ticket.isBusinessClass()) {
                 flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() + 1);
@@ -86,9 +98,10 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
                 newPlacesBitSet.clear(ticket.getSittingPlace());
                 flightPlace.setBitPlacesEconom(newPlacesBitSet);
             }
-            fps.update(flightPlace);
-            fs.update(flight);
-            ts.delete(ticket);
+            log.info("revertSittingPlaces(tickets): Updating flightPlaceService, flightService, ticketService.");
+            flightPlaceService.update(flightPlace);
+            flightService.update(flight);
+            ticketService.delete(ticket);
         }
     }
 
@@ -102,14 +115,17 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
      */
     @Override
     public int getRandomSittingPlace(long flightId, boolean business) {
-        FlightService fs = FlightServiceImpl.getInstance();
-        FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
-        FlightPlace flightPlace = fps.getByFlightId((int) flightId).get();
-        Flight flight = fs.get((int) flightId).get();
+        log.info("getRandomSittingPlace(flightId, business): Getting instances of FlightServiceImpl, FlightPlaceServiceImpl.");
+        FlightService flightService = FlightServiceImpl.getInstance();
+        FlightPlaceService flightPlaceService = FlightPlaceServiceImpl.getInstance();
+        log.info("getRandomSittingPlace(flightId, business): Getting a flight place by flight id.");
+        FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).get();
+        Flight flight = flightService.get((int) flightId).get();
 
         OurBitSet placesBitSet;
         int availablePlacesInClass;
 
+        log.info("getRandomSittingPlace(flightId, business): Getting available places.");
         if (business) {
             placesBitSet = flightPlace.getBitPlacesBusiness();
             availablePlacesInClass = flight.getAvailablePlacesBusiness();
@@ -120,33 +136,40 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
 
         int lengthPlacesBitSet = placesBitSet.length();
         int reservedPlace = 0;
+
         while (true) {
             if (availablePlacesInClass == 0) {
-                //TODO: logging
-                System.out.println("Not enough placesBitSet");
+                log.info("getRandomSittingPlace(flightId, business): Not enough placesBitSet.");
                 break;
             }
+            log.info("getRandomSittingPlace(flightId, business): Reserving random place.");
             reservedPlace = RandomGenerator.createNumber(1, lengthPlacesBitSet);
             if (placesBitSet.get(reservedPlace)) {
                 continue;
             }
             placesBitSet.set(reservedPlace);
+            log.info("getRandomSittingPlace(flightId, business): Reducing available places.");
             if (business) {
                 flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() - 1);
             } else {
                 flight.setAvailablePlacesEconom(flight.getAvailablePlacesEconom() - 1);
             }
-            fs.update(flight);
-            flight = fs.get((int) flightId).get();
-            flightPlace = fps.getByFlightId((int) flight.getFlightId()).get();
+            log.info("getRandomSittingPlace(flightId, business): Updating flightService.");
+            flightService.update(flight);
+            flight = flightService.get((int) flightId).get();
+            log.info("getRandomSittingPlace(flightId, business): Getting a flight place by flight id.");
+            flightPlace = flightPlaceService.getByFlightId((int) flight.getFlightId()).get();
             if (business) {
                 flightPlace.setBitPlacesBusiness(placesBitSet);
             } else {
                 flightPlace.setBitPlacesEconom(placesBitSet);
             }
-            fps.update(flightPlace);
+            log.info("getRandomSittingPlace(flightId, business): Updating flightPlaceService.");
+            flightPlaceService.update(flightPlace);
             break;
         }
+
+        log.info("getRandomSittingPlace(flightId, business): Returning reservedPlace number: " + reservedPlace);
         return reservedPlace;
     }
 }

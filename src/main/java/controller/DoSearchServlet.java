@@ -3,11 +3,12 @@ package controller;
 import com.google.gson.Gson;
 import db.services.interfaces.AirportService;
 import db.services.interfaces.FlightService;
+import db.services.interfaces.TicketService;
 import db.services.servicesimpl.AirportServiceImpl;
 import db.services.servicesimpl.FlightServiceImpl;
+import db.services.servicesimpl.TicketServiceImpl;
 import pojo.Airport;
 import pojo.Flight;
-import utils.PriceRecounter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,10 +28,12 @@ import static java.lang.StrictMath.ceil;
 public class DoSearchServlet extends HttpServlet {
     private static AirportService airportService;
     private static FlightService flightService;
+    private static TicketService ticketService;
 
     public void init() {
         airportService = AirportServiceImpl.getInstance();
         flightService = FlightServiceImpl.getInstance();
+        ticketService = TicketServiceImpl.getInstance();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,8 +63,9 @@ public class DoSearchServlet extends HttpServlet {
 
         boolean business = false;
         if (checkbox != null) {
-            if (checkbox[0].equals("business"))
+            if (checkbox[0].equals("business")) {
                 business = true;
+            }
         }
 
         //проверяем фильтры перед парсингом
@@ -105,7 +109,7 @@ public class DoSearchServlet extends HttpServlet {
             for (Flight f : foundFlights) {
                 f.setArrivalAirport(arr);
                 f.setDepartureAirport(dep);
-                f.setBaseCost(PriceRecounter.recountPrice(f.getBaseCost(), f.getDateTime(), business));
+                f.setBaseCost(ticketService.recountPrice(f.getBaseCost(), f.getDateTime(), business));
                 httpSession.setAttribute("ticketCost", f.getBaseCost());
             }
 
@@ -121,7 +125,6 @@ public class DoSearchServlet extends HttpServlet {
                 System.out.println("required number of pages:" + numPages);
                 request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
             } else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
-
                 String json = new Gson().toJson(foundFlights);
                 response.setContentType("json");
                 response.setCharacterEncoding("UTF-8");

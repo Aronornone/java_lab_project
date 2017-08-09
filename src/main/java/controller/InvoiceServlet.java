@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
-public class InvoiceServlet extends HttpServlet {
+public final class InvoiceServlet extends HttpServlet {
     private static FlightService flightService;
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
@@ -36,10 +36,10 @@ public class InvoiceServlet extends HttpServlet {
         invoiceService = InvoiceServiceImpl.getInstance();
         ticketService = TicketServiceImpl.getInstance();
         flightPlaceService = FlightPlaceServiceImpl.getInstance();
-
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
 

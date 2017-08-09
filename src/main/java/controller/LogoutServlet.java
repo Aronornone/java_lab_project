@@ -15,12 +15,12 @@ public class LogoutServlet extends HttpServlet {
 
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie:cookies) {
-            if(cookie.getName().equals("userId"))
+            if(cookie.getName().equals("userId")) {
                 cookie.setMaxAge(0);
                 response.addCookie(cookie);
+            }
         }
         response.sendRedirect("/");
-
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

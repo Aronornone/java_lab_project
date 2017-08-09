@@ -19,17 +19,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class SessionUtils {
-    private static final InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static final TicketService ts = TicketServiceImpl.getInstance();
-    private static final FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
-    private static final UserService us = UserServiceImpl.getInstance();
+    private static final InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
+    private static final TicketService ticketService = TicketServiceImpl.getInstance();
+    private static final FlightPlaceService flightPlaceService = FlightPlaceServiceImpl.getInstance();
+    private static final UserService userService = UserServiceImpl.getInstance();
 
     /**
      * Method for invalidate userSession if it destroyed by Logout or timeout
      * It gets only Invoice in status Created (it can be only one).
      * It loads FlightPlaces, Tickets and FlightService for this Invoice from DB,
-     * return places in FlightService available places and bitSet (for business class if Ticket boolean business is true and econom
-     * class if boolean is false), update FlightService and FlightPlace and delete Tickets from DB.
+     * return places in FlightService available places and bitSet (for business class if Ticket boolean business invoiceService true and econom
+     * class if boolean invoiceService false), update FlightService and FlightPlace and delete Tickets from DB.
      * After all it updates Invoice.Status for CANCELLED (can be used for reports of numbers of cancelled invoices
      * by users) and invalidate httpSession.
      *
@@ -40,12 +40,12 @@ public class SessionUtils {
         User user = (User) httpSession.getAttribute("user");
         Invoice invoice;
 
-        if (is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
-            invoice = is.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
-            List<Ticket> tickets = ts.getTicketsByInvoice(invoice.getInvoiceId());
-            fps.revertSittingPlaces(tickets);
+        if (invoiceService.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).isPresent()) {
+            invoice = invoiceService.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).get();
+            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+            flightPlaceService.revertSittingPlaces(tickets);
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.CANCELLED);
-            is.update(invoice);
+            invoiceService.update(invoice);
         }
         httpSession.invalidate();
     }
@@ -56,7 +56,7 @@ public class SessionUtils {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("userId")) {
-                    Optional<User> userOptional = us.get(Long.parseLong(cookie.getValue()));
+                    Optional<User> userOptional = userService.get(Long.parseLong(cookie.getValue()));
                     if (userOptional.isPresent()) {
                         user = userOptional.get();
                         httpSession.setAttribute("user", user);

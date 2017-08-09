@@ -122,13 +122,11 @@ public class DoSearchServlet extends HttpServlet {
                 int numPages = (int) ceil((double) flightService.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
                         dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
                 request.setAttribute("numPages", numPages);
-                System.out.println("required number of pages:" + numPages);
                 request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
             } else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
                 String json = new Gson().toJson(foundFlights);
                 response.setContentType("json");
                 response.setCharacterEncoding("UTF-8");
-                System.out.println(json);
                 response.getWriter().write(json);
             }
         }

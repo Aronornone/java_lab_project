@@ -90,7 +90,7 @@ public final class TicketDAOImpl implements TicketDAO {
         String sql = SELECT_ALL + " WHERE t.invoice_id =? "
                 + ORDER_BY_FLIGHT_DATETIME;
         try (Connection connection = DataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql);) {
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, invoiceId);
 
             ResultSet rs = ps.executeQuery();

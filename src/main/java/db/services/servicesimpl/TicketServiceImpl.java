@@ -5,12 +5,11 @@ import db.dao.interfaces.TicketDAO;
 import db.services.interfaces.TicketService;
 import pojo.Ticket;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public final class TicketServiceImpl implements TicketService {
-    private TicketDAO dao = TicketDAOImpl.getInstance();
+    private final TicketDAO dao = TicketDAOImpl.getInstance();
 
     private final static TicketService instance = new TicketServiceImpl();
 
@@ -51,35 +50,36 @@ public final class TicketServiceImpl implements TicketService {
      */
     @Override
     public boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames,
-                                                 String[] passports, String[] luggages) {
+                                          String[] passports, String[] luggages) {
         TicketService ts = TicketServiceImpl.getInstance();
         boolean empty = false;
         if (ticketsIds != null && passengerNames != null && passports != null) {
-            List<String> ticketsList = Arrays.asList(ticketsIds);
-            List<String> passengersList = Arrays.asList(passengerNames);
-            List<String> passportsList = Arrays.asList(passports);
-
-            for (String string : ticketsList) {
-                if (string.isEmpty()) empty = true;
+            for (String ticketsId : ticketsIds) {
+                if (ticketsId.isEmpty()) {
+                    empty = true;
+                }
             }
-            for (String string : passengersList) {
-                if (string.isEmpty()) empty = true;
+            for (String passengerName : passengerNames) {
+                if (passengerName.isEmpty()) {
+                    empty = true;
+                }
             }
-            for (String string : passportsList) {
-                if (string.isEmpty()) empty = true;
+            for (String passport : passports) {
+                if (passport.isEmpty()) {
+                    empty = true;
+                }
             }
-
-            List<String> luggagesList;
-            boolean[] luggagesBoolean = new boolean[ticketsList.size()];
+            boolean[] luggagesBoolean = new boolean[ticketsIds.length];
 
             if (luggages != null) {
-                luggagesList = Arrays.asList(luggages);
-                for (int i = 0; i < luggagesList.size(); i++) {
-                    luggagesBoolean[i] = (luggagesList.get(i).equals("luggage"));
+                for (int i = 0; i < luggages.length; i++) {
+                    luggagesBoolean[i] = (luggages[i].equals("luggage"));
                 }
             }
             ts.updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
-        } else empty = true;
+        } else {
+            empty = true;
+        }
         return empty;
     }
 

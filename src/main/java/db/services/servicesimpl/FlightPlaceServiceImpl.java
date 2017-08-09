@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightPlaceServiceImpl implements FlightPlaceService {
-    private FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
+    private final FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
 
     private final static FlightPlaceService instance = new FlightPlaceServiceImpl();
 

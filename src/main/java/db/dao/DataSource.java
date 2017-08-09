@@ -12,15 +12,14 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DataSource {
-    private static Logger log = ServletLog.getLgDB();
-    private static String driverClassName;
-    private static String dbUrl;
-    private static String dbUser;
-    private static String dbPassword;
-    private static int connPoolSize;
-    private static int minIdleConnections;
-    private static int maxIdleConnections;
-    private static int maxOpenedPrepStmts;
+    private static final String DRIVER_CLASS_NAME;
+    private static final String DB_URL;
+    private static final String DB_USER;
+    private static final String DB_PASSWORD;
+    private static final int CONN_POOL_SIZE;
+    private static final int MIN_IDLE_CONNECTIONS;
+    private static final int MAX_IDLE_CONNECTIONS;
+    private static final int MAX_OPENED_PREP_STMTS;
 
     private static BasicDataSource dataSource;
     private static Connection connection;
@@ -39,28 +38,27 @@ public class DataSource {
             log.error("static block: " + e);
         }
 
-        log.info("static block: Initiazling DB related field parameters by those received from 'db.propertiesfs'.");
-        driverClassName = properties.getProperty("driver");
-        dbUrl = properties.getProperty("url");
-        dbUser = properties.getProperty("user");
-        dbPassword = properties.getProperty("password");
-        connPoolSize = Integer.parseInt(properties.getProperty("connection_pool_size"));
-        minIdleConnections = Integer.parseInt(properties.getProperty("min_idle_connections"));
-        maxIdleConnections = Integer.parseInt(properties.getProperty("max_idle_connections"));
-        maxOpenedPrepStmts = Integer.parseInt(properties.getProperty("max_opened_prepared_stmts"));
+        DRIVER_CLASS_NAME = properties.getProperty("driver");
+        DB_URL = properties.getProperty("url");
+        DB_USER = properties.getProperty("user");
+        DB_PASSWORD = properties.getProperty("password");
+        CONN_POOL_SIZE = Integer.parseInt(properties.getProperty("connection_pool_size"));
+        MIN_IDLE_CONNECTIONS = Integer.parseInt(properties.getProperty("min_idle_connections"));
+        MAX_IDLE_CONNECTIONS = Integer.parseInt(properties.getProperty("max_idle_connections"));
+        MAX_OPENED_PREP_STMTS = Integer.parseInt(properties.getProperty("max_opened_prepared_stmts"));
     }
 
     private static void getDataSource() {
         log.info("getDataSource(): Initializing dataSource field (of BasicDataSource apache class).");
         BasicDataSource bds = new BasicDataSource();
-        bds.setDriverClassName(driverClassName);
-        bds.setUrl(dbUrl);
-        bds.setUsername(dbUser);
-        bds.setPassword(dbPassword);
-        bds.setInitialSize(connPoolSize);
-        bds.setMinIdle(minIdleConnections);
-        bds.setMaxIdle(maxIdleConnections);
-        bds.setMaxOpenPreparedStatements(maxOpenedPrepStmts);
+        bds.setDriverClassName(DRIVER_CLASS_NAME);
+        bds.setUrl(DB_URL);
+        bds.setUsername(DB_USER);
+        bds.setPassword(DB_PASSWORD);
+        bds.setInitialSize(CONN_POOL_SIZE);
+        bds.setMinIdle(MIN_IDLE_CONNECTIONS);
+        bds.setMaxIdle(MAX_IDLE_CONNECTIONS);
+        bds.setMaxOpenPreparedStatements(MAX_OPENED_PREP_STMTS);
         dataSource = bds;
     }
 

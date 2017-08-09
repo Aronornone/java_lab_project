@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirportServiceImpl implements AirportService {
-    private AirportDAO dao = AirportDAOImpl.getInstance();
+    private final AirportDAO dao = AirportDAOImpl.getInstance();
 
     private final static AirportService instance = new AirportServiceImpl();
 

@@ -31,11 +31,11 @@ public class RandomGenerator {
         return ThreadLocalRandom.current().nextInt(min, max);
     }
 
-    public static long createNumber(long min, long max) {
+    private static long createNumber(long min, long max) {
         return ThreadLocalRandom.current().nextLong(min, max);
     }
 
-    public static String createRandomDateTime(String from, String to) throws ParseException {
+    static String createRandomDateTime(String from, String to) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date date1 = sdf.parse(from);
         Date date2 = sdf.parse(to);

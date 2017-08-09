@@ -86,7 +86,9 @@ public class DoLoginServlet extends HttpServlet {
                         (numberTicketsFilterString == null)) {
                     response.sendRedirect("/");
                 }
-                response.sendRedirect(redirectBackString);
+                else {
+                    response.sendRedirect(redirectBackString);
+                }
             } else {
                 request.setAttribute("loginFailed", err.getString("loginFailed"));
                 request.setAttribute("email", email);

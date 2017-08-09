@@ -48,19 +48,19 @@ public final class FlightDAOImpl implements FlightDAO {
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("add(flight): Putting parameters of specified types into their PreparedStatement positions.");
-            ps.setLong      (1, flight.getAirplane().getAirplaneId());
-            ps.setString    (2, flight.getFlightNumber());
-            ps.setLong      (3, flight.getDepartureAirport().getAirportId());
-            ps.setLong      (4, flight.getArrivalAirport().getAirportId());
-            ps.setDouble    (5, flight.getBaseCost());
-            ps.setInt       (6, flight.getAvailablePlacesEconom());
-            ps.setInt       (7, flight.getAvailablePlacesBusiness());
-            ps.setTimestamp (8, Timestamp.valueOf(flight.getDateTime()));
+            ps.setLong     (1, flight.getAirplane().getAirplaneId());
+            ps.setString   (2, flight.getFlightNumber());
+            ps.setLong     (3, flight.getDepartureAirport().getAirportId());
+            ps.setLong     (4, flight.getArrivalAirport().getAirportId());
+            ps.setDouble   (5, flight.getBaseCost());
+            ps.setInt      (6, flight.getAvailablePlacesEconom());
+            ps.setInt      (7, flight.getAvailablePlacesBusiness());
+            ps.setTimestamp(8, Timestamp.valueOf(flight.getDateTime()));
 
             log.info("add(flight): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("add(flight): SQL exception!\n" + e);
+            log.error("add(flight): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -86,7 +86,7 @@ public final class FlightDAOImpl implements FlightDAO {
                 }
             }
         } catch (SQLException e) {
-            log.error("get(id): SQL exception!\n" + e);
+            log.error("get(id): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("get(id): Returning a 'flight' object: " + flight);
@@ -104,20 +104,20 @@ public final class FlightDAOImpl implements FlightDAO {
         try(Connection connection = DataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("update(flight): Putting parameters of specified types into their PreparedStatement positions.");
-            ps.setLong      (1, flight.getAirplane().getAirplaneId());
-            ps.setString    (2, flight.getFlightNumber());
-            ps.setLong      (3, flight.getDepartureAirport().getAirportId());
-            ps.setLong      (4, flight.getArrivalAirport().getAirportId());
-            ps.setDouble    (5, flight.getBaseCost());
-            ps.setInt       (6, flight.getAvailablePlacesEconom());
-            ps.setInt       (7, flight.getAvailablePlacesBusiness());
-            ps.setTimestamp (8, Timestamp.valueOf(flight.getDateTime()));
-            ps.setLong      (9, flight.getFlightId());
+            ps.setLong     (1, flight.getAirplane().getAirplaneId());
+            ps.setString   (2, flight.getFlightNumber());
+            ps.setLong     (3, flight.getDepartureAirport().getAirportId());
+            ps.setLong     (4, flight.getArrivalAirport().getAirportId());
+            ps.setDouble   (5, flight.getBaseCost());
+            ps.setInt      (6, flight.getAvailablePlacesEconom());
+            ps.setInt      (7, flight.getAvailablePlacesBusiness());
+            ps.setTimestamp(8, Timestamp.valueOf(flight.getDateTime()));
+            ps.setLong     (9, flight.getFlightId());
 
             log.info("update(flight): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("update(airport): SQL exception!\n" + e);
+            log.error("update(airport): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -136,7 +136,7 @@ public final class FlightDAOImpl implements FlightDAO {
             log.info("delete(flight): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("delete(flight): SQL exception!\n" + e);
+            log.error("delete(flight): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -154,7 +154,7 @@ public final class FlightDAOImpl implements FlightDAO {
                 flights.add(createNewFlight(rs));
             }
         } catch (SQLException e) {
-            log.error("getAll(): SQL exception!\n" + e);
+            log.error("getAll(): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getAll(): Returning the list of flights.");
@@ -193,11 +193,18 @@ public final class FlightDAOImpl implements FlightDAO {
             try(ResultSet rs = ps.executeQuery()) {
                 log.info("getFlights(...): Adding flights from ResultSet to the list.");
                 while (rs.next()) {
-                    flights.add(new Flight(rs.getLong("id"), rs.getString("flight_number"), rs.getDouble("base_cost"), rs.getTimestamp("flight_datetime").toLocalDateTime(), departure, arrival));
+                    flights.add(new Flight(
+                            rs.getLong     ("id"),
+                            rs.getString   ("flight_number"),
+                            rs.getDouble   ("base_cost"),
+                            rs.getTimestamp("flight_datetime").toLocalDateTime(),
+                            departure,
+                            arrival
+                    ));
                 }
             }
         } catch (SQLException e) {
-            log.error("getFlights(...): SQL exception!\n" + e);
+            log.error("getFlights(...): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getFlights(...): Returning the list of flights.");
@@ -239,7 +246,7 @@ public final class FlightDAOImpl implements FlightDAO {
                 i = rs.getInt("tt");
             }
         } catch (SQLException e) {
-            log.error("getAmountFlights(...): SQL exception!\n" + e);
+            log.error("getAmountFlights(...): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getAmountFlights(...): Returning amount of flights.");
@@ -273,10 +280,10 @@ public final class FlightDAOImpl implements FlightDAO {
                         rs.getDouble("a.latitude"),
                         rs.getDouble("a.longitude")
                 ),
-                rs.getDouble    ("base_cost"),
-                rs.getInt       ("available_places_econom"),
-                rs.getInt       ("available_places_business"),
-                rs.getTimestamp ("flight_datetime").toLocalDateTime()
+                rs.getDouble   ("base_cost"),
+                rs.getInt      ("available_places_econom"),
+                rs.getInt      ("available_places_business"),
+                rs.getTimestamp("flight_datetime").toLocalDateTime()
         );
     }
 }

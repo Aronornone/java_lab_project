@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirportDAOImpl implements AirportDAO {
-    private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
     private static final Logger log = ServletLog.getLgDB();
+    private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
 
     private final static AirportDAO instance = new AirportDAOImpl();
 
@@ -47,7 +47,7 @@ public final class AirportDAOImpl implements AirportDAO {
             log.info("add(airport): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("add(airport): SQL exception!\n" + e);
+            log.error("add(airport): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -65,15 +65,15 @@ public final class AirportDAOImpl implements AirportDAO {
             log.info("get(id): Putting 'id' = " + id + " into its PreparedStatement position.");
             ps.setLong(1, id);
 
-            log.info("get(id): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet rs = ps.executeQuery();
-
-            log.info("get(id): Creating an 'airport' object from ResultSet.");
-            while (rs.next()) {
-                airport = createNewAirport(rs);
+            log.info("get(id): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("get(id): Creating an 'airport' object from ResultSet.");
+                while (rs.next()) {
+                    airport = createNewAirport(rs);
+                }
             }
         } catch (SQLException e) {
-            log.error("get(id): SQL exception!\n" + e);
+            log.error("get(id): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("get(id): Returning an 'airport' object: " + airport);
@@ -100,7 +100,7 @@ public final class AirportDAOImpl implements AirportDAO {
             log.info("update(airport): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("update(airport): SQL exception!\n" + e);
+            log.error("update(airport): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -119,7 +119,7 @@ public final class AirportDAOImpl implements AirportDAO {
             log.info("delete(airport): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("delete(user): SQL exception!\n" + e);
+            log.error("delete(user): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -128,15 +128,15 @@ public final class AirportDAOImpl implements AirportDAO {
         log.info("getAll(): Creating an empty list of airports.");
         List<Airport> airports = new ArrayList<>();
         log.info("getAll(): Trying to create a connection to a data source, prepare a query, execute it and put result into ResultSet.");
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
-             ResultSet result = statement.executeQuery()) {
+        try(Connection connection = DataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL);
+            ResultSet result = statement.executeQuery()) {
             log.info("getAll(): Adding airports from ResultSet to the list.");
             while (result.next()) {
                 airports.add(createNewAirport(result));
             }
         } catch (SQLException e) {
-            log.error("getAll(): SQL exception!\n" + e);
+            log.error("getAll(): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getAll(): Returning the list of airports.");

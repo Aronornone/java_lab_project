@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class AirplaneDAOImpl implements AirplaneDAO {
-    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
     private static final Logger log = ServletLog.getLgDB();
+    private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
 
     private final static AirplaneDAO instance = new AirplaneDAOImpl();
 
@@ -45,7 +45,7 @@ public class AirplaneDAOImpl implements AirplaneDAO {
             log.info("add(airplane): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("add(airport): SQL exception!\n" + e);
+            log.error("add(airport): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -63,15 +63,15 @@ public class AirplaneDAOImpl implements AirplaneDAO {
             log.info("get(id): Putting 'id' = " + id + " into its PreparedStatement position.");
             ps.setLong(1, id);
 
-            log.info("get(id): Executing the query and putting result to ResultSet: " + ps);
-            ResultSet rs = ps.executeQuery();
-
-            log.info("get(id): Creating an 'airplane' object from ResultSet.");
-            while (rs.next()) {
-                airplane = createNewAirplane(rs);
+            log.info("get(id): Trying to execute the query and put result to ResultSet: " + ps);
+            try(ResultSet rs = ps.executeQuery()) {
+                log.info("get(id): Creating an 'airplane' object from ResultSet.");
+                while (rs.next()) {
+                    airplane = createNewAirplane(rs);
+                }
             }
         } catch (SQLException e) {
-            log.error("get(id): SQL exception!\n" + e);
+            log.error("get(id): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("get(id): Returning an 'airplane' object: " + airplane);
@@ -96,7 +96,7 @@ public class AirplaneDAOImpl implements AirplaneDAO {
             log.info("update(airplane): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("update(airplane): SQL exception!\n" + e);
+            log.error("update(airplane): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -115,7 +115,7 @@ public class AirplaneDAOImpl implements AirplaneDAO {
             log.info("delete(airplane): Executing the query: " + ps);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.error("delete(airplane): SQL exception!\n" + e);
+            log.error("delete(airplane): SQL exception code: " + e.getErrorCode());
         }
     }
 
@@ -132,7 +132,7 @@ public class AirplaneDAOImpl implements AirplaneDAO {
                 airplanes.add(createNewAirplane(rs));
             }
         } catch (SQLException e) {
-            log.error("getAll(): SQL exception!\n" + e);
+            log.error("getAll(): SQL exception code: " + e.getErrorCode());
         }
 
         log.info("getAll(): Returning the list of airplanes.");

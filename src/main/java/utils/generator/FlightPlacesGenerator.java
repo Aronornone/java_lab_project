@@ -13,7 +13,7 @@ import java.util.List;
 
 import static db.dao.DataSource.getConnection;
 
-class FlightPlacesGeneratorPolina {
+class FlightPlacesGenerator {
 
     private static final FlightService flightService = FlightServiceImpl.getInstance();
 

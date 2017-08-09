@@ -15,7 +15,7 @@ import static java.lang.StrictMath.*;
 import static utils.generator.FlightsGenerator.DistanceCounter.calculateDistance;
 import static utils.generator.RandomGenerator.*;
 
-public class FlightsGenerator {
+class FlightsGenerator {
     private static final AirplaneService airplaneService = AirplaneServiceImpl.getInstance();
     private static final AirportService airportService = AirportServiceImpl.getInstance();
 

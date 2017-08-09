@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirplaneServiceImpl implements AirplaneService {
-    private AirplaneDAO dao = AirplaneDAOImpl.getInstance();
+    private final AirplaneDAO dao = AirplaneDAOImpl.getInstance();
 
     private final static AirplaneService instance = new AirplaneServiceImpl();
     public static AirplaneService getInstance() {

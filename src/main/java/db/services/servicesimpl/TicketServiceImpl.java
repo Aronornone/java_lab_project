@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class TicketServiceImpl implements TicketService {
-    private TicketDAO dao = TicketDAOImpl.getInstance();
+    private final TicketDAO dao = TicketDAOImpl.getInstance();
 
     private final static TicketService instance = new TicketServiceImpl();
 

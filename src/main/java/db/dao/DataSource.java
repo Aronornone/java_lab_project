@@ -10,14 +10,14 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DataSource {
-    private static String DRIVER_CLASS_NAME;
-    private static String DB_URL;
-    private static String DB_USER;
-    private static String DB_PASSWORD;
-    private static int CONN_POOL_SIZE;
-    private static int MIN_IDLE_CONNECTIONS;
-    private static int MAX_IDLE_CONNECTIONS;
-    private static int MAX_OPENED_PREP_STMTS;
+    private static final String DRIVER_CLASS_NAME;
+    private static final String DB_URL;
+    private static final String DB_USER;
+    private static final String DB_PASSWORD;
+    private static final int CONN_POOL_SIZE;
+    private static final int MIN_IDLE_CONNECTIONS;
+    private static final int MAX_IDLE_CONNECTIONS;
+    private static final int MAX_OPENED_PREP_STMTS;
 
     private static BasicDataSource dataSource;
     private static Connection connection;

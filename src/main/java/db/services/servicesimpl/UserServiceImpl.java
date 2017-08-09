@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class UserServiceImpl implements UserService {
-    private UserDAO dao = UserDAOImpl.getInstance();
+    private final UserDAO dao = UserDAOImpl.getInstance();
 
     private final static UserService instance = new UserServiceImpl();
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 import static db.dao.DataSource.getConnection;
 
-public class FlightPlacesGeneratorPolina {
+class FlightPlacesGeneratorPolina {
 
     private static final FlightService flightService = FlightServiceImpl.getInstance();
 
@@ -22,9 +22,8 @@ public class FlightPlacesGeneratorPolina {
     }
 
     @SneakyThrows
-    private static void generateFlightPlaces() throws SQLException {
+    private static void generateFlightPlaces() {
         List<Flight> flights = flightService.getAll();
-        int number = flights.size();
 
         StringBuilder valueBuilder = new StringBuilder();
         for (Flight flight : flights) {

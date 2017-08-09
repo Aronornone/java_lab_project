@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightServiceImpl implements FlightService {
-    private FlightDAO dao = FlightDAOImpl.getInstance();
+    private final FlightDAO dao = FlightDAOImpl.getInstance();
 
     private final static FlightService instance = new FlightServiceImpl();
 

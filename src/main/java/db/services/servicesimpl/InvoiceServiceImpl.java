@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class InvoiceServiceImpl implements InvoiceService {
-    private InvoiceDAO dao = InvoiceDAOImpl.getInstance();
+    private final InvoiceDAO dao = InvoiceDAOImpl.getInstance();
 
     private final static InvoiceService instance = new InvoiceServiceImpl();
     public static InvoiceService getInstance() {

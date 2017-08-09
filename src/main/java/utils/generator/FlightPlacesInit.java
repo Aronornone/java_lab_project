@@ -9,7 +9,7 @@ import pojo.Flight;
 import java.sql.Statement;
 import java.util.Collection;
 
-public class FlightPlacesInit {
+class FlightPlacesInit {
     private static final FlightService flightService = FlightServiceImpl.getInstance();
 
     public static void main(String[] args) {

@@ -14,7 +14,7 @@ public class PriceRecounter {
         return (int) result; // casting int for simplicity
     }
 
-    public static double affectByBusiness(double basePrice){
+    private static double affectByBusiness(double basePrice){
         return affectPriceByPercents(basePrice,30);
     }
     public static double affectByLuggage(double basePrice){
@@ -25,13 +25,13 @@ public class PriceRecounter {
         return basePrice-1000;
     }
 
-    public static double affectPriceByPercents(double basePrice, int percents) {
+    private static double affectPriceByPercents(double basePrice, int percents) {
         return basePrice * (1 + (double) percents / 100);
     }
 
     //max price increase=basePrice*0.3(30%)
     //price increases only if days until departure<120 days
-    public static double affectPriceByDate(double basePrice, LocalDateTime dateTime) {
+    private static double affectPriceByDate(double basePrice, LocalDateTime dateTime) {
         long daysUntilDeparture = LocalDateTime.from(LocalDateTime.now()).until(dateTime, ChronoUnit.DAYS);
         if (daysUntilDeparture > 120) {
             return basePrice;

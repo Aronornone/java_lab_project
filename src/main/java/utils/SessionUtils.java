@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SessionUtils {
-    private static InvoiceService is = InvoiceServiceImpl.getInstance();
-    private static TicketService ts = TicketServiceImpl.getInstance();
-    private static FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
-    private static UserService us = UserServiceImpl.getInstance();
+    private static final InvoiceService is = InvoiceServiceImpl.getInstance();
+    private static final TicketService ts = TicketServiceImpl.getInstance();
+    private static final FlightPlaceService fps = FlightPlaceServiceImpl.getInstance();
+    private static final UserService us = UserServiceImpl.getInstance();
 
     /**
      * Method for invalidate userSession if it destroyed by Logout or timeout

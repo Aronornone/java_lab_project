@@ -43,14 +43,13 @@ public class DeleteTicketServlet extends HttpServlet {
 
         String ticketId = request.getParameter("ticketId");
         Optional<Ticket> ticketOptional = ticketService.get(Long.parseLong(ticketId));
-        if (ticketOptional.isPresent()) {
-            Ticket ticket = ticketOptional.get();
+        ticketOptional.ifPresent(ticket1 -> {
             List<Ticket> tickets = new ArrayList<>();
-            tickets.add(ticket);
+            tickets.add(ticket1);
             flightPlaceService.revertSittingPlaces(tickets);
             int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-        }
+        });
         String redirectBackString = "/bucket";
         response.sendRedirect(redirectBackString);
     }

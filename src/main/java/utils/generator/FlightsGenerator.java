@@ -16,8 +16,8 @@ import static utils.generator.FlightsGenerator.DistanceCounter.calculateDistance
 import static utils.generator.RandomGenerator.*;
 
 public class FlightsGenerator {
-    private static AirplaneService as = AirplaneServiceImpl.getInstance();
-    private static AirportService aps = AirportServiceImpl.getInstance();
+    private static final AirplaneService airplaneService = AirplaneServiceImpl.getInstance();
+    private static final AirportService airportService = AirportServiceImpl.getInstance();
 
     //Run it to insert randomly generated flights
     public static void main(String[] args) {
@@ -70,11 +70,11 @@ public class FlightsGenerator {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     private static String getRandomFlight() {
-        int airplaneId = createNumber(1, as.getAll().size());
+        int airplaneId = createNumber(1, airplaneService.getAll().size());
         int depAirportId = createNumber(1, 20);
-        //int depAirportId = createNumber(1, aps.getAll().size());
+        //int depAirportId = createNumber(1, airportService.getAll().size());
         int arrAirportId = createNumber(1, 20);
-        //int arrAirportId = createNumber(1, aps.getAll().size());
+        //int arrAirportId = createNumber(1, airportService.getAll().size());
         String result = "(%d,'%s',%d ,%d, %d, %d ,%d ,'%s')";
         List params = new ArrayList();
         params.add(airplaneId);
@@ -82,19 +82,19 @@ public class FlightsGenerator {
         params.add(depAirportId);
         params.add(arrAirportId);
         params.add(countBaseCost(getDistance(depAirportId, arrAirportId)));
-        params.add(as.get(airplaneId).get().getCapacityEconom());
-        params.add(as.get(airplaneId).get().getCapacityBusiness());
+        params.add(airplaneService.get(airplaneId).get().getCapacityEconom());
+        params.add(airplaneService.get(airplaneId).get().getCapacityBusiness());
         params.add(createRandomDateTime("01/08/2017", "01/09/2017"));
         return String.format(result, params.toArray());
     }
 
     @SneakyThrows
     private static String getRandomFlight(int depId, int arrId) {
-        int airplaneId = createNumber(1, as.getAll().size());
+        int airplaneId = createNumber(1, airplaneService.getAll().size());
 //        int depAirportId = createNumber(1, 20);
-        //int depAirportId = createNumber(1, aps.getAll().size());
+        //int depAirportId = createNumber(1, airportService.getAll().size());
 //        int arrAirportId = createNumber(1, 20);
-        //int arrAirportId = createNumber(1, aps.getAll().size());
+        //int arrAirportId = createNumber(1, airportService.getAll().size());
         String result = "(%d,'%s',%d ,%d, %d, %d ,%d ,'%s')";
         List params = new ArrayList();
         params.add(airplaneId);
@@ -102,23 +102,22 @@ public class FlightsGenerator {
         params.add(depId);
         params.add(arrId);
         params.add(countBaseCost(getDistance(arrId, depId)));
-        params.add(as.get(airplaneId).get().getCapacityEconom());
-        params.add(as.get(airplaneId).get().getCapacityBusiness());
+        params.add(airplaneService.get(airplaneId).get().getCapacityEconom());
+        params.add(airplaneService.get(airplaneId).get().getCapacityBusiness());
         params.add(createRandomDateTime("01/08/2017", "01/09/2017"));
         return String.format(result, params.toArray());
     }
 
     private static double getDistance(int departureAirportId, int arrivalAirportId) {
-        double lat1 = aps.get(departureAirportId).get().getLatitude();
-        double lon1 = aps.get(departureAirportId).get().getLongitude();
-        double lat2 = aps.get(arrivalAirportId).get().getLatitude();
-        double lon2 = aps.get(arrivalAirportId).get().getLongitude();
+        double lat1 = airportService.get(departureAirportId).get().getLatitude();
+        double lon1 = airportService.get(departureAirportId).get().getLongitude();
+        double lat2 = airportService.get(arrivalAirportId).get().getLatitude();
+        double lon2 = airportService.get(arrivalAirportId).get().getLongitude();
         return calculateDistance(lat1, lon1, lat2, lon2);
     }
 
     private static int countBaseCost(double distance) {
-        int basePrice = (int) (2.4 * distance + 500);
-        return basePrice;
+        return (int) (2.4 * distance + 500);
     }
 
     static class DistanceCounter {

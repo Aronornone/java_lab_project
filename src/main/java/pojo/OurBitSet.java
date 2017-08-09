@@ -10,7 +10,7 @@ import java.util.BitSet;
  */
 public class OurBitSet extends BitSet{
 
-    private int fixedLength;
+    private final int fixedLength;
 
     public OurBitSet(int fixedLength){
         super(fixedLength);

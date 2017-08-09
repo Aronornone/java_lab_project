@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Collection;
 
 public class FlightPlacesInit {
-    private static FlightService fs = FlightServiceImpl.getInstance();
+    private static final FlightService flightService = FlightServiceImpl.getInstance();
 
     public static void main(String[] args) {
         initFlightPlaces();
@@ -18,7 +18,7 @@ public class FlightPlacesInit {
 
     @SneakyThrows
     private static void initFlightPlaces() {
-        Collection<Flight> flights = fs.getAll();
+        Collection<Flight> flights = flightService.getAll();
         StringBuilder query = new StringBuilder("INSERT INTO flightplace (flight_id,places_econom,places_business) VALUES ");
         query.append(getValues(flights));
         System.out.println(query.toString());

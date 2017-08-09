@@ -39,7 +39,7 @@
 
                     <c:forEach items="${invoice.tickets}" var="ticket">
                         <div class="ticketInfo">
-                            <p><u></u><fmt:message key="ticket"/> <b>№${ticket.ticketId}</b></p></u>
+                            <p><u><fmt:message key="ticket"/> <b>№${ticket.ticketId}</b></u></p>
                             <div class="printTickets">
                                 <div class="firstBlock">
                                     <p><fmt:message key="tabFlight"/> <b>${ticket.flight.flightNumber}</b>

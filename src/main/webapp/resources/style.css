@@ -82,16 +82,6 @@ a:active {
     padding: 14px 28px;
 }
 
-.buttonLogout {
-    font-size: 10pt;
-    background-color: #d56e00;
-    border: none;
-    color: white;
-    padding: 7px 14px;
-    clear: both;
-    margin: 10px 0 10px 10px;
-}
-
 .buttonLogin {
     font-size: 10pt;
     background-color: #4CAF30;
@@ -121,15 +111,6 @@ a:active {
     color: white;
     padding: 7px 14px;
     float: right;
-    clear: both;
-    margin: 10px 0 10px 10px;
-}
-.buttonBucketSave {
-    font-size: 14pt;
-    background-color: #0017af;
-    border: none;
-    color: white;
-    padding: 7px 14px;
     clear: both;
     margin: 10px 0 10px 10px;
 }
@@ -168,9 +149,8 @@ a:active {
 }
 
 
-.buttonSearch:hover, .buttonBucketPay:hover, .buttonBucketSave:hover,
-.buttonBucket:hover, .buttonBucketMenu:hover,.buttonLogout:hover, .buttonLogReg:hover, a.buttonDelete:hover,
-.goBackBut:hover, .menuButton:hover, .flightInfo, .invoiceToggle, #appendButton:hover, .buttonMenu:hover, .buttonLogin:hover {
+.buttonSearch:hover, .buttonBucketPay:hover, .buttonBucket:hover, .buttonBucketMenu:hover, .buttonLogReg:hover, a.buttonDelete:hover,
+.menuButton:hover, .flightInfo, .invoiceToggle, #appendButton:hover, .buttonMenu:hover, .buttonLogin:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -203,14 +183,10 @@ a.buttonDelete {
     margin: 10px 0 10px 10px;
 }
 
-.buttonBuy {
-    float: right;
-}
-
 .menuButton {
     color: white;
     background-color: #d56e00 !important;
-    margin: 0px 0px 0px 10px !important;
+    margin: 0 0 0 10px !important;
 }
 
 .header {
@@ -225,10 +201,6 @@ a.buttonDelete {
 .logged {
     display: inline-flex;
     width: 100%;
-}
-
-.test {
-    font-size: 15pt;
 }
 
 table {
@@ -325,96 +297,16 @@ p.passengerNum {
     margin: auto 20px auto 0;
 }
 
-.pasCost {
-    display: inline-flex;
-    float: right;
-    margin: auto 0 auto auto;
-}
-
-.wrapOptions {
-    display: inline-flex;
-    width: 100%;
-}
-
 .error {
     color: #af1300;
     font-weight: bold;
 }
 
-.headerLineFlight {
-    border-width: 3px;
-    border-style: groove;
-}
-
-.headerLineTicket {
-
-}
 
 .tableBucketField {
     width: 100px;
     text-align: center;
 }
-
-.cost {
-    font-weight: bold;
-}
-
-.place {
-    font-weight: bold;
-    margin: 0 20px 0 0;
-}
-
-.goBackBut {
-    font-size: 10pt;
-    background-color: #0017af;
-    border: none;
-    color: white;
-    padding: 7px 14px;
-    float: right;
-    clear: both;
-    margin: 10px 0 10px 10px;
-}
-
-#usernameIn {
-    color: red;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-#usernameOut {
-    color: red;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-#toggleIn {
-    display: block;
-}
-
-#toggleOut {
-    /*so that panel will show up under username*/
-    display: block;
-}
-
-#panIn {
-    position: absolute;
-    width: 90px;
-    top: 43px;
-    text-align: center;
-    display: none;
-    background-color: lightyellow;
-    border: 5px groove;
-}
-
-#panOut {
-    position: absolute;
-    width: 90px;
-    top: 43px;
-    display: none;
-    background-color: lightyellow;
-    border: 5px groove;
-}
-
 .invoiceSuccess {
     margin-top: 100px;
     text-align: center;
@@ -460,7 +352,7 @@ button.invoiceToggle {
     padding: 15px 5px 1px 5px;
     width: 100%;
     clear: both;
-    margin: 0px 0px 10px 0px;
+    margin: 0 0 10px 0;
     background-color: steelblue;
 }
 
@@ -491,7 +383,7 @@ button.invoiceToggle {
     z-index: 999;
     width: 150px;
     background: aliceblue;;
-    padding: 7px 0px;
+    padding: 7px 0;
 }
 
 
@@ -506,10 +398,7 @@ button.invoiceToggle {
 }
 
 .menu li.last{
-    padding: 7px 0px 0px 0px;
-}
-p.u {
-    text-decoration: underline;
+    padding: 7px 0 0 0;
 }
 
 .menuBlock {

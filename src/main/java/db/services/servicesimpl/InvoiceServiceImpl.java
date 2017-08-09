@@ -40,7 +40,7 @@ public final class InvoiceServiceImpl implements InvoiceService {
      * Method for getting number of tickets in created invoice of user (exactly bucket)
      *
      * @param user user for whom we check number of tickets in invoice to view in bucket
-     * @return
+     * @return number of Ticket in invoice
      */
     @Override
     public int getNumberOfTicketsInInvoice(User user) {

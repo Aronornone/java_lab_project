@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -90,7 +91,6 @@ public class DoSearchServlet extends HttpServlet {
                     arr = a;
                 }
             }
-
             //TODO: Добавить в логгер информацию о поиске
             System.out.println("Searching for flight:" + dateFrom + " " + dateTo
                     + " " + departure + " " + arrival + " " + numberTicketsFilter
@@ -100,10 +100,15 @@ public class DoSearchServlet extends HttpServlet {
             try {
                 pageNum = Integer.parseInt(request.getParameter("page"));
             } catch (NumberFormatException ex) {
-                pageNum = 0;
+                pageNum = -1;
             }
             httpSession.setAttribute("pageLast", pageNum);
 
+            boolean pageFirst = false;
+            if (pageNum == -1) {
+                pageNum = 0;
+                pageFirst = true;
+            }
             List<Flight> foundFlights = flightService.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
             for (Flight f : foundFlights) {
@@ -116,13 +121,14 @@ public class DoSearchServlet extends HttpServlet {
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
-
-            } else if (pageNum == 0) { // if first page, foundFlights are sent as attribute, also number of found pages is sent
+                request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
+            } else if (pageFirst) { // if first page, foundFlights are sent as attribute, also number of found pages is sent
+                foundFlights = new ArrayList<>();
                 request.setAttribute("flights", foundFlights);
                 int numPages = (int) ceil((double) flightService.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
                         dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
                 request.setAttribute("numPages", numPages);
-                request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
+                request.getRequestDispatcher("").forward(request, response);
             } else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
                 String json = new Gson().toJson(foundFlights);
                 response.setContentType("json");

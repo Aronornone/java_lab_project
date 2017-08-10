@@ -1,5 +1,6 @@
 body {
     background-color: aliceblue;
+    overflow-y: visible;
 }
 
 .body {
@@ -132,7 +133,8 @@ a:active {
     color: white;
     padding: 10px 20px;
 }
-#hiddenDiv{
+
+#hiddenDiv {
     display: none;
 }
 
@@ -147,7 +149,6 @@ a:active {
     margin-right: auto;
     margin-top: 10px;
 }
-
 
 .buttonSearch:hover, .buttonBucketPay:hover, .buttonBucket:hover, .buttonBucketMenu:hover, .buttonLogReg:hover, a.buttonDelete:hover,
 .menuButton:hover, .flightInfo, .invoiceToggle, #appendButton:hover, .buttonMenu:hover, .buttonLogin:hover {
@@ -302,11 +303,11 @@ p.passengerNum {
     font-weight: bold;
 }
 
-
 .tableBucketField {
     width: 100px;
     text-align: center;
 }
+
 .invoiceSuccess {
     margin-top: 100px;
     text-align: center;
@@ -386,7 +387,6 @@ button.invoiceToggle {
     padding: 7px 0;
 }
 
-
 .menu ul {
     position: absolute;
     display: none;
@@ -397,10 +397,44 @@ button.invoiceToggle {
     float: left;
 }
 
-.menu li.last{
+.menu li.last {
     padding: 7px 0 0 0;
 }
 
 .menuBlock {
     margin-top: 15px;
+}
+
+#popup_box {
+    display: none;
+    position: fixed;
+    _position: absolute;
+    height: 50px;
+    width: 200px;
+    background: #FFFFFF;
+    top: 450px;
+    right: 450px;
+    z-index: 100;
+    text-align: center;
+    margin-left: 15px;
+    border: 2px solid lightsteelblue;
+    padding: 15px;
+    font-size: 19px;
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#popupBoxClose {
+    font-size: 15px;
+    line-height: 15px;
+    right: 5px;
+    top: 5px;
+    position: absolute;
+    color: red;
+    font-weight: bold;
 }

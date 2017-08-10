@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
-public final class InvoiceServlet extends HttpServlet {
+public class InvoiceServlet extends HttpServlet {
     private static FlightService flightService;
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
@@ -58,7 +58,9 @@ public final class InvoiceServlet extends HttpServlet {
         if (checkBox != null) {
             redirectBackStringBuilder.append("&box=").append(checkBox[0]);
         }
+
         String redirectBackString = redirectBackStringBuilder.toString();
+
 
         String numberTicketsFlightString = request.getParameter("numberTicketsFlight");
         int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
@@ -102,7 +104,6 @@ public final class InvoiceServlet extends HttpServlet {
             }
             int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            //request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }
         response.sendRedirect(redirectBackString);
     }

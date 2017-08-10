@@ -74,7 +74,7 @@
                     <p class="filter"><fmt:message key="busClass"/>
                         <input class="fieldFilters" type="checkbox"
                         <c:if test="${sessionScope.business !=null}"> checked="checked" </c:if>
-                               value="business" name="box">
+                               value="business" id="box" name="box">
                     </p>
                 </div>
                 <p class="error">${requestScope.nothingFound}</p>
@@ -106,8 +106,7 @@
                 </thead>
                 <tbody>
                 <c:forEach items="${flights}" var="flight">
-                    <form name="form2" id="form2${flight.flightId}" class="addTickets" action="addFlightToInvoice"
-                          method="post">
+                    <form name="form2" id="form2${flight.flightId}" class="addTickets" >
                         <tr>
                             <td>${flight.departureAirport.code} (${flight.departureAirport.city})</td>
                             <td>${flight.arrivalAirport.code} (${flight.arrivalAirport.city})</td>
@@ -115,7 +114,7 @@
                             <td>${flight.flightNumber}</td>
                             <td>${flight.baseCost}</td>
                             <td>
-                                <input id="num" class="fieldFilters" type="number" min="1"
+                                <input id="num${flight.flightId}" class="fieldFilters" type="number" min="1"
                                        max="${sessionScope.numberTicketsFilter}" step="1"
                                        value="${sessionScope.numberTicketsFilter}" form="form2${flight.flightId}"
                                        name="numberTicketsFlight">
@@ -123,9 +122,9 @@
                                        value="${flight.flightId}">
                             </td>
                             <td>
-                                <input class="buttonBucket" form="form2${flight.flightId}"
-                                       type="submit"
-                                       value="<fmt:message key="buyButton"/>"/>
+                                <button class="buttonBucket" form="form2${flight.flightId}"
+                                        id="${flight.flightId}" onclick=buy(this.id)>
+                                    <fmt:message key="buyButton"/></button>
                             </td>
                         </tr>
 
@@ -134,6 +133,11 @@
                 </tbody>
             </table>
         </div>
+        <div id="popup_box">
+            <p><fmt:message key="ticketBought"/></p>
+            <a id="popupBoxClose">Close</a>
+        </div>
+
         <div class="appendButton">
             <c:if test="${requestScope.numPages!=null}">
                 <button id="appendButton"><fmt:message key="showMore"/>

@@ -6,6 +6,7 @@ import db.services.interfaces.TicketService;
 import db.services.servicesimpl.FlightPlaceServiceImpl;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
+import org.apache.log4j.Logger;
 import pojo.Ticket;
 import pojo.User;
 
@@ -22,26 +23,30 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger("servLog");
     private static FlightPlaceService flightPlaceService;
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
 
     public void init() {
+        log.info("init(): Initializing 'flightPlaceService', 'invoiceService' and 'ticketService'.");
         flightPlaceService = FlightPlaceServiceImpl.getInstance();
         invoiceService = InvoiceServiceImpl.getInstance();
         ticketService = TicketServiceImpl.getInstance();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         doPost(request, response);
-
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
         String ticketId = request.getParameter("ticketId");
+        log.info("doPost(request, response): Initiaziling 'ticketOptional'.");
         Optional<Ticket> ticketOptional = ticketService.get(Long.parseLong(ticketId));
         ticketOptional.ifPresent(ticket1 -> {
             List<Ticket> tickets = new ArrayList<>();
@@ -51,6 +56,7 @@ public class DeleteTicketServlet extends HttpServlet {
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         });
         String redirectBackString = "/bucket";
+        log.info("doPost(request, response): Executing response.sendRedirect(redirectBackString).");
         response.sendRedirect(redirectBackString);
     }
 }

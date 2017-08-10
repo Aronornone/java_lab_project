@@ -3,6 +3,7 @@ package controller;
 import db.services.interfaces.UserService;
 import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 import pojo.User;
 
 import javax.servlet.ServletException;
@@ -17,22 +18,26 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger("servLog");
     private static UserService userService;
 
     public void init() {
+        log.info("init(): Initializing 'userService'.");
         userService = UserServiceImpl.getInstance();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         String email = request.getParameter("email");
         String username = request.getParameter("username");
         String nonHashedPasswordFirstReq = request.getParameter("password1");
         String nonHashedPasswordSecondReq = request.getParameter("password2");
-        String password1HashReq = "";
-        String password2HashReq = "";
+        String password1HashReq;
+        String password2HashReq;
         LocalDateTime registrationDate = LocalDateTime.now();
 
+        log.info("doGet(request, response): Trying to register a user.");
         if (nonHashedPasswordFirstReq==null ||
                 nonHashedPasswordSecondReq==null ||
                 username==null ||
@@ -41,6 +46,7 @@ public class DoRegServlet extends HttpServlet {
                 nonHashedPasswordSecondReq.isEmpty() ||
                 username.isEmpty() ||
                email.isEmpty()) {
+            log.info("doGet(request, response): Some field is empty!");
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
@@ -60,6 +66,7 @@ public class DoRegServlet extends HttpServlet {
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
+                    log.info("doGet(request, response): Registration is successful.");
                     User user = new User(username, email, password1HashReq, registrationDate);
                     userService.add(user);
                     request.setAttribute("regSuccess", err.getString("regSuccess"));
@@ -71,6 +78,7 @@ public class DoRegServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         doGet(request, response);
     }
 }

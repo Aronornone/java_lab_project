@@ -5,6 +5,7 @@ import db.services.interfaces.UserService;
 import db.services.servicesimpl.AirportServiceImpl;
 import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 import pojo.Airport;
 import pojo.User;
 
@@ -18,19 +19,23 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger("servLog");
     private static AirportService airportService;
     private static UserService userService;
 
     public void init() {
+        log.info("init(): Initializing 'airportService' and 'userService'.");
         airportService = AirportServiceImpl.getInstance();
         userService = UserServiceImpl.getInstance();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
 
+        log.info("doGet(request, response): Trying to login.");
         if ((nonHashedPasswordReq == null || (email == null ||
                 nonHashedPasswordReq.isEmpty()) || email.isEmpty())) {
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
@@ -90,6 +95,7 @@ public class DoLoginServlet extends HttpServlet {
                     response.sendRedirect(redirectBackString);
                 }
             } else {
+                log.info("doGet(request, response): Log-in failed!");
                 request.setAttribute("loginFailed", err.getString("loginFailed"));
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -98,6 +104,7 @@ public class DoLoginServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         doGet(request, response);
     }
 }

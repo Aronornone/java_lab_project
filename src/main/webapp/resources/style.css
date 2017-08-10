@@ -4,7 +4,7 @@ body {
 }
 
 .body {
-    font-family: Arial, serif;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     min-height: calc(100vh - 20px);
     max-width: 1200px;
     margin: auto;
@@ -76,6 +76,7 @@ a:active {
 }
 
 .buttonLogReg {
+    font-family: 'Century Gothic','Calibri', sans-serif;
     font-size: 16pt;
     background-color: steelblue;
     border: none;
@@ -85,6 +86,7 @@ a:active {
 
 .buttonLogin {
     font-size: 10pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -95,8 +97,9 @@ a:active {
 
 .buttonBucketMenu {
     font-size: 12pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     display: inline-flex;
-    background-color: steelblue;
+    background-color: #3f669f;
     text-decoration: underline;
     border: none;
     color: white;
@@ -108,6 +111,7 @@ a:active {
 
 .buttonBucket {
     font-size: 12pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -119,6 +123,7 @@ a:active {
 
 .buttonBucketPay {
     font-size: 14pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -128,6 +133,7 @@ a:active {
 }
 
 .buttonSearch {
+    font-family: 'Century Gothic','Calibri', sans-serif;
     font-size: 16pt;
     background-color: #3f669f;
     border: none;
@@ -141,6 +147,7 @@ a:active {
 
 #appendButton {
     font-size: 14pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: #3f669f;
     border: none;
     color: white;
@@ -176,6 +183,7 @@ a.buttonDelete:active {
 
 a.buttonDelete {
     font-size: 12pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: #af1300;
     border: none;
     color: white;
@@ -187,6 +195,7 @@ a.buttonDelete {
 
 .menuButton {
     color: white;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: #3f669f !important;
     margin: 0 0 0 10px !important;
 }
@@ -282,6 +291,7 @@ p.filter {
 
 p.passengerNum {
     font-size: 13pt;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     margin: 5px 0 5px 0;
 }
 
@@ -315,10 +325,6 @@ p.passengerNum {
     font-size: 16pt;
 }
 
-.printTickets {
-
-}
-
 .printTickets tr:hover {
     background-color: rgba(255, 255, 255, 0);
 }
@@ -336,6 +342,7 @@ button.invoiceToggle {
     width: 100%;
     clear: both;
     margin: 10px 10px 10px 0;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     background-color: steelblue;
 }
 
@@ -363,11 +370,12 @@ button.invoiceToggle {
 }
 
 .buttonMenu {
+    font-family: 'Century Gothic','Calibri', sans-serif;
     font-size: 11pt;
     background-color: steelblue;
     border: none;
     color: white;
-    width: 150px;
+    width: 170px;
     padding: 7px 14px;
 
 }
@@ -383,8 +391,8 @@ button.invoiceToggle {
     display: block;
     margin: -1px 1px;
     z-index: 999;
-    width: 150px;
-    background: aliceblue;;
+    width: 190px;
+    background-color: #f1f4f9;
     padding: 7px 0;
 }
 
@@ -406,14 +414,18 @@ button.invoiceToggle {
     margin-top: 15px;
 }
 
+input {
+    font-family: 'Century Gothic','Calibri', sans-serif;
+}
+
 #popup_box, #popup_box_login {
     display: none;
     position: fixed;
     _position: absolute;
     height: 50px;
-    width: 200px;
+    width: 350px;
     background: #FFFFFF;
-    top: 450px;
+    top: 250px;
     right: 450px;
     z-index: 100;
     text-align: center;
@@ -425,11 +437,6 @@ button.invoiceToggle {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-#popup_box_login {
-    width: 300px !important;
-    top: 250px !important;
-}
-
 a {
     cursor: pointer;
     text-decoration: none;
@@ -437,6 +444,7 @@ a {
 
 #popupBoxClose, #popupBoxCloseLogin {
     font-size: 15px;
+    font-family: 'Century Gothic','Calibri', sans-serif;
     line-height: 15px;
     right: 5px;
     top: 5px;

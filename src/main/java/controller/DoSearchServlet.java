@@ -78,7 +78,7 @@ public class DoSearchServlet extends HttpServlet {
         }
 
         //проверяем фильтры перед парсингом
-        log.info("doGet(request, response): Checking filters before parcing.");
+        log.info("doGet(request, response): Checking filters before parsing.");
         if ((dateFromString.isEmpty()) ||
                 (dateToString.isEmpty()) ||
                 departure.isEmpty() ||
@@ -129,7 +129,7 @@ public class DoSearchServlet extends HttpServlet {
 
             //if flight list is empty, show notification
             if (foundFlights.isEmpty()) {
-                log.info("doGet(request, response): 'foundFlights' is empty.");
+                log.error("doGet(request, response): Flights not found!");
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
                 request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
             } else if (pageFirst) { // if first page, foundFlights are sent as attribute, also number of found pages is sent
@@ -137,11 +137,11 @@ public class DoSearchServlet extends HttpServlet {
                 int numPages = (int) ceil((double) flightService.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
                         dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
                 request.setAttribute("numPages", numPages);
-                request.setAttribute("ifPageFirst",pageFirst);
+                request.setAttribute("ifPageFirst", pageFirst);
 
                 request.getRequestDispatcher("").forward(request, response);
             } else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
-                log.info("doGet(request, response): 'pageNum' is greater then 0. Creating a json string and send it as a response.");
+                log.info("doGet(request, response): 'pageNum' is greater then 0. Creating a json string and sending it as a response.");
                 String json = new Gson().toJson(foundFlights);
                 response.setContentType("json");
                 response.setCharacterEncoding("UTF-8");

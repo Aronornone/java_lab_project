@@ -46,7 +46,7 @@ public class DoRegServlet extends HttpServlet {
                 nonHashedPasswordSecondReq.isEmpty() ||
                 username.isEmpty() ||
                email.isEmpty()) {
-            log.info("doGet(request, response): Some field is empty!");
+            log.error("doGet(request, response): Field is empty!");
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
@@ -56,6 +56,7 @@ public class DoRegServlet extends HttpServlet {
             password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
 
             if (!password1HashReq.equals(password2HashReq)) {
+                log.error("doGet(request, response): Password mismatches!");
                 request.setAttribute("passMismatch", err.getString("passMismatch"));
                 request.setAttribute("email", email);
                 request.setAttribute("username", username);
@@ -63,10 +64,11 @@ public class DoRegServlet extends HttpServlet {
             } else {
                 Optional<User> userOptional = userService.get(email);
                 if (userOptional.isPresent()) {
+                    log.error("doGet(request, response): User already exists!");
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
-                    log.info("doGet(request, response): Registration is successful.");
+                    log.info("doGet(request, response): Registration is successful!");
                     User user = new User(username, email, password1HashReq, registrationDate);
                     userService.add(user);
                     request.setAttribute("regSuccess", err.getString("regSuccess"));

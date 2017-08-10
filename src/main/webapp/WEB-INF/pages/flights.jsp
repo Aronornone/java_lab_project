@@ -139,6 +139,12 @@
             <a id="popupBoxClose">Close</a>
         </div>
 
+        <div id="popup_box_login">
+            <p><fmt:message key="loginFirst"/>
+            <a href="loginPage"><fmt:message key="loginButton"/></a></p>
+            <a id="popupBoxCloseLogin">Close</a>
+        </div>
+
         <div class="appendButton">
             <c:if test="${requestScope.numPages!=null}">
                 <button id="appendButton"><fmt:message key="showMore"/>

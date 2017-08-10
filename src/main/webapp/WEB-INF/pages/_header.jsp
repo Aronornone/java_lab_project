@@ -29,13 +29,8 @@
             <c:if test="${sessionScope.user != null}">
                 <fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}!
                 <a href="bucket">
-                    <c:if test="${sessionScope.ticketsInBucket != null}">
-                        <input class="buttonBucketMenu" type="submit"
-                               value="<fmt:message key="cartButton"/>: ${ticketsInBucket} <fmt:message key="cartTickets"/>"/>
-                    </c:if>
-                    <c:if test="${sessionScope.ticketsInBucket == null}">
-                        <input class="buttonBucketMenu" type="submit"
-                               value="<fmt:message key="cartButton"/>: 0 <fmt:message key="cartTickets"/>"/></c:if>
+                    <button class="buttonBucketMenu"><fmt:message key="cartButton"/>: <div id="ticketBucket">${ticketsInBucket}</div>
+                         <fmt:message key="cartTickets"/></button>
                 </a>
 
                 <ul class="menu">

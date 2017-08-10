@@ -84,11 +84,22 @@ function buy(flightId) {
             box: box
         },
         success: function (data) {
+            var ticketOld = $('#ticketBucket').text();
+            var ticketOldInt;
+            if(ticketOld==undefined || ticketOld ==='') ticketOldInt=0;
+            else ticketOldInt = parseInt(ticketOld);
+            console.log(ticketOld + ' ' + ticketOldInt);
+            var numberTicketInt = parseInt(numberTicketsFlight);
+            console.log(numberTicketInt);
+            var ticketNew = parseInt(ticketOldInt + numberTicketInt);
+            document.getElementById("ticketBucket").textContent = ticketNew;
+            console.log(ticketNew);
+
             loadPopupBox();
             console.log('add success');
         },
-        failure: function (data) {
-            alert(data);
+        error: function (data) {
+            loadPopupBoxLogin();
         }
     });
 
@@ -96,8 +107,8 @@ function buy(flightId) {
         unloadPopupBox();
     });
 
-    $('#wrapper').click(function () {
-        unloadPopupBox();
+    $('#popupBoxCloseLogin').click(function () {
+        unloadPopupBoxLogin();
     });
 
     function unloadPopupBox() {
@@ -107,8 +118,21 @@ function buy(flightId) {
         });
     }
 
+    function unloadPopupBoxLogin() {
+        $('#popup_box_login').fadeOut("slow");
+        $("#wrapper").css({
+            "opacity": "1"
+        });
+    }
+
     function loadPopupBox() {
         $('#popup_box').fadeIn("slow");
+        $("#wrapper").css({
+            "opacity": "0.3"
+        });
+    }
+    function loadPopupBoxLogin() {
+        $('#popup_box_login').fadeIn("slow");
         $("#wrapper").css({
             "opacity": "0.3"
         });

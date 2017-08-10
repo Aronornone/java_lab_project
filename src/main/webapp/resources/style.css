@@ -95,6 +95,7 @@ a:active {
 
 .buttonBucketMenu {
     font-size: 12pt;
+    display: inline-flex;
     background-color: #4CAF30;
     text-decoration: underline;
     border: none;
@@ -405,7 +406,7 @@ button.invoiceToggle {
     margin-top: 15px;
 }
 
-#popup_box {
+#popup_box, #popup_box_login {
     display: none;
     position: fixed;
     _position: absolute;
@@ -424,12 +425,17 @@ button.invoiceToggle {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+#popup_box_login {
+    width: 300px !important;
+    top: 250px !important;
+}
+
 a {
     cursor: pointer;
     text-decoration: none;
 }
 
-#popupBoxClose {
+#popupBoxClose, #popupBoxCloseLogin {
     font-size: 15px;
     line-height: 15px;
     right: 5px;

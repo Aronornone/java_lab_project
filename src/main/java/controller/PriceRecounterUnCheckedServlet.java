@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/priceRecountUnChecked")
 public class PriceRecounterUnCheckedServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static TicketService ticketService;
 
     public void init() {

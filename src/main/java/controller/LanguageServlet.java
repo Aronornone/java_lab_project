@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/language")
 public class LanguageServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

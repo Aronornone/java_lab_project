@@ -16,13 +16,15 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger("servLog");
     private static AirportService airportService;
-    private final static Logger LOG=Logger.getLogger("servLog");
 
     public void init() {
+        log.info("init(): Initializing 'airportService'.");
         airportService = AirportServiceImpl.getInstance();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         Cookie[] cookies = request.getCookies();
@@ -34,14 +36,17 @@ public class FlightsServlet extends HttpServlet {
                     getBundle("ErrorsBundle", Locale.getDefault()));
         }
 
+        log.info("doGet(request, response): Getting a list of all airports from 'airportService'.");
         List<Airport> airports = airportService.getAll();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
 
+        log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
         request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         doGet(request, response);
     }
 }

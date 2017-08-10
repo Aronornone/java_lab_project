@@ -4,6 +4,7 @@ import db.services.interfaces.InvoiceService;
 import db.services.interfaces.TicketService;
 import db.services.servicesimpl.InvoiceServiceImpl;
 import db.services.servicesimpl.TicketServiceImpl;
+import org.apache.log4j.Logger;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
@@ -20,14 +21,17 @@ import java.util.*;
 
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger("servLog");
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
 
     public void init() {
+        log.info("init(): Initializing 'invoiceService' and 'ticketService'.");
         invoiceService = InvoiceServiceImpl.getInstance();
         ticketService = TicketServiceImpl.getInstance();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
@@ -37,6 +41,7 @@ public class BucketServlet extends HttpServlet {
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
+        log.info("doGet(request, response): Counting total price.");
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
             httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
@@ -70,10 +75,12 @@ public class BucketServlet extends HttpServlet {
         } else {
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
+        log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         doGet(request, response);
     }
 }

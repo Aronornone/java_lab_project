@@ -1,5 +1,5 @@
 body {
-    background-color: aliceblue;
+    background: aliceblue url("/resources/images/back.jpg") fixed;
     overflow-y: visible;
 }
 

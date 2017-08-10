@@ -5,6 +5,8 @@ $(document).ready(function () {
     else buy = "Приобрести";
     var counter = 0;
     var numPages = document.getElementById("numPages").value;
+    var ifPageFirst = document.getElementById("ifPageFirst").value;
+
     $("#appendButton").click(function () {
         createAppend(counter);
         console.log("counter:" + counter);
@@ -59,9 +61,15 @@ $(document).ready(function () {
         var cdatetime = year + '-' + month + '-' + day + 'T' + hour + ':' + minute;
         return cdatetime;
     }
-
+    if (document.readyState=='complete'&&ifPageFirst=='true'){
+        document.getElementById("appendButton").click();
+    }
 
 });
+// jQuery(document).load(function () {
+//     alert("emm page seems to be loaded");
+//     document.getElementById("appendButton").click();
+// });
 
 function buy(flightId) {
     var numberTicketsFlight = document.getElementById('num' + flightId).value;

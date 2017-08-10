@@ -11,7 +11,7 @@
     <link rel="stylesheet"
           type="text/css"
           href="<c:url value='resources/style.css'/>">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="resources/js/flights.js"> </script>
 </head>
 <body>
@@ -20,6 +20,7 @@
 <input type="hidden" id="numberTicketsFilter" value="${sessionScope.numberTicketsFilter}">
 <input type="hidden" id="pageToLoad" value="${sessionScope.pageToLoad}">
 <input type="hidden" id="boughtFlightId" value="${sessionScope.boughtFlightId}">
+<input type="hidden" id="ifPageFirst" value="${requestScope.ifPageFirst}">
 <div class="body">
     <jsp:include page="/WEB-INF/pages/_header.jsp"/>
     <div class="wrapper">

@@ -92,7 +92,7 @@ function buy(flightId) {
             var numberTicketInt = parseInt(numberTicketsFlight);
             console.log(numberTicketInt);
             var ticketNew = parseInt(ticketOldInt + numberTicketInt);
-            document.getElementById("ticketBucket").textContent = ticketNew;
+            document.getElementById("ticketBucket").textContent = ' '+ticketNew+' ';
             console.log(ticketNew);
 
             loadPopupBox();

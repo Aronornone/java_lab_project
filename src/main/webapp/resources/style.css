@@ -1,6 +1,6 @@
 body {
-    background: aliceblue url("/resources/images/back.jpg") fixed;
-    overflow-y: visible;
+    background: aliceblue url("/resources/images/back.jpg") no-repeat fixed center;
+    background-size: cover;
 }
 
 .body {

@@ -13,13 +13,15 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/doLogin"})
 public class DoLoginServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
+    private static Logger userLogger = Logger.getLogger("userLogger");
     private static AirportService airportService;
     private static UserService userService;
 
@@ -35,6 +37,7 @@ public class DoLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
 
+        LocalDateTime time;
         log.info("doGet(request, response): Trying to login.");
         if ((nonHashedPasswordReq == null || (email == null ||
                 nonHashedPasswordReq.isEmpty()) || email.isEmpty())) {
@@ -50,6 +53,12 @@ public class DoLoginServlet extends HttpServlet {
                 user = userOptional.get();
                 passwordHashDB = user.getPasswordHash();
             } else {
+                time = LocalDateTime.now();
+                userLogger.error("doGet(request, response): --> Failed attempt to log-in:\n +" +
+                        "email: " + email +
+                        "password: " + nonHashedPasswordReq +
+                        "time: " + time + "\n"
+                );
                 request.setAttribute("nonexistentLogin", err.getString("nonexistentLogin"));
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class AirplaneDAOImpl implements AirplaneDAO {
     private static final String SELECT_ALL = "SELECT id, name, capacity_econom, capacity_business FROM Airplane ";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static AirplaneDAO instance = new AirplaneDAOImpl();
 

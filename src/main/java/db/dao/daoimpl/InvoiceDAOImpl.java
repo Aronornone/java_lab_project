@@ -19,7 +19,7 @@ public final class InvoiceDAOImpl implements InvoiceDAO {
             "FROM Invoice i \n" +
             " JOIN Account a ON a.id = i.account_id \n";
     private static final String ORDER_BY_DATETIME = "ORDER BY invoice_datetime";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static InvoiceDAO instance = new InvoiceDAOImpl();
 

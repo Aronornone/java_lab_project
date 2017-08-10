@@ -12,14 +12,14 @@ function calc(ticketId) {
             function (price) {
                 $('#price' + ticketId).text(price);
                 totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
-                document.getElementById('totalSum').textContent = totalSum;
+                document.getElementById('totalSum').textContent = totalSum+'.0';
             });
     } else {
         $.get("priceRecountUnChecked", {ticketId: ticketId},
             function (price) {
                 $('#price' + ticketId).text(price);
                 totalSum = parseFloat(totalSum) - parseFloat(oldPrice) + parseFloat(price);
-                document.getElementById('totalSum').textContent = totalSum;
+                document.getElementById('totalSum').textContent = totalSum+'.0';
             });
     }
 }

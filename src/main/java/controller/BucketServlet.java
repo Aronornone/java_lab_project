@@ -21,7 +21,7 @@ import java.util.*;
 
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
 
@@ -73,6 +73,7 @@ public class BucketServlet extends HttpServlet {
             }
             request.setAttribute("totalSum", sumTotal);
         } else {
+            log.info("doGet(request, response): Cart is empty!");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }
         log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");

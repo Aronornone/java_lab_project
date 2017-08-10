@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class FlightPlaceServiceImpl implements FlightPlaceService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final FlightPlaceDAO dao = FlightPlaceDAOImpl.getInstance();
 
     private final static FlightPlaceService instance = new FlightPlaceServiceImpl();
@@ -84,8 +84,8 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
         log.info("revertSittingPlaces(tickets): Starting to revert places.");
         for (Ticket ticket : tickets) {
             long flightId = ticket.getFlight().getFlightId();
-            FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).get();
-            flight = flightService.get((int) flightId).get();
+            FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).orElse(null);
+            flight = flightService.get((int) flightId).orElse(null);
             OurBitSet newPlacesBitSet;
             if (ticket.isBusinessClass()) {
                 flight.setAvailablePlacesBusiness(flight.getAvailablePlacesBusiness() + 1);
@@ -119,8 +119,8 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
         FlightService flightService = FlightServiceImpl.getInstance();
         FlightPlaceService flightPlaceService = FlightPlaceServiceImpl.getInstance();
         log.info("getRandomSittingPlace(flightId, business): Getting a flight place by flight id.");
-        FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).get();
-        Flight flight = flightService.get((int) flightId).get();
+        FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).orElse(null);
+        Flight flight = flightService.get((int) flightId).orElse(null);
 
         OurBitSet placesBitSet;
         int availablePlacesInClass;
@@ -156,9 +156,9 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
             }
             log.info("getRandomSittingPlace(flightId, business): Updating flightService.");
             flightService.update(flight);
-            flight = flightService.get((int) flightId).get();
+            flight = flightService.get((int) flightId).orElse(null);
             log.info("getRandomSittingPlace(flightId, business): Getting a flight place by flight id.");
-            flightPlace = flightPlaceService.getByFlightId((int) flight.getFlightId()).get();
+            flightPlace = flightPlaceService.getByFlightId((int) flight.getFlightId()).orElse(null);
             if (business) {
                 flightPlace.setBitPlacesBusiness(placesBitSet);
             } else {

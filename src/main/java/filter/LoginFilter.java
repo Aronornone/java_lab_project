@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @WebFilter(urlPatterns = {"/addFlightToInvoice","/ticketDelete","/invoicePay","/bucket","/addFlightToInvoice"})
 public class LoginFilter implements Filter {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static FlightPlaceService flightPlaceService;
     private static InvoiceService invoiceService;
     private static TicketService ticketService;

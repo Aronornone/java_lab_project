@@ -31,7 +31,7 @@ public final class TicketDAOImpl implements TicketDAO {
                     "  JOIN Airport dep ON dep.id = f.departure_airport_id\n" +
                     "  JOIN Airport arr ON arr.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_FLIGHT_DATETIME = "ORDER BY f.flight_datetime";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static TicketDAO instance = new TicketDAOImpl();
 

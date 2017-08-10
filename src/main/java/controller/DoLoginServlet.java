@@ -95,7 +95,7 @@ public class DoLoginServlet extends HttpServlet {
                     response.sendRedirect(redirectBackString);
                 }
             } else {
-                log.info("doGet(request, response): Log-in failed!");
+                log.error("doGet(request, response): Log-in failed!");
                 request.setAttribute("loginFailed", err.getString("loginFailed"));
                 request.setAttribute("email", email);
                 request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

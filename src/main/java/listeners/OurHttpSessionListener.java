@@ -1,5 +1,6 @@
 package listeners;
 
+import org.apache.log4j.Logger;
 import utils.SessionUtils;
 
 import javax.servlet.annotation.WebListener;
@@ -11,16 +12,18 @@ import java.time.LocalDateTime;
 
 @WebListener
 public class OurHttpSessionListener implements HttpSessionListener {
+    private static Logger log = Logger.getLogger("servLog");
+
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();
-        System.out.println("Session ID:" + httpSession.getId() +
+        log.info("sessionCreated(se): Session ID: " + httpSession.getId() +
                 " is created at: " + LocalDateTime.now());
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();
         SessionUtils.invalidateSession(httpSession);
-        System.out.println("Session ID:" + httpSession.getId() +
+        log.info("sessionDestroyed(se): Session ID:" + httpSession.getId() +
                 " has destroyed at: " + LocalDateTime.now());
     }
 }

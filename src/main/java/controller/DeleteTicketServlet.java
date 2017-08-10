@@ -56,7 +56,7 @@ public class DeleteTicketServlet extends HttpServlet {
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         });
         String redirectBackString = "/bucket";
-        log.info("doPost(request, response): Executing response.sendRedirect(redirectBackString).");
+        log.info("doPost(request, response): Sending redirect.");
         response.sendRedirect(redirectBackString);
     }
 }

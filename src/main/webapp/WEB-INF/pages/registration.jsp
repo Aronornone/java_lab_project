@@ -38,7 +38,7 @@
 
         <form action="doReg" method="post">
             <p><fmt:message key="loginLable"/> :<input class="fieldLogReg" type="email" name="email" value="${email}"></p>
-            <p><fmt:message key="dispName"/> :<input class="fieldLogReg" type="text" name="username"
+            <p><fmt:message key="dispName"/> :<input class="fieldLogReg"  pattern="[\w]{1,25}" type="text" name="username"
                                                        value="${username}"></p>
             <p><fmt:message key="passLable"/> :<input class="fieldLogReg" type="password" name="password1"></p>
             <p><fmt:message key="repPass"/> :<input class="fieldLogReg" type="password" name="password2"></p>

@@ -18,7 +18,8 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
+    private static Logger userLogger = Logger.getLogger("userLogger");
     private static UserService userService;
 
     public void init() {
@@ -71,6 +72,12 @@ public class DoRegServlet extends HttpServlet {
                     log.info("doGet(request, response): Registration is successful!");
                     User user = new User(username, email, password1HashReq, registrationDate);
                     userService.add(user);
+                    userLogger.info("doGet(request, response): --> A new user has been registered:\n +" +
+                            "username: " + username +
+                            "email: " + email +
+                            "password_hash: " + password1HashReq +
+                            "registration_date: " + registrationDate + "\n"
+                    );
                     request.setAttribute("regSuccess", err.getString("regSuccess"));
                     request.setAttribute("email", email);
                     request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);

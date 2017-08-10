@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/invoicePay"})
 public class PayInvoiceServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
 

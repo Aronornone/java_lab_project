@@ -45,7 +45,7 @@
                                             <p class="passengerNum"><fmt:message key="passenger"/></p>
                                             <table class="buckettable">
                                                 <tr>
-                                                    <th><fmt:message key="name"/></th>
+                                                    <th><fmt:message key="name"/>(in English)</th>
                                                     <th><fmt:message key="passport"/></th>
                                                     <th><fmt:message key="lugg"/></th>
                                                     <th><fmt:message key="place"/></th>
@@ -55,10 +55,10 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <input class="passengerfield" type="text" name="passengerName"
+                                                        <input class="passengerfield" pattern="[A-Za-z\s]{1,45}" type="text" name="passengerName"
                                                                value="${ticket.passengerName}">
                                                     </td>
-                                                    <td><input type="text" name="passport" value="${ticket.passport}"
+                                                    <td><input type="text" name="passport" pattern="[\-\d\w\s]{1,25}" value="${ticket.passport}"
                                                     ></td>
                                                     <td>
                                                         <div class="tableBucketField">

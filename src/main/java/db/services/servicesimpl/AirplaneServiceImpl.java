@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirplaneServiceImpl implements AirplaneService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final AirplaneDAO dao = AirplaneDAOImpl.getInstance();
 
     private final static AirplaneService instance = new AirplaneServiceImpl();

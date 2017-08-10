@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class TicketServiceImpl implements TicketService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final TicketDAO dao = TicketDAOImpl.getInstance();
 
     private final static TicketService instance = new TicketServiceImpl();
@@ -112,7 +112,7 @@ public final class TicketServiceImpl implements TicketService {
         log.info("updateTicketWhilePay(...): Getting instances of TicketServiceImpl and updating them.");
         for (int i = 0; i < ticketsIds.length; i++) {
             TicketService ticketService = TicketServiceImpl.getInstance();
-            Ticket ticketToUpdate = ticketService.get(Long.parseLong(ticketsIds[i])).get();
+            Ticket ticketToUpdate = ticketService.get(Long.parseLong(ticketsIds[i])).orElse(null);
             ticketToUpdate.setPassengerName(passengerNames[i]);
             ticketToUpdate.setPassport(passports[i]);
             ticketToUpdate.setLuggage(luggages[i]);

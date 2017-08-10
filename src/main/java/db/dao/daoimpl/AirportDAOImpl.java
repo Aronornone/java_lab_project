@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public final class AirportDAOImpl implements AirportDAO {
     private static final String SELECT_ALL = "SELECT id, code, city, airport_name, latitude, longitude FROM Airport ";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static AirportDAO instance = new AirportDAOImpl();
 

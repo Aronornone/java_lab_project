@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class AirportServiceImpl implements AirportService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final AirportDAO dao = AirportDAOImpl.getInstance();
 
     private final static AirportService instance = new AirportServiceImpl();

@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static FlightService flightService;
     private static InvoiceService invoiceService;
     private static TicketService ticketService;

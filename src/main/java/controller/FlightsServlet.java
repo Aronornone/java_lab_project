@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static AirportService airportService;
 
     public void init() {

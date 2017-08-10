@@ -29,7 +29,7 @@ import static java.lang.StrictMath.ceil;
 
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
     private static AirportService airportService;
     private static FlightService flightService;
     private static TicketService ticketService;

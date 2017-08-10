@@ -25,7 +25,7 @@ public final class FlightDAOImpl implements FlightDAO {
             "  JOIN Airport  d ON d.id = f.departure_airport_id\n" +
             "  JOIN Airport  a ON a.id = f.arrival_airport_id\n";
     private static final String ORDER_BY_DATETIME_AND_BASECOST = "ORDER BY flight_datetime, base_cost";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static FlightDAO instance = new FlightDAOImpl();
 

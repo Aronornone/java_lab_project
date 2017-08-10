@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @WebListener
 public class OurHttpSessionListener implements HttpSessionListener {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
 
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();

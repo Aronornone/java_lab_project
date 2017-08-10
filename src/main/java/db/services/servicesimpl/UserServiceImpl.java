@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class UserServiceImpl implements UserService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final UserDAO dao = UserDAOImpl.getInstance();
 
     private final static UserService instance = new UserServiceImpl();

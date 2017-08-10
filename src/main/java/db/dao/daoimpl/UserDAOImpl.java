@@ -14,7 +14,7 @@ import java.util.Optional;
 public final class UserDAOImpl implements UserDAO {
     private static final String SELECT_ALL = "SELECT id, name, email, password_hash, registration_date FROM Account ";
     private static final String ORDER_BY_REG_DATE = "ORDER BY registration_date";
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private final static UserDAO instance = new UserDAOImpl();
 

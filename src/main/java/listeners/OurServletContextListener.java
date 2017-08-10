@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @WebListener
 public class OurServletContextListener implements ServletContextListener {
-    private static Logger log = Logger.getLogger("servLog");
+    private static Logger log = Logger.getLogger("servletLogger");
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

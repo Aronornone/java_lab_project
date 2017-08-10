@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class InvoiceServiceImpl implements InvoiceService {
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
     private final InvoiceDAO dao = InvoiceDAOImpl.getInstance();
 
     private final static InvoiceService instance = new InvoiceServiceImpl();

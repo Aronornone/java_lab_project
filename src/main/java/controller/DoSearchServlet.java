@@ -77,7 +77,7 @@ public class DoSearchServlet extends HttpServlet {
             notifyFiltersEmpty(request, response, err);
             return;
         }
-        parseFilters();
+        parseFilters(httpSession);
         log.info("doGet(request, response): Searching for flight:" + dateFrom + " " + dateTo + " " +
                 departure + " " + arrival + " " + numberTicketsFilter + " " + Arrays.toString(checkbox));
 
@@ -149,9 +149,9 @@ public class DoSearchServlet extends HttpServlet {
         request.getRequestDispatcher("").forward(request, response);
     }
 
-    private void parseFilters() {
+    private void parseFilters(HttpSession httpSession) {
         setBusiness();
-        parseDates();
+        parseDates(httpSession);
         numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
         dep = new Airport();
         arr = new Airport();
@@ -181,8 +181,12 @@ public class DoSearchServlet extends HttpServlet {
         }
     }
 
-    private void parseDates() {
+    private void parseDates(HttpSession httpSession) {
         dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        if (dateFrom.isBefore(LocalDate.now())) {
+            dateFrom = LocalDate.now();
+            httpSession.setAttribute("dateFrom", dateFrom.toString());
+        }
         dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         dateToPlusDay = dateTo.plusDays(1);
     }

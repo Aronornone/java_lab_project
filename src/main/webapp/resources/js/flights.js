@@ -72,6 +72,7 @@ $(document).ready(function () {
         return cdatetime;
     }
 
+
     if (document.readyState == 'complete' && ifPageFirst == 'true') {
         document.getElementById("appendButton").click();
     }
@@ -88,6 +89,13 @@ $(document).ready(function () {
         }
         today = yyyy+'-'+mm+'-'+dd;
         document.getElementById("dateFrom").setAttribute("min", today);
+        if (document.getElementById("dateFrom").value=='') {
+            document.getElementById("dateFrom").value=today;
+        }
+        if (document.getElementById("dateTo").value=='') {
+            document.getElementById("dateTo").value=today;
+        }
+
     }
 });
 

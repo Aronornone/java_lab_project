@@ -90,10 +90,6 @@ $(document).ready(function () {
         document.getElementById("dateFrom").setAttribute("min", today);
     }
 });
-// jQuery(document).load(function () {
-//     alert("emm page seems to be loaded");
-//     document.getElementById("appendButton").click();
-// });
 
 function buy(flightId) {
     var numberTicketsFlight = document.getElementById('num' + flightId).value;

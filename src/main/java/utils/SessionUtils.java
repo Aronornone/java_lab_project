@@ -1,16 +1,16 @@
 package utils;
 
-import db.services.interfaces.FlightPlaceService;
-import db.services.interfaces.InvoiceService;
-import db.services.interfaces.TicketService;
-import db.services.interfaces.UserService;
-import db.services.servicesimpl.FlightPlaceServiceImpl;
-import db.services.servicesimpl.InvoiceServiceImpl;
-import db.services.servicesimpl.TicketServiceImpl;
-import db.services.servicesimpl.UserServiceImpl;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
+import services.interfaces.FlightPlaceService;
+import services.interfaces.InvoiceService;
+import services.interfaces.TicketService;
+import services.interfaces.UserService;
+import services.servicesimpl.FlightPlaceServiceImpl;
+import services.servicesimpl.InvoiceServiceImpl;
+import services.servicesimpl.TicketServiceImpl;
+import services.servicesimpl.UserServiceImpl;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;

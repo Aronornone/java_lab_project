@@ -1,15 +1,15 @@
 package controller;
 
 import com.google.gson.Gson;
-import db.services.interfaces.AirportService;
-import db.services.interfaces.FlightService;
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.AirportServiceImpl;
-import db.services.servicesimpl.FlightServiceImpl;
-import db.services.servicesimpl.TicketServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Airport;
 import pojo.Flight;
+import services.interfaces.AirportService;
+import services.interfaces.FlightService;
+import services.interfaces.TicketService;
+import services.servicesimpl.AirportServiceImpl;
+import services.servicesimpl.FlightServiceImpl;
+import services.servicesimpl.TicketServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

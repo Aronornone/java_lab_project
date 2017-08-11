@@ -7,7 +7,7 @@
         <description>Include footer in all pages except login and reg
         </description>
         <name>show</name>
-        <tag-class>utils.FooterCustomTag</tag-class>
+        <tag-class>tags.FooterCustomTag</tag-class>
         <body-content>empty</body-content>
     </tag>
 </taglib>

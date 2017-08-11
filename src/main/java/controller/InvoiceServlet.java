@@ -1,18 +1,18 @@
 package controller;
 
-import db.services.interfaces.FlightPlaceService;
-import db.services.interfaces.FlightService;
-import db.services.interfaces.InvoiceService;
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.FlightPlaceServiceImpl;
-import db.services.servicesimpl.FlightServiceImpl;
-import db.services.servicesimpl.InvoiceServiceImpl;
-import db.services.servicesimpl.TicketServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
+import services.interfaces.FlightPlaceService;
+import services.interfaces.FlightService;
+import services.interfaces.InvoiceService;
+import services.interfaces.TicketService;
+import services.servicesimpl.FlightPlaceServiceImpl;
+import services.servicesimpl.FlightServiceImpl;
+import services.servicesimpl.InvoiceServiceImpl;
+import services.servicesimpl.TicketServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

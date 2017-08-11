@@ -1,9 +1,9 @@
 package controller;
 
-import db.services.interfaces.AirportService;
-import db.services.servicesimpl.AirportServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Airport;
+import services.interfaces.AirportService;
+import services.servicesimpl.AirportServiceImpl;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;

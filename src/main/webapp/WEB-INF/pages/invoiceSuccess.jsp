@@ -10,7 +10,7 @@
     <title><fmt:message key="payTitle"/></title>
     <link rel="stylesheet"
           type="text/css"
-          href="<c:url value='resources/style.css'/>">
+          href="<c:url value='resources/css/style.css'/>">
 </head>
 <body>
 <div class="body">

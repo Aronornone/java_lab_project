@@ -1,13 +1,13 @@
 package controller;
 
-import db.services.interfaces.AirportService;
-import db.services.interfaces.UserService;
-import db.services.servicesimpl.AirportServiceImpl;
-import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import pojo.Airport;
 import pojo.User;
+import services.interfaces.AirportService;
+import services.interfaces.UserService;
+import services.servicesimpl.AirportServiceImpl;
+import services.servicesimpl.UserServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

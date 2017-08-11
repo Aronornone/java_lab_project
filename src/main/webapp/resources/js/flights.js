@@ -1,15 +1,17 @@
 $(document).ready(function () {
 
     var buy;
-    if (document.getElementById("buybut").value === 'en_US') buy = "Buy";
-    else buy = "Приобрести";
+    if (document.getElementById("buybut").value === 'en_US') {
+        buy = "Buy";
+    } else {
+        buy = "Приобрести";
+    }
     var counter = 0;
     var numPages = document.getElementById("numPages").value;
     var ifPageFirst = document.getElementById("ifPageFirst").value;
 
     $("#appendButton").click(function () {
         createAppend(counter);
-        console.log("counter:" + counter);
         counter++;
     });
 
@@ -50,18 +52,27 @@ $(document).ready(function () {
     function parseDate(v) {
         var year = v.dateTime.date.year;
         var month = v.dateTime.date.month;
-        if (month < 10) month = '0' + month;
+        if (month < 10) {
+            month = '0' + month;
+        }
         var day = v.dateTime.date.day;
-        if (day < 10) day = '0' + day;
+        if (day < 10) {
+            day = '0' + day;
+        }
 
         var hour = v.dateTime.time.hour;
-        if (hour < 10) hour = '0' + hour;
+        if (hour < 10) {
+            hour = '0' + hour;
+        }
         var minute = v.dateTime.time.minute;
-        if (minute < 10) minute = '0' + minute;
+        if (minute < 10) {
+            minute = '0' + minute;
+        }
         var cdatetime = year + '-' + month + '-' + day + 'T' + hour + ':' + minute;
         return cdatetime;
     }
-    if (document.readyState=='complete'&&ifPageFirst=='true'){
+
+    if (document.readyState == 'complete' && ifPageFirst == 'true') {
         document.getElementById("appendButton").click();
     }
 
@@ -74,7 +85,6 @@ $(document).ready(function () {
 function buy(flightId) {
     var numberTicketsFlight = document.getElementById('num' + flightId).value;
     var box = document.getElementById('box').value;
-    console.log("num:" + numberTicketsFlight + box);
     $.ajax({
         url: 'addFlightToInvoice',
         type: 'POST',
@@ -86,14 +96,15 @@ function buy(flightId) {
         success: function (data) {
             var ticketOld = $('#ticketBucket').text();
             var ticketOldInt;
-            if(ticketOld===undefined || ticketOld ==='') ticketOldInt=0;
-            else ticketOldInt = parseInt(ticketOld);
+            if (ticketOld == undefined || ticketOld === '') {
+                ticketOldInt = 0;
+            } else {
+                ticketOldInt = parseInt(ticketOld);
+            }
             var numberTicketInt = parseInt(numberTicketsFlight);
             var ticketNew = parseInt(ticketOldInt + numberTicketInt);
             document.getElementById("ticketBucket").textContent = ticketNew;
-
             loadPopupBox();
-            console.log('add success');
         },
         error: function (data) {
             loadPopupBoxLogin();
@@ -128,10 +139,12 @@ function buy(flightId) {
             "opacity": "0.3"
         });
     }
+
     function loadPopupBoxLogin() {
         $('#popup_box_login').fadeIn("slow");
         $("#wrapper").css({
             "opacity": "0.3"
         });
     }
+
 }

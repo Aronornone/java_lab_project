@@ -21,7 +21,7 @@ public class LoginFilter implements Filter {
         HttpSession httpSession = req.getSession();
         Cookie[] cookies = req.getCookies();
         User user = (User) httpSession.getAttribute("user");
-        SessionUtils.checkCookie(cookies, req, httpSession);
+        SessionUtils.checkCookie(cookies, httpSession);
         if (user == null) {
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
         }

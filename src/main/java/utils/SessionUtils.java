@@ -13,7 +13,6 @@ import pojo.Ticket;
 import pojo.User;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +49,7 @@ public class SessionUtils {
         httpSession.invalidate();
     }
 
-    public static void checkCookie(Cookie[] cookies, HttpServletRequest request,
+    public static void checkCookie(Cookie[] cookies,
                                    HttpSession httpSession) {
         User user;
         if (cookies != null) {

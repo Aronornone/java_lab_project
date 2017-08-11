@@ -31,7 +31,7 @@ public class FlightsServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute("lastServletPath", request.getServletPath());
         Cookie[] cookies = request.getCookies();
-        SessionUtils.checkCookie(cookies, request, httpSession);
+        SessionUtils.checkCookie(cookies, httpSession);
 
         //get locale of user and set it by default if null
         if (httpSession.getAttribute("currentLocale") == null) {

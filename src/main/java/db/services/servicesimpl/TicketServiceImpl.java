@@ -15,6 +15,12 @@ public final class TicketServiceImpl implements TicketService {
     private static Logger log = Logger.getLogger("DBLogger");
     private final TicketDAO dao = TicketDAOImpl.getInstance();
 
+    private final static int LUGGAGE_AFFECT = 1000;
+    private final static int BUSINESS_AFFECT = 30;
+    private final static int MAX_DAYS_TO_FLIGHT = 120;
+    private final static double MAX_PRICE_INCREASE = 0.3;
+
+
     private final static TicketService instance = new TicketServiceImpl();
 
     public static TicketService getInstance() {
@@ -50,7 +56,8 @@ public final class TicketServiceImpl implements TicketService {
     }
 
     /**
-     * Method for check if all fields of tickets in invoice are contains information. Then it saves ticket info, anyway.
+     * Method for check if all fields of tickets in invoice are contains information.
+     * Then it saves ticket info, anyway.
      *
      * @param ticketsIds     array of Strings tickets ids
      * @param passengerNames array of Strings passenger names
@@ -68,21 +75,24 @@ public final class TicketServiceImpl implements TicketService {
             for (String ticketsId : ticketsIds) {
                 if (ticketsId.isEmpty()) {
                     empty = true;
+                    break;
                 }
             }
             for (String passengerName : passengerNames) {
                 if (passengerName.isEmpty()) {
                     empty = true;
+                    break;
                 }
             }
             for (String passport : passports) {
                 if (passport.isEmpty()) {
                     empty = true;
+                    break;
                 }
             }
             log.info("isEmptyWhilePayAndSave(...): Creating an array of luggages.");
-            boolean[] luggagesBoolean = new boolean[ticketsIds.length];
 
+            boolean[] luggagesBoolean = new boolean[ticketsIds.length];
             if (luggages != null) {
                 for (int i = 0; i < luggages.length; i++) {
                     luggagesBoolean[i] = (luggages[i].equals("luggage"));
@@ -120,44 +130,83 @@ public final class TicketServiceImpl implements TicketService {
         }
     }
 
+    /**
+     * Method recount price for individual ticket based on instant date and class of ticket.
+     *
+     * @param basePrice base price of ticket from flight (calculated)
+     * @param dateTime  current date and time
+     * @param business  if true class is business, if false class is econom
+     * @return calculated price casting int for simplicity
+     */
     public double recountPrice(double basePrice, LocalDateTime dateTime, boolean business) {
         double result = basePrice;
         if (business) {
             result = affectByBusiness(basePrice);
         }
         result = affectPriceByDate(result, dateTime);
-        return (int) result; // casting int for simplicity
+        return (int) result;
     }
 
+    /**
+     * Method for increase price of ticket if it is business class
+     *
+     * @param basePrice from flight
+     * @return calculated price with affect of business by procent
+     */
     @Override
     public double affectByBusiness(double basePrice) {
-        return affectPriceByPercents(basePrice, 30);
+        return affectPriceByPercents(basePrice, BUSINESS_AFFECT);
     }
 
+    /**
+     * Method for increase price of ticket if luggage is add by user
+     *
+     * @param basePrice from flight
+     * @return base price increased by luggage constant price
+     */
     @Override
     public double affectByLuggage(double basePrice) {
-        return basePrice + 1000;
+        return basePrice + LUGGAGE_AFFECT;
     }
 
+    /**
+     * Method for decrease price of ticket if luggage is cancel by user
+     *
+     * @param basePrice from flight
+     * @return base price decreased by luggage constant price
+     */
     @Override
     public double defectByLuggage(double basePrice) {
-        return basePrice - 1000;
+        return basePrice - LUGGAGE_AFFECT;
     }
 
+    /**
+     * Method for increase price of ticket by setting percents
+     *
+     * @param basePrice from flight
+     * @return base price increased by percents
+     */
     @Override
     public double affectPriceByPercents(double basePrice, int percents) {
         return basePrice * (1 + (double) percents / 100);
     }
 
-    //max price increase=basePrice*0.3(30%)
-    //price increases only if days until departure<120 days
+    /**
+     * Method fo calculate ticket increased price by distance to date of flight
+     * Max price increase=basePrice*0.3(30%) (MAX_PRICE_INCREASE)
+     * Price increases only if days until departure<120 days (MAX_DAYS_TO_FLIGHT)
+     *
+     * @param basePrice from flight
+     * @param dateTime  date and time of flight to recount
+     * @return calculated price with affect of distance to date of flight from current date
+     */
     @Override
     public double affectPriceByDate(double basePrice, LocalDateTime dateTime) {
         long daysUntilDeparture = LocalDateTime.from(LocalDateTime.now()).until(dateTime, ChronoUnit.DAYS);
-        if (daysUntilDeparture > 120) {
+        if (daysUntilDeparture > MAX_DAYS_TO_FLIGHT) {
             return basePrice;
         }
-        return basePrice + 0.3 * basePrice * (1 - daysUntilDeparture / 120);
+        return basePrice + MAX_PRICE_INCREASE * basePrice * (1 - daysUntilDeparture / MAX_DAYS_TO_FLIGHT);
     }
 
     @Override

@@ -36,6 +36,12 @@ public class InvoiceServlet extends HttpServlet {
     private static TicketService ticketService;
     private static FlightPlaceService flightPlaceService;
 
+    private User user;
+    private String[] checkBox;
+    private String redirectBackString;
+    private boolean business;
+    private int availableForClass;
+
     public void init() {
         log.info("init(): Initializing 'flightService', 'invoiceService', 'ticketService' and 'flightPlaceService'.");
         flightService = FlightServiceImpl.getInstance();
@@ -44,22 +50,12 @@ public class InvoiceServlet extends HttpServlet {
         flightPlaceService = FlightPlaceServiceImpl.getInstance();
     }
 
-
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
-        User user = (User) httpSession.getAttribute("user");
-
-        String dateFromString = (String) httpSession.getAttribute("dateFrom");
-        String dateToString = (String) httpSession.getAttribute("dateTo");
-        String departure = (String) httpSession.getAttribute("departureF");
-        String arrival = (String) httpSession.getAttribute("arrivalF");
-        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
-        String[] checkBox = (String[]) httpSession.getAttribute("business");
-        String redirectBackString = getRedirectBackString(dateFromString, dateToString, departure,
-                arrival, numberTicketsFilterString, checkBox);
+        getAllAttributes(httpSession);
 
         String numberTicketsFlightString = request.getParameter("numberTicketsFlight");
         int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
@@ -77,16 +73,7 @@ public class InvoiceServlet extends HttpServlet {
         }
 
         // check if ticket is business or econom and get available places in flight for class
-        String[] checkbox = (String[]) httpSession.getAttribute("business");
-        boolean business = false;
-        int availableForClass = flight.getAvailablePlacesEconom();
-
-        if (checkbox != null) {
-            if (checkbox[0].equals("business")) {
-                business = true;
-                availableForClass = flight.getAvailablePlacesBusiness();
-            }
-        }
+        getAvailablePlaces(flight);
 
         log.info("doPost(request, response): Executing getInvoiceForUser().");
         Invoice invoice = getInvoiceForUser(request, response, err, user,
@@ -101,6 +88,30 @@ public class InvoiceServlet extends HttpServlet {
         }
         log.info("doPost(request, response): Executing response.sendRedirect(redirectBackString).");
         response.sendRedirect(redirectBackString);
+    }
+
+    private void getAvailablePlaces(Flight flight) {
+        business = false;
+        availableForClass = flight.getAvailablePlacesEconom();
+
+        if (checkBox != null) {
+            if (checkBox[0].equals("business")) {
+                business = true;
+                availableForClass = flight.getAvailablePlacesBusiness();
+            }
+        }
+    }
+
+    private void getAllAttributes(HttpSession httpSession) {
+        user = (User) httpSession.getAttribute("user");
+        String dateFromString = (String) httpSession.getAttribute("dateFrom");
+        String dateToString = (String) httpSession.getAttribute("dateTo");
+        String departure = (String) httpSession.getAttribute("departureF");
+        String arrival = (String) httpSession.getAttribute("arrivalF");
+        String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
+        checkBox = (String[]) httpSession.getAttribute("business");
+        redirectBackString = getRedirectBackString(dateFromString, dateToString, departure,
+                arrival, numberTicketsFilterString, checkBox);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)

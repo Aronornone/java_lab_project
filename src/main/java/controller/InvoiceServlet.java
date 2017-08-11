@@ -44,9 +44,9 @@ public class InvoiceServlet extends HttpServlet {
         flightPlaceService = FlightPlaceServiceImpl.getInstance();
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         HttpSession httpSession = request.getSession();
@@ -70,7 +70,7 @@ public class InvoiceServlet extends HttpServlet {
         // get flight id and get Flight to add  tickets for it in invoice
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
-        log.info("doGet(request, response): Initializing 'flightOptional' by 'flightId'.");
+        log.info("doPost(request, response): Initializing 'flightOptional' by 'flightId'.");
         Optional<Flight> flightOptional = flightService.get(Long.parseLong(flightIdString));
         if (flightOptional.isPresent()) {
             flight = flightOptional.get();
@@ -88,20 +88,28 @@ public class InvoiceServlet extends HttpServlet {
             }
         }
 
-        log.info("doGet(request, response): Executing getInvoiceForUser().");
+        log.info("doPost(request, response): Executing getInvoiceForUser().");
         Invoice invoice = getInvoiceForUser(request, response, err, user,
                 redirectBackString, numberTicketsFlight, availableForClass);
 
         //if number of needed Ticket is not zero, start to create ticket
-        log.info("doGet(request, response): Checking if numberTicketsFlight != 0.");
+        log.info("doPost(request, response): Checking if numberTicketsFlight != 0.");
         if (numberTicketsFlight != 0) {
             if (createTicketsForInvoice(request, response, err, httpSession, user, redirectBackString,
                     numberTicketsFlight, flight, business, invoice))
                 return;
         }
-        log.info("doGet(request, response): Executing response.sendRedirect(redirectBackString).");
+        log.info("doPost(request, response): Executing response.sendRedirect(redirectBackString).");
         response.sendRedirect(redirectBackString);
     }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+
+        //doPost(request, response);
+    }
+
 
     private boolean createTicketsForInvoice(HttpServletRequest request, HttpServletResponse response, ResourceBundle err, HttpSession httpSession, User user, String redirectBackString, int numberTicketsFlight, Flight flight, boolean business, Invoice invoice) throws ServletException, IOException {
         for (int i = 0; i < numberTicketsFlight; i++) {
@@ -195,8 +203,4 @@ public class InvoiceServlet extends HttpServlet {
         return invoice;
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doGet(request, response);
-    }
 }

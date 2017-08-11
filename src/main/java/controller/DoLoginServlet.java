@@ -31,8 +31,8 @@ public class DoLoginServlet extends HttpServlet {
         userService = UserServiceImpl.getInstance();
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
 
@@ -42,7 +42,7 @@ public class DoLoginServlet extends HttpServlet {
         LocalDateTime time;
 
         //check if all fields aren't empty, if so show notification
-        log.info("doGet(request, response): Trying to login.");
+        log.info("doPost(request, response): Trying to login.");
         if ((nonHashedPasswordReq == null || (email == null ||
                 nonHashedPasswordReq.isEmpty()) || email.isEmpty())) {
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
@@ -64,7 +64,7 @@ public class DoLoginServlet extends HttpServlet {
         //else notificate about non-existing user
         else {
             time = LocalDateTime.now();
-            userLogger.error("doGet(request, response): --> Failed attempt to log-in:\n +" +
+            userLogger.error("doPost(request, response): --> Failed attempt to log-in:\n +" +
                     "email: " + email +
                     "password: " + nonHashedPasswordReq +
                     "time: " + time + "\n"
@@ -87,14 +87,20 @@ public class DoLoginServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
     }
 
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+        //doPost(request, response);
+    }
+
     /**
      * Method checks password hashes equals and if they are save filters to session and redirect user to
      * base page
-     * @param request from user
-     * @param response to user
-     * @param httpSession session for user which completes with attributes
-     * @param user user tried to login
-     * @param passwordHashDB hash of password from DB
+     *
+     * @param request         from user
+     * @param response        to user
+     * @param httpSession     session for user which completes with attributes
+     * @param user            user tried to login
+     * @param passwordHashDB  hash of password from DB
      * @param passwordHashReq hash of password from user request (site form)
      * @return true if user check is ok and return to base page, false if not and
      * show notification
@@ -136,8 +142,9 @@ public class DoLoginServlet extends HttpServlet {
 
     /**
      * Create and set cookies for logged user
+     *
      * @param response to user
-     * @param user logged user
+     * @param user     logged user
      */
     private void setCookies(HttpServletResponse response, User user) {
         Cookie cookieUserId;
@@ -148,6 +155,7 @@ public class DoLoginServlet extends HttpServlet {
 
     /**
      * get lists of airports
+     *
      * @param request whom sent user
      */
     private void getAirports(HttpServletRequest request) {
@@ -158,12 +166,13 @@ public class DoLoginServlet extends HttpServlet {
 
     /**
      * Create back string with which user will be returning for his filters in search
-     * @param dateFromString http session attribute
-     * @param dateToString http session attribute
-     * @param departure http session attribute
-     * @param arrival http session attribute
+     *
+     * @param dateFromString            http session attribute
+     * @param dateToString              http session attribute
+     * @param departure                 http session attribute
+     * @param arrival                   http session attribute
      * @param numberTicketsFilterString http session attribute
-     * @param checkBox http session attribute
+     * @param checkBox                  http session attribute
      * @return ready string to servlet path
      */
     private String getRedirectBackString(String dateFromString, String dateToString, String departure, String arrival, String numberTicketsFilterString, String[] checkBox) {
@@ -175,10 +184,5 @@ public class DoLoginServlet extends HttpServlet {
             redirectBackStringBuilder.append("&box=").append(checkBox[0]);
         }
         return redirectBackStringBuilder.toString();
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doGet(request, response);
     }
 }

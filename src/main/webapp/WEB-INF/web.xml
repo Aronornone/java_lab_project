@@ -12,18 +12,9 @@
         <session-timeout>30</session-timeout>
     </session-config>
 
-    <context-param>
-        <param-name>dbURL</param-name>
-        <param-value>jdbc:mysql://localhost/mysql_db</param-value>
-    </context-param>
-    <context-param>
-        <param-name>dbUser</param-name>
-        <param-value>mysql_user</param-value>
-    </context-param>
-    <context-param>
-        <param-name>dbUserPwd</param-name>
-        <param-value>mysql_pwd</param-value>
-    </context-param>
+    <error-page>
+        <location>/WEB-INF/pages/error.jsp</location>
+    </error-page>
 
     <jsp-config>
         <taglib>

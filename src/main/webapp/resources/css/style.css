@@ -4,7 +4,7 @@ body {
 }
 
 .body {
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     min-height: calc(100vh - 20px);
     max-width: 1200px;
     margin: auto;
@@ -76,7 +76,7 @@ a:active {
 }
 
 .buttonLogReg {
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     font-size: 16pt;
     background-color: steelblue;
     border: none;
@@ -86,7 +86,7 @@ a:active {
 
 .buttonLogin {
     font-size: 10pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -97,7 +97,7 @@ a:active {
 
 .buttonBucketMenu {
     font-size: 12pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     display: inline-flex;
     background-color: #3f669f;
     text-decoration: underline;
@@ -111,7 +111,7 @@ a:active {
 
 .buttonBucket {
     font-size: 12pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -123,7 +123,7 @@ a:active {
 
 .buttonBucketPay {
     font-size: 14pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: steelblue;
     border: none;
     color: white;
@@ -133,7 +133,7 @@ a:active {
 }
 
 .buttonSearch {
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     font-size: 16pt;
     background-color: #3f669f;
     border: none;
@@ -147,7 +147,7 @@ a:active {
 
 #appendButton {
     font-size: 14pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: #3f669f;
     border: none;
     color: white;
@@ -183,7 +183,7 @@ a.buttonDelete:active {
 
 a.buttonDelete {
     font-size: 12pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: #af1300;
     border: none;
     color: white;
@@ -195,7 +195,7 @@ a.buttonDelete {
 
 .menuButton {
     color: white;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: #3f669f !important;
     margin: 0 0 0 10px !important;
 }
@@ -291,7 +291,7 @@ p.filter {
 
 p.passengerNum {
     font-size: 13pt;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     margin: 5px 0 5px 0;
 }
 
@@ -342,7 +342,7 @@ button.invoiceToggle {
     width: 100%;
     clear: both;
     margin: 10px 10px 10px 0;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     background-color: steelblue;
 }
 
@@ -370,7 +370,7 @@ button.invoiceToggle {
 }
 
 .buttonMenu {
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     font-size: 11pt;
     background-color: steelblue;
     border: none;
@@ -395,8 +395,8 @@ button.invoiceToggle {
     background-color: #f1f4f9;
     padding: 7px 0;
 }
-#ticketBucket {
 
+#ticketBucket {
 
 }
 
@@ -419,7 +419,7 @@ button.invoiceToggle {
 }
 
 input {
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
 }
 
 #popup_box, #popup_box_login {
@@ -448,11 +448,21 @@ a {
 
 #popupBoxClose, #popupBoxCloseLogin {
     font-size: 15px;
-    font-family: 'Century Gothic','Calibri', sans-serif;
+    font-family: 'Century Gothic', 'Calibri', sans-serif;
     line-height: 15px;
     right: 5px;
     top: 5px;
     position: absolute;
     color: red;
     font-weight: bold;
+}
+
+.blockError {
+    text-align: center;
+    font-size: 25pt;
+    position: relative;
+    margin: auto;
+    top: 200px;
+    width: 400px;
+    border: steelblue 2px solid;
 }

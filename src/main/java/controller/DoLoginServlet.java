@@ -77,13 +77,33 @@ public class DoLoginServlet extends HttpServlet {
 
         //check that password hashes from DB and from request are equal and if so create cookie
         // with userId for 1 week
+        if (checkIfPasswordHashesEquals(request, response,
+                httpSession, user, passwordHashDB, passwordHashReq)) return;
+
+        //if password hashes are not equal show notification
+        log.error("doGet(request, response): Log-in failed!");
+        request.setAttribute("loginFailed", err.getString("loginFailed"));
+        request.setAttribute("email", email);
+        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+    }
+
+    /**
+     * Method checks password hashes equals and if they are save filters to session and redirect user to
+     * base page
+     * @param request from user
+     * @param response to user
+     * @param httpSession session for user which completes with attributes
+     * @param user user tried to login
+     * @param passwordHashDB hash of password from DB
+     * @param passwordHashReq hash of password from user request (site form)
+     * @return true if user check is ok and return to base page, false if not and
+     * show notification
+     * @throws IOException
+     */
+    private boolean checkIfPasswordHashesEquals(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession, User user, String passwordHashDB, String passwordHashReq) throws IOException {
         if (passwordHashDB.equals(passwordHashReq)) {
             httpSession.setAttribute("user", user);
-
-            Cookie cookieUserId;
-            cookieUserId = new Cookie("userId", String.valueOf(user.getUserId()));
-            cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
-            response.addCookie(cookieUserId);
+            setCookies(response, user);
             getAirports(request);
 
             //get and save filters in search that were set by user before login
@@ -103,20 +123,27 @@ public class DoLoginServlet extends HttpServlet {
                     (arrival == null) ||
                     (numberTicketsFilterString == null)) {
                 response.sendRedirect("/");
-                return;
+                return true;
             }
             // if filters are set redirect to them
             else {
                 response.sendRedirect(redirectBackString);
-                return;
+                return true;
             }
         }
+        return false;
+    }
 
-        //if password hashes are not equal show notification
-        log.error("doGet(request, response): Log-in failed!");
-        request.setAttribute("loginFailed", err.getString("loginFailed"));
-        request.setAttribute("email", email);
-        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+    /**
+     * Create and set cookies for logged user
+     * @param response to user
+     * @param user logged user
+     */
+    private void setCookies(HttpServletResponse response, User user) {
+        Cookie cookieUserId;
+        cookieUserId = new Cookie("userId", String.valueOf(user.getUserId()));
+        cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
+        response.addCookie(cookieUserId);
     }
 
     /**

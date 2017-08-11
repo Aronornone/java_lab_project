@@ -151,17 +151,16 @@ public class InvoiceServlet extends HttpServlet {
     }
 
     /**
-     *
-     * @param request from user
-     * @param response to user
-     * @param err locale of errors
-     * @param user current user
-     * @param redirectBackString created backString for return if something gone wrong
+     * @param request             from user
+     * @param response            to user
+     * @param err                 locale of errors
+     * @param user                current user
+     * @param redirectBackString  created backString for return if something gone wrong
      * @param numberTicketsFlight to reserve
-     * @param availableForClass available for this class amount of tickets
+     * @param availableForClass   available for this class amount of tickets
      * @return checked Invoice
      * @throws ServletException for request Dispatcher
-     * @throws IOException for request Dispatcher
+     * @throws IOException      for request Dispatcher
      */
     private Invoice getInvoiceForUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err, User user,
                                       String redirectBackString, int numberTicketsFlight, int availableForClass)
@@ -178,20 +177,19 @@ public class InvoiceServlet extends HttpServlet {
         if (numberTicketsFlight > availableForClass) {
             request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
             request.getRequestDispatcher(redirectBackString).forward(request, response);
-        } else {
-            //check if invoice already created in status Created for this user
-            log.info("doGet(request, response): Initializing 'invoiceOptional' by user ID.");
-            Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
-                    Invoice.InvoiceStatus.CREATED);
-            if (invoiceOptional.isPresent()) {
-                invoice = invoiceOptional.get();
-            } else {
-                //if invoice isn't created, add it
-                log.info("doGet(request, response): Adding new invoice.");
-                invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
-                invoiceService.add(invoice);
-            }
+            return null;
         }
+        //check if invoice already created in status Created for this user
+        log.info("doGet(request, response): Initializing 'invoiceOptional' by user ID.");
+        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
+                Invoice.InvoiceStatus.CREATED);
+        if (!invoiceOptional.isPresent()) {
+            //if invoice isn't created, add it
+            log.info("doGet(request, response): Adding new invoice.");
+            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
+            invoiceService.add(invoice);
+        }
+
         log.info("doGet(request, response): Getting invoice by user and returning it.");
         invoice = invoiceService.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).orElse(null);
         return invoice;

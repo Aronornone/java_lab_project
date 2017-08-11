@@ -12,7 +12,7 @@
     <title><fmt:message key="bucketTitle"/></title>
     <link rel="stylesheet"
           type="text/css"
-          href="<c:url value='resources/style.css'/>">
+          href="<c:url value='resources/css/style.css'/>">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="resources/js/bucket.js"> </script>
 </head>

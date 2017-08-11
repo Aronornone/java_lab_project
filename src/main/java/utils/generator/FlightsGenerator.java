@@ -1,16 +1,16 @@
 package utils.generator;
 
-import db.services.interfaces.AirplaneService;
-import db.services.interfaces.AirportService;
-import db.services.servicesimpl.AirplaneServiceImpl;
-import db.services.servicesimpl.AirportServiceImpl;
 import lombok.SneakyThrows;
+import services.interfaces.AirplaneService;
+import services.interfaces.AirportService;
+import services.servicesimpl.AirplaneServiceImpl;
+import services.servicesimpl.AirportServiceImpl;
 
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static db.dao.DataSource.getConnection;
+import static dao.DataSource.getConnection;
 import static java.lang.StrictMath.*;
 import static utils.generator.FlightsGenerator.DistanceCounter.calculateDistance;
 import static utils.generator.RandomGenerator.*;

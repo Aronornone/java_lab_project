@@ -1,12 +1,12 @@
 package controller;
 
-import db.services.interfaces.InvoiceService;
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.InvoiceServiceImpl;
-import db.services.servicesimpl.TicketServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Invoice;
 import pojo.User;
+import services.interfaces.InvoiceService;
+import services.interfaces.TicketService;
+import services.servicesimpl.InvoiceServiceImpl;
+import services.servicesimpl.TicketServiceImpl;
 import utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -59,10 +59,11 @@ public class PayInvoiceServlet extends HttpServlet {
             request.setAttribute("setFields", err.getString("setFields"));
             request.setAttribute("changesSaved", err.getString("changesSaved"));
             request.getRequestDispatcher("/bucket").forward(request, response);
+            return;
         }
         // if all fields are filled pay invoice, update it in DB and set new count of tickets in cart,
         // redirect to page with invoice
-        else if (invoiceOptional.isPresent()) {
+        if (invoiceOptional.isPresent()) {
             log.info("doGet(request, response): Setting invoice status to PAYED.");
             Invoice invoice = invoiceOptional.get();
             invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
@@ -71,10 +72,11 @@ public class PayInvoiceServlet extends HttpServlet {
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
             httpSession.setAttribute("invoiceView", null);
             request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);
-        } else {
-            log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
-            request.getRequestDispatcher("/bucket").forward(request, response);
+            return;
         }
+        log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
+        request.getRequestDispatcher("/bucket").forward(request, response);
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

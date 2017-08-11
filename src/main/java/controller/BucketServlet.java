@@ -1,14 +1,14 @@
 package controller;
 
-import db.services.interfaces.InvoiceService;
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.InvoiceServiceImpl;
-import db.services.servicesimpl.TicketServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Flight;
 import pojo.Invoice;
 import pojo.Ticket;
 import pojo.User;
+import services.interfaces.InvoiceService;
+import services.interfaces.TicketService;
+import services.servicesimpl.InvoiceServiceImpl;
+import services.servicesimpl.TicketServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,6 +34,7 @@ public class BucketServlet extends HttpServlet {
         invoiceService = InvoiceServiceImpl.getInstance();
         ticketService = TicketServiceImpl.getInstance();
     }
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -45,46 +46,75 @@ public class BucketServlet extends HttpServlet {
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
-        // If invoice exists show it's tickets sorted by flights
         log.info("doGet(request, response): Counting total price.");
+        Invoice invoice;
+        List<Ticket> tickets;
         if (invoiceOptional.isPresent()) {
-            Invoice invoice = invoiceOptional.get();
+            invoice = invoiceOptional.get();
             httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
-            List<Ticket> tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
-
-            if (tickets.size() == 0) {
-                request.setAttribute("cartEmpty", err.getString("cartEmpty"));
-            }
-            Set<Flight> flights = new LinkedHashSet<>();
-            for (Ticket ticket : tickets) {
-                flights.add(ticket.getFlight());
-            }
-
-            LinkedHashSet<Ticket> ticketsForFlight;
-            for (Flight flight : flights) {
-                ticketsForFlight = new LinkedHashSet<>();
-                for (Ticket ticket : tickets)
-                    if (flight.getFlightId() == ticket.getFlight().getFlightId()) {
-                        ticketsForFlight.add(ticket);
-                    }
-                flight.setTickets(ticketsForFlight);
-            }
-            request.setAttribute("flights", flights);
-
-            // calc total sum of all tickets in invoice
-            double sumTotal = 0;
-            for (Ticket ticket : tickets) {
-                sumTotal = sumTotal + ticket.getPrice();
-            }
-            request.setAttribute("totalSum", sumTotal);
-        }
-        // if invoice isn't exist show notification about empty cart
-        else {
+            tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
+        } else {
             log.info("doGet(request, response): Cart is empty!");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+            request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+            return;
         }
+
+        if (tickets.isEmpty()) {
+            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+            request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+            return;
+        }
+
+        Set<Flight> flights = getTicketsSortedByFlights(tickets);
+        request.setAttribute("flights", flights);
+
+        double sumTotal = getSumTotalOfTickets(tickets);
+        request.setAttribute("totalSum", sumTotal);
+
         log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
-        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").
+                forward(request, response);
+
+    }
+
+    /**
+     * Method calculate total sum of tickets in invoice
+     *
+     * @param tickets all tickets of invoice
+     * @return total sum from all tickets in cart
+     */
+    private double getSumTotalOfTickets(List<Ticket> tickets) {
+        // calc total sum of all tickets in invoice
+        double sumTotal = 0;
+        for (Ticket ticket : tickets) {
+            sumTotal = sumTotal + ticket.getPrice();
+        }
+        return sumTotal;
+    }
+
+    /**
+     * Method groups ticket in flights lists
+     *
+     * @param tickets list of all tickets too group
+     * @return set of flights include lists of tickets
+     */
+    private Set<Flight> getTicketsSortedByFlights(List<Ticket> tickets) {
+        Set<Flight> flights = new LinkedHashSet<>();
+        for (Ticket ticket : tickets) {
+            flights.add(ticket.getFlight());
+        }
+
+        LinkedHashSet<Ticket> ticketsForFlight;
+        for (Flight flight : flights) {
+            ticketsForFlight = new LinkedHashSet<>();
+            for (Ticket ticket : tickets)
+                if (flight.getFlightId() == ticket.getFlight().getFlightId()) {
+                    ticketsForFlight.add(ticket);
+                }
+            flight.setTickets(ticketsForFlight);
+        }
+        return flights;
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,10 +1,10 @@
 package controller;
 
-import db.services.interfaces.UserService;
-import db.services.servicesimpl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import pojo.User;
+import services.interfaces.UserService;
+import services.servicesimpl.UserServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

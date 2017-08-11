@@ -10,7 +10,7 @@
     <title><fmt:message key="flightsTitle"/></title>
     <link rel="stylesheet"
           type="text/css"
-          href="<c:url value='resources/style.css'/>">
+          href="<c:url value='resources/css/style.css'/>">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="resources/js/flights.js"> </script>
 </head>
@@ -32,7 +32,7 @@
                     <p class="filter"><fmt:message key="dateTo"/></p>
                 </div>
                 <div class="fdates">
-                    <input class="calendar" type="date" name="dateFrom" value="${sessionScope.dateFrom}" required
+                    <input class="calendar" type="date" id="dateFrom" name="dateFrom" value="${sessionScope.dateFrom}" required
                            pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
                     <input class="calendar" type="date" name="dateTo" value="${sessionScope.dateTo}" required
                            pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">

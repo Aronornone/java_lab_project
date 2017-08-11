@@ -1,17 +1,17 @@
 package utils.generator;
 
-import db.services.interfaces.FlightService;
-import db.services.servicesimpl.FlightServiceImpl;
 import lombok.SneakyThrows;
 import pojo.Flight;
 import pojo.OurBitSet;
+import services.interfaces.FlightService;
+import services.servicesimpl.FlightServiceImpl;
 import utils.ServletUtils;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static db.dao.DataSource.getConnection;
+import static dao.DataSource.getConnection;
 
 class FlightPlacesGenerator {
 

@@ -1,9 +1,9 @@
 package controller;
 
-import db.services.interfaces.TicketService;
-import db.services.servicesimpl.TicketServiceImpl;
 import org.apache.log4j.Logger;
 import pojo.Ticket;
+import services.interfaces.TicketService;
+import services.servicesimpl.TicketServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

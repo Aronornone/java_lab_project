@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ *  Servlet fort logic of deleting one ticket from user bucket (cart)
+ */
 @WebServlet(urlPatterns = {"/ticketDelete"})
 public class DeleteTicketServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -45,6 +47,8 @@ public class DeleteTicketServlet extends HttpServlet {
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
+        // get ticketId from request, revert places from it to flight and flightplace
+        // (and delete ticket in inner method), refresh tickets count in cart
         String ticketId = request.getParameter("ticketId");
         log.info("doPost(request, response): Initiaziling 'ticketOptional'.");
         Optional<Ticket> ticketOptional = ticketService.get(Long.parseLong(ticketId));

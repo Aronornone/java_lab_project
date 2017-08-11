@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+/**
+* Servlet for logout logic
+ */
 @WebServlet(urlPatterns = "/logout")
 public class LogoutServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -15,9 +18,11 @@ public class LogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         HttpSession httpSession = request.getSession();
+        //invalidate session of user when he clicked logout
         SessionUtils.invalidateSession(httpSession);
 
         log.info("doGet(request, response): Getting cookies.");
+        //delete cookies if they are exist
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie:cookies) {
             if(cookie.getName().equals("userId")) {
@@ -25,6 +30,7 @@ public class LogoutServlet extends HttpServlet {
                 response.addCookie(cookie);
             }
         }
+        //return to base page
         log.info("doGet(request, response): Sending redirect.");
         response.sendRedirect("/");
     }

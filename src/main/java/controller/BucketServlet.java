@@ -19,6 +19,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Servlet for bucket (cart) logic
+ */
+
 @WebServlet(urlPatterns = {"/bucket"})
 public class BucketServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -41,6 +45,7 @@ public class BucketServlet extends HttpServlet {
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
+        // If invoice exists show it's tickets sorted by flights
         log.info("doGet(request, response): Counting total price.");
         if (invoiceOptional.isPresent()) {
             Invoice invoice = invoiceOptional.get();
@@ -66,13 +71,15 @@ public class BucketServlet extends HttpServlet {
             }
             request.setAttribute("flights", flights);
 
+            // calc total sum of all tickets in invoice
             double sumTotal = 0;
-            // calc total Sum of all tickets in invoice
             for (Ticket ticket : tickets) {
                 sumTotal = sumTotal + ticket.getPrice();
             }
             request.setAttribute("totalSum", sumTotal);
-        } else {
+        }
+        // if invoice isn't exist show notification about empty cart
+        else {
             log.info("doGet(request, response): Cart is empty!");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
         }

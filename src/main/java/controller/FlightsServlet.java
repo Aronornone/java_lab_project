@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -45,6 +46,8 @@ public class FlightsServlet extends HttpServlet {
         List<Airport> airports = airportService.getAll();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
+        httpSession.setAttribute("dateFrom", LocalDate.now().toString());
+        httpSession.setAttribute("dateTo", LocalDate.now().toString());
 
         log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
         request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);

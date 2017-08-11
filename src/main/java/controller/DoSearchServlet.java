@@ -95,6 +95,10 @@ public class DoSearchServlet extends HttpServlet {
         //parse all filters
         else {
             LocalDate dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (dateFrom.isBefore(LocalDate.now())) {
+                dateFrom = LocalDate.now();
+                httpSession.setAttribute("dateFrom", dateFrom.toString());
+            }
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);

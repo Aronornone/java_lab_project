@@ -89,7 +89,7 @@ public class DoLoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        //doPost(request, response);
+        response.sendError(501);
     }
 
     /**

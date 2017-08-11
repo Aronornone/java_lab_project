@@ -54,15 +54,7 @@ public class BucketServlet extends HttpServlet {
             httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
             tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
         } else {
-            log.info("doGet(request, response): Cart is empty!");
-            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
-            request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
-            return;
-        }
-
-        if (tickets.isEmpty()) {
-            request.setAttribute("cartEmpty", err.getString("cartEmpty"));
-            request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
+            notifyCartEmpty(request, response, err);
             return;
         }
 
@@ -76,6 +68,12 @@ public class BucketServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").
                 forward(request, response);
 
+    }
+
+    private void notifyCartEmpty(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
+        log.info("doGet(request, response): Cart is empty!");
+        request.setAttribute("cartEmpty", err.getString("cartEmpty"));
+        request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);
     }
 
     /**

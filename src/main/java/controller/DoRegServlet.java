@@ -24,6 +24,8 @@ public class DoRegServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
     private static Logger userLogger = Logger.getLogger("userLogger");
     private static UserService userService;
+    private String email, username, nonHashedPasswordFirstReq, nonHashedPasswordSecondReq, password1HashReq, password2HashReq;
+    private LocalDateTime registrationDate;
 
     public void init() {
         log.info("init(): Initializing 'userService'.");
@@ -35,52 +37,38 @@ public class DoRegServlet extends HttpServlet {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         // get all parameters from registration form
-        String email = request.getParameter("email");
-        String username = request.getParameter("username");
-        String nonHashedPasswordFirstReq = request.getParameter("password1");
-        String nonHashedPasswordSecondReq = request.getParameter("password2");
-        String password1HashReq;
-        String password2HashReq;
-        LocalDateTime registrationDate = LocalDateTime.now();
+        getFormParameters(request);
 
         //check that fields aren't empty, if so show notification
         log.info("doGet(request, response): Trying to register a user.");
-        if (nonHashedPasswordFirstReq == null ||
-                nonHashedPasswordSecondReq == null ||
-                username == null ||
-                email == null ||
-                nonHashedPasswordFirstReq.isEmpty() ||
-                nonHashedPasswordSecondReq.isEmpty() ||
-                username.isEmpty() ||
-                email.isEmpty()) {
-            log.error("doGet(request, response): Field is empty!");
-            request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
-            request.setAttribute("email", email);
-            request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+        if (fieldEmpty()) {
+            notifyEmptyField(request, response, err);
             return;
         }
         // check both hashes of passwords. If they aren't equal show notification
-        password1HashReq = DigestUtils.md5Hex(nonHashedPasswordFirstReq);
-        password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
+        encodePasswords();
 
         if (!password1HashReq.equals(password2HashReq)) {
-            log.error("doGet(request, response): Password mismatches!");
-            request.setAttribute("passMismatch", err.getString("passMismatch"));
-            request.setAttribute("email", email);
-            request.setAttribute("username", username);
-            request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            notifyPassMismatch(request, response, err);
             return;
         }
 
         //if hashes are equal, check if user with that email is already exists, if so show notification
         Optional<User> userOptional = userService.get(email);
         if (userOptional.isPresent()) {
-            log.error("doGet(request, response): User already exists!");
-            request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
-            request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            notifyUserExists(request, response, err);
             return;
         }
         //if hashes ok+ user is new, create user and notificate user
+        createUser(request, response, err);
+    }
+
+    private void encodePasswords() {
+        password1HashReq = DigestUtils.md5Hex(nonHashedPasswordFirstReq);
+        password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
+    }
+
+    private void createUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
         log.info("doGet(request, response): Registration is successful!");
         User user = new User(username, email, password1HashReq, registrationDate);
         userService.add(user);
@@ -93,6 +81,46 @@ public class DoRegServlet extends HttpServlet {
         request.setAttribute("regSuccess", err.getString("regSuccess"));
         request.setAttribute("email", email);
         request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
+    }
+
+    private void notifyUserExists(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
+        log.error("doGet(request, response): User already exists!");
+        request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
+        request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+    }
+
+    private void notifyPassMismatch(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
+        log.error("doGet(request, response): Password mismatches!");
+        request.setAttribute("passMismatch", err.getString("passMismatch"));
+        request.setAttribute("email", email);
+        request.setAttribute("username", username);
+        request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+    }
+
+    private void notifyEmptyField(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
+        log.error("doGet(request, response): Field is empty!");
+        request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
+        request.setAttribute("email", email);
+        request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+    }
+
+    private boolean fieldEmpty() {
+        return nonHashedPasswordFirstReq == null ||
+                nonHashedPasswordSecondReq == null ||
+                username == null ||
+                email == null ||
+                nonHashedPasswordFirstReq.isEmpty() ||
+                nonHashedPasswordSecondReq.isEmpty() ||
+                username.isEmpty() ||
+                email.isEmpty();
+    }
+
+    private void getFormParameters(HttpServletRequest request) {
+        email = request.getParameter("email");
+        username = request.getParameter("username");
+        nonHashedPasswordFirstReq = request.getParameter("password1");
+        nonHashedPasswordSecondReq = request.getParameter("password2");
+        registrationDate = LocalDateTime.now();
     }
 
 

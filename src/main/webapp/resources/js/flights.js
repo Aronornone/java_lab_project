@@ -86,14 +86,11 @@ function buy(flightId) {
         success: function (data) {
             var ticketOld = $('#ticketBucket').text();
             var ticketOldInt;
-            if(ticketOld==undefined || ticketOld ==='') ticketOldInt=0;
+            if(ticketOld===undefined || ticketOld ==='') ticketOldInt=0;
             else ticketOldInt = parseInt(ticketOld);
-            console.log(ticketOld + ' ' + ticketOldInt);
             var numberTicketInt = parseInt(numberTicketsFlight);
-            console.log(numberTicketInt);
             var ticketNew = parseInt(ticketOldInt + numberTicketInt);
-            document.getElementById("ticketBucket").textContent = ' '+ticketNew+' ';
-            console.log(ticketNew);
+            document.getElementById("ticketBucket").textContent = ticketNew;
 
             loadPopupBox();
             console.log('add success');
@@ -137,5 +134,4 @@ function buy(flightId) {
             "opacity": "0.3"
         });
     }
-
 }

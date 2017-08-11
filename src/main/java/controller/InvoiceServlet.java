@@ -25,6 +25,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Servlet for add ticket to user cart (invoice)
+ */
 @WebServlet(urlPatterns = {"/addFlightToInvoice"})
 public class InvoiceServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -47,6 +50,7 @@ public class InvoiceServlet extends HttpServlet {
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
 
+        //get all parameters of filters from session to later use
         User user = (User) httpSession.getAttribute("user");
         String dateFromString = (String) httpSession.getAttribute("dateFrom");
         String dateToString = (String) httpSession.getAttribute("dateTo");
@@ -55,24 +59,26 @@ public class InvoiceServlet extends HttpServlet {
         String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
         String[] checkBox = (String[]) httpSession.getAttribute("business");
 
+        //create back string for next requests
         log.info("doGet(request, response): Initializing redirectBackStringBuilder.");
         StringBuilder redirectBackStringBuilder = new StringBuilder();
         redirectBackStringBuilder.append("/doSearch?dateFrom=").append(dateFromString).append("&dateTo=").
                 append(dateToString).append("&selectedDeparture=").append(departure).append("&selectedArrival=").
                 append(arrival).append("&numberTicketsFilter=").append(numberTicketsFilterString);
+        // check if filter contains business class
         if (checkBox != null) {
             redirectBackStringBuilder.append("&box=").append(checkBox[0]);
         }
-
         String redirectBackString = redirectBackStringBuilder.toString();
 
-
+        // get needed number of tickets in request to add to invoice
         String numberTicketsFlightString = request.getParameter("numberTicketsFlight");
         int numberTicketsFlight = Integer.parseInt(numberTicketsFlightString);
 
         int pageNum = (int) httpSession.getAttribute("pageLast");
         httpSession.setAttribute("pageToLoad", pageNum);
 
+        // get flight id and get Flight to add  tickets for it in invoice
         String flightIdString = request.getParameter("flightId");
         Flight flight = null;
         log.info("doGet(request, response): Initializing 'flightOptional' by 'flightId'.");
@@ -81,6 +87,7 @@ public class InvoiceServlet extends HttpServlet {
             flight = flightOptional.get();
         }
 
+        // check if ticket is business or econom and get available places in flight for class
         String[] checkbox = (String[]) httpSession.getAttribute("business");
         boolean business = false;
         int availableForClass = flight.getAvailablePlacesEconom();
@@ -91,20 +98,24 @@ public class InvoiceServlet extends HttpServlet {
             }
         }
 
+        //check and create invoice if not exists for this user in inner method
         log.info("doGet(request, response): Executing getInvoiceForUser().");
         Invoice invoice = getInvoiceForUser(request, response, err, user, redirectBackString, numberTicketsFlight, availableForClass);
 
+        //if number of needed Ticket is not zero, start to create ticket
         log.info("doGet(request, response): Checking if numberTicketsFlight != 0.");
         if (numberTicketsFlight != 0) {
             for (int i = 0; i < numberTicketsFlight; i++) {
-                //request for available places and reserve of them
+                //request for available places in flight and reserve them in inner method
                 int sittingPlace = flightPlaceService.getRandomSittingPlace(flight.getFlightId(), business);
+                // if available place is 0 in random, create notification, it means here aren't available places
                 if (sittingPlace == 0) {
                     log.info("doGet(request, response): Not enough places!");
                     request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                     request.getRequestDispatcher(redirectBackString).forward(request, response);
-                } else {
-                    //new Ticket to DB
+                }
+                // if sitting place is reserved in flight, create new Ticket in DB with parameters set by user in filters
+                else {
                     Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                             false, business, (double) httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
                     ticketService.add(ticket);
@@ -114,7 +125,6 @@ public class InvoiceServlet extends HttpServlet {
             }
             int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            //request.setAttribute("ticketsAdd", err.getString("ticketsAdd"));
         }
         log.info("doGet(request, response): Executing response.sendRedirect(redirectBackString).");
         response.sendRedirect(redirectBackString);

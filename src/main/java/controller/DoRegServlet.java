@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Servlet for registration logic for new user
+ */
 @WebServlet(urlPatterns = "/doReg")
 public class DoRegServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -30,6 +33,7 @@ public class DoRegServlet extends HttpServlet {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
+        // get all parameters from registration form
         String email = request.getParameter("email");
         String username = request.getParameter("username");
         String nonHashedPasswordFirstReq = request.getParameter("password1");
@@ -38,6 +42,7 @@ public class DoRegServlet extends HttpServlet {
         String password2HashReq;
         LocalDateTime registrationDate = LocalDateTime.now();
 
+        //check that fields aren't empty, if so show notification
         log.info("doGet(request, response): Trying to register a user.");
         if (nonHashedPasswordFirstReq==null ||
                 nonHashedPasswordSecondReq==null ||
@@ -52,6 +57,7 @@ public class DoRegServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
         }
+        // check both hashes of passwords. If they aren't equal show notification
         else {
             password1HashReq = DigestUtils.md5Hex(nonHashedPasswordFirstReq);
             password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
@@ -62,13 +68,16 @@ public class DoRegServlet extends HttpServlet {
                 request.setAttribute("email", email);
                 request.setAttribute("username", username);
                 request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
-            } else {
+            }
+            //if hashes are equal, check if user with that email is already exists, if so show notification
+            else {
                 Optional<User> userOptional = userService.get(email);
                 if (userOptional.isPresent()) {
                     log.error("doGet(request, response): User already exists!");
                     request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
                     request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
                 } else {
+                    //if hashes ok+ user is new, create user and notificate user
                     log.info("doGet(request, response): Registration is successful!");
                     User user = new User(username, email, password1HashReq, registrationDate);
                     userService.add(user);

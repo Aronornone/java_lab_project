@@ -34,25 +34,32 @@ public class DoLoginServlet extends HttpServlet {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
+
+        //get all parameters from login form
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
-
         LocalDateTime time;
+
+        //check if all fields aren't empty, if so show notification
         log.info("doGet(request, response): Trying to login.");
         if ((nonHashedPasswordReq == null || (email == null ||
                 nonHashedPasswordReq.isEmpty()) || email.isEmpty())) {
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
             request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-
-        } else {
+        }
+        //check if user with entered email exists
+        else {
             String passwordHashDB = "";
             User user = null;
             String passwordHashReq = DigestUtils.md5Hex(nonHashedPasswordReq);
             Optional<User> userOptional = userService.get(email);
+            // if user exists get his password hash from DB
             if (userOptional.isPresent()) {
                 user = userOptional.get();
                 passwordHashDB = user.getPasswordHash();
-            } else {
+            }
+            //else notificate about non-existing user
+            else {
                 time = LocalDateTime.now();
                 userLogger.error("doGet(request, response): --> Failed attempt to log-in:\n +" +
                         "email: " + email +
@@ -64,6 +71,8 @@ public class DoLoginServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
             }
 
+            //check that password hashes from DB and from request are equal and if so create cookie
+            // with userId for 1 week
             if (passwordHashDB.equals(passwordHashReq)) {
                 httpSession.setAttribute("user", user);
 
@@ -72,6 +81,7 @@ public class DoLoginServlet extends HttpServlet {
                 cookieUserId.setMaxAge(60 * 60 * 24 * 7); //one week
                 response.addCookie(cookieUserId);
 
+                //get and save filters in search that were set by user before login
                 List<Airport> airports = airportService.getAll();
                 request.setAttribute("departures", airports);
                 request.setAttribute("arrivals", airports);
@@ -83,6 +93,7 @@ public class DoLoginServlet extends HttpServlet {
                 String numberTicketsFilterString = (String) httpSession.getAttribute("numberTicketsFilter");
                 String[] checkBox = (String[]) httpSession.getAttribute("business");
 
+                //create back string with which user will be returning for his filters in search
                 StringBuilder redirectBackStringBuilder = new StringBuilder();
                 redirectBackStringBuilder.append("/doSearch?dateFrom=").append(dateFromString).append("&dateTo=").
                         append(dateToString).append("&selectedDeparture=").append(departure).append("&selectedArrival=").
@@ -90,9 +101,9 @@ public class DoLoginServlet extends HttpServlet {
                 if (checkBox != null) {
                     redirectBackStringBuilder.append("&box=").append(checkBox[0]);
                 }
-
                 String redirectBackString = redirectBackStringBuilder.toString();
 
+                //if filters are empty redirect on base page
                 if ((dateFromString == null) ||
                         (dateToString == null) ||
                         (departure == null) ||
@@ -100,10 +111,13 @@ public class DoLoginServlet extends HttpServlet {
                         (numberTicketsFilterString == null)) {
                     response.sendRedirect("/");
                 }
+                // if filters are set redirect to them
                 else {
                     response.sendRedirect(redirectBackString);
                 }
-            } else {
+            }
+            //if password hashes are not equal show notification
+            else {
                 log.error("doGet(request, response): Log-in failed!");
                 request.setAttribute("loginFailed", err.getString("loginFailed"));
                 request.setAttribute("email", email);

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet for view of login page, no logic
+ */
 @WebServlet(urlPatterns = {"/loginPage"})
 public class LoginPageServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");

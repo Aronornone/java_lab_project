@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Servlet for base page of app, it is first that user see when enter site, include unsigned users
+ */
 @WebServlet(urlPatterns = {"", "/flights"})
 public class FlightsServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -30,12 +33,14 @@ public class FlightsServlet extends HttpServlet {
         Cookie[] cookies = request.getCookies();
         SessionUtils.checkCookie(cookies, request, httpSession);
 
+        //get locale of user and set it by default if null
         if (httpSession.getAttribute("currentLocale") == null) {
             httpSession.setAttribute("currentLocale", Locale.getDefault());
             getServletContext().setAttribute("errors", ResourceBundle.
                     getBundle("ErrorsBundle", Locale.getDefault()));
         }
 
+        //prepare list of airports for filters
         log.info("doGet(request, response): Getting a list of all airports from 'airportService'.");
         List<Airport> airports = airportService.getAll();
         request.setAttribute("departures", airports);

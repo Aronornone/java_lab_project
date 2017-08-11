@@ -27,6 +27,9 @@ import java.util.ResourceBundle;
 
 import static java.lang.StrictMath.ceil;
 
+/**
+ * Servlet for search logic in base of flights
+ */
 @WebServlet(urlPatterns = {"/doSearch"})
 public class DoSearchServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -47,12 +50,13 @@ public class DoSearchServlet extends HttpServlet {
 
         log.info("doGet(request, response): Getting a list of all airports from 'airportService'.");
         HttpSession httpSession = request.getSession();
-        List<Airport> airports = airportService.getAll();
 
+        //get list of airports needed for filters
+        List<Airport> airports = airportService.getAll();
         request.setAttribute("departures", airports);
         request.setAttribute("arrivals", airports);
 
-        // получаем установленные фильтры
+        // get set by user filters in search for later using
         log.info("doGet(request, response): Receiving setup filters.");
         String dateFromString = request.getParameter("dateFrom");
         String dateToString = request.getParameter("dateTo");
@@ -61,7 +65,7 @@ public class DoSearchServlet extends HttpServlet {
         String numberTicketsFilterString = request.getParameter("numberTicketsFilter");
         String[] checkbox = request.getParameterValues("box");
 
-        //Сохраняем фильтры для следующих запросов в рамках этой же сессии
+        //save filters for next requests in this session
         log.info("doGet(request, response): Saving filters for future requests.");
         httpSession.setAttribute("numberTicketsFilter", numberTicketsFilterString);
         httpSession.setAttribute("dateFrom", dateFromString);
@@ -70,6 +74,7 @@ public class DoSearchServlet extends HttpServlet {
         httpSession.setAttribute("arrivalF", arrival);
         httpSession.setAttribute("business", checkbox);
 
+        //check if filter of business is set
         boolean business = false;
         if (checkbox != null) {
             if (checkbox[0].equals("business")) {
@@ -77,7 +82,7 @@ public class DoSearchServlet extends HttpServlet {
             }
         }
 
-        //проверяем фильтры перед парсингом
+        //check filters before search, if not set show notification
         log.info("doGet(request, response): Checking filters before parsing.");
         if ((dateFromString.isEmpty()) ||
                 (dateToString.isEmpty()) ||
@@ -86,11 +91,14 @@ public class DoSearchServlet extends HttpServlet {
                 numberTicketsFilterString == null) {
             request.setAttribute("setFilters", err.getString("setFilters"));
             request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
-        } else {
+        }
+        //parse all filters
+        else {
             LocalDate dateFrom = LocalDate.parse(dateFromString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateTo = LocalDate.parse(dateToString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dateToPlusDay = dateTo.plusDays(1);
             int numberTicketsFilter = Integer.parseInt(numberTicketsFilterString);
+            // prepare set filters for airports to results
             Airport dep = new Airport();
             Airport arr = new Airport();
             for (Airport a : airports) {
@@ -104,6 +112,8 @@ public class DoSearchServlet extends HttpServlet {
             log.info("doGet(request, response): Searching for flight:" + dateFrom + " " + dateTo + " " +
                     departure + " " + arrival + " " + numberTicketsFilter + " " + Arrays.toString(checkbox));
 
+            //check and save in session number of page which is requested for view.
+            // If it is -1 then it is first request
             Integer pageNum;
             try {
                 pageNum = Integer.parseInt(request.getParameter("page"));
@@ -112,17 +122,21 @@ public class DoSearchServlet extends HttpServlet {
             }
             httpSession.setAttribute("pageLast", pageNum);
 
+            //check if page is first for view and next logic about view in ajax
             boolean pageFirst = false;
             if (pageNum == -1) {
                 pageNum = 0;
                 pageFirst = true;
             }
             log.info("doGet(request, response): Creating a list of found flights.");
+
+            // prepare list of found flights for view of requested page
             List<Flight> foundFlights = flightService.getFlights(dep.getAirportId(), arr.getAirportId(),
                     dateFrom.toString(), dateToPlusDay.toString(), numberTicketsFilter, business, pageNum);
             for (Flight f : foundFlights) {
                 f.setArrivalAirport(arr);
                 f.setDepartureAirport(dep);
+                //set recounted prices of flights that bases on date and class of flight
                 f.setBaseCost(ticketService.recountPrice(f.getBaseCost(), f.getDateTime(), business));
                 httpSession.setAttribute("ticketCost", f.getBaseCost());
             }
@@ -132,7 +146,9 @@ public class DoSearchServlet extends HttpServlet {
                 log.error("doGet(request, response): Flights not found!");
                 request.setAttribute("nothingFound", err.getString("nothingFound"));
                 request.getRequestDispatcher("/WEB-INF/pages/flights.jsp").forward(request, response);
-            } else if (pageFirst) { // if first page, foundFlights are sent as attribute, also number of found pages is sent
+            }
+            // if first page, foundFlights are sent as attribute, also number of found pages is sent
+            else if (pageFirst) {
                 request.setAttribute("flights", new ArrayList<Flight>());
                 int numPages = (int) ceil((double) flightService.getAmountFlights(arr.getAirportId(), dep.getAirportId(), dateFrom.toString(),
                         dateToPlusDay.toString(), numberTicketsFilter, business) / 10);
@@ -140,7 +156,9 @@ public class DoSearchServlet extends HttpServlet {
                 request.setAttribute("ifPageFirst", pageFirst);
 
                 request.getRequestDispatcher("").forward(request, response);
-            } else { // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
+            }
+            // if its not first page&foundFlights is not empty, foundFlights is sent as json in response
+            else {
                 log.info("doGet(request, response): 'pageNum' is greater then 0. Creating a json string and sending it as a response.");
                 String json = new Gson().toJson(foundFlights);
                 response.setContentType("json");

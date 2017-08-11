@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet for recount price of ticket in cart if we check parameters(dynamically)
+ */
 @WebServlet(urlPatterns = "/priceRecountChecked")
 public class PriceRecounterCheckedServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -25,8 +28,11 @@ public class PriceRecounterCheckedServlet extends HttpServlet {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         long ticketId = Long.parseLong(request.getParameter("ticketId"));
 
+        //recount price
         Ticket ticket = ticketService.get(ticketId).orElse(null);
+        // egt old price from ticket
         double oldPrice = ticket.getPrice();
+        // if parameter is checked recount price and set luggage to true
         double newPrice = ticketService.affectByLuggage(oldPrice);
         ticket.setLuggage(true);
         ticket.setPrice(newPrice);

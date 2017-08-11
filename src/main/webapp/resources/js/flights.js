@@ -13,6 +13,7 @@ $(document).ready(function () {
     $("#appendButton").click(function () {
         createAppend(counter);
         counter++;
+        $('table', this).slideDown("slow");
     });
 
     function createAppend(i) {
@@ -79,23 +80,22 @@ $(document).ready(function () {
     if (document.readyState == 'complete') {
         var today = new Date();
         var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
+        var mm = today.getMonth() + 1; //January is 0!
         var yyyy = today.getFullYear();
-        if(dd<10){
-            dd='0'+dd
+        if (dd < 10) {
+            dd = '0' + dd
         }
-        if(mm<10){
-            mm='0'+mm
+        if (mm < 10) {
+            mm = '0' + mm
         }
-        today = yyyy+'-'+mm+'-'+dd;
+        today = yyyy + '-' + mm + '-' + dd;
         document.getElementById("dateFrom").setAttribute("min", today);
-        if (document.getElementById("dateFrom").value=='') {
-            document.getElementById("dateFrom").value=today;
+        if (document.getElementById("dateFrom").value == '') {
+            document.getElementById("dateFrom").value = today;
         }
-        if (document.getElementById("dateTo").value=='') {
-            document.getElementById("dateTo").value=today;
+        if (document.getElementById("dateTo").value == '') {
+            document.getElementById("dateTo").value = today;
         }
-
     }
 });
 

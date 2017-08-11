@@ -66,6 +66,6 @@ public class TicketPrintServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doGet(request, response);
+        response.sendError(405);
     }
 }

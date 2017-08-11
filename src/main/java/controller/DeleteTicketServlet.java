@@ -39,18 +39,13 @@ public class DeleteTicketServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         HttpSession httpSession = request.getSession();
         User user = (User) httpSession.getAttribute("user");
 
         // get ticketId from request, revert places from it to flight and flightplace
         // (and delete ticket in inner method), refresh tickets count in cart
         String ticketId = request.getParameter("ticketId");
-        log.info("doPost(request, response): Initiaziling 'ticketOptional'.");
+        log.info("doGet(request, response): Initiaziling 'ticketOptional'.");
         Optional<Ticket> ticketOptional = ticketService.get(Long.parseLong(ticketId));
         ticketOptional.ifPresent(ticket1 -> {
             List<Ticket> tickets = new ArrayList<>();
@@ -60,7 +55,13 @@ public class DeleteTicketServlet extends HttpServlet {
             httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
         });
         String redirectBackString = "/bucket";
-        log.info("doPost(request, response): Sending redirect.");
+        log.info("doGet(request, response): Sending redirect.");
         response.sendRedirect(redirectBackString);
+    }
+
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+        response.sendError(405);
     }
 }

@@ -21,7 +21,7 @@ public class LanguageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doPost(request, response);
+        response.sendError(405);
     }
 
     @Override

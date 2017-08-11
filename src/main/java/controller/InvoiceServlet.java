@@ -117,7 +117,7 @@ public class InvoiceServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        response.sendError(501);
+        response.sendError(405);
     }
 
 

@@ -32,8 +32,8 @@ public class PayInvoiceServlet extends HttpServlet {
         ticketService = TicketServiceImpl.getInstance();
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
         HttpSession httpSession = request.getSession();
         Cookie[] cookies = request.getCookies();
@@ -44,7 +44,7 @@ public class PayInvoiceServlet extends HttpServlet {
         // it can be needed for any other purpose
         request.setCharacterEncoding("UTF-8");
 
-        log.info("doGet(request, response): Initializing 'invoiceOptional' by user.");
+        log.info("doPost(request, response): Initializing 'invoiceOptional' by user.");
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
         // get set fields from request by array parameters
@@ -62,9 +62,14 @@ public class PayInvoiceServlet extends HttpServlet {
             performPayment(request, response, httpSession, user, invoiceOptional);
             return;
         }
-        log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
+        log.info("doPost(request, response): Executing request.getRequestDispatcher(...).");
         request.getRequestDispatcher("/bucket").forward(request, response);
 
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+        response.sendError(405);
     }
 
     private void getFieldsInfo(HttpServletRequest request) {
@@ -75,7 +80,7 @@ public class PayInvoiceServlet extends HttpServlet {
     }
 
     private void performPayment(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession, User user, Optional<Invoice> invoiceOptional) throws ServletException, IOException {
-        log.info("doGet(request, response): Setting invoice status to PAYED.");
+        log.info("doPost(request, response): Setting invoice status to PAYED.");
         Invoice invoice = invoiceOptional.get();
         invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
         invoiceService.update(invoice);
@@ -86,14 +91,10 @@ public class PayInvoiceServlet extends HttpServlet {
     }
 
     private void notifyEmptyFields(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
-        log.info("doGet(request, response): Ticket is empty.");
+        log.info("doPost(request, response): Ticket is empty.");
         request.setAttribute("setFields", err.getString("setFields"));
         request.setAttribute("changesSaved", err.getString("changesSaved"));
         request.getRequestDispatcher("/bucket").forward(request, response);
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doGet(request, response);
-    }
 }

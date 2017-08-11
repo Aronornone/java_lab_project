@@ -38,18 +38,18 @@
                         <ul>
                             <div class="menuBlock">
                                 <li>
-                                    <form action="flights" method="post">
+                                    <form action="flights" method="get">
                                         <input class="buttonMenu" type="submit" value="<fmt:message key="flightsBut"/>">
                                     </form>
                                 </li>
                                 <li>
-                                    <form action="ticketsPrint" method="post">
+                                    <form action="ticketsPrint" method="get">
                                         <input class="buttonMenu" type="submit"
                                                value="<fmt:message key="ticketPrintBut"/>">
                                     </form>
                                 </li>
                                 <li class="last">
-                                    <form action="logout" method="post">
+                                    <form action="logout" method="get">
                                         <input class="buttonMenu" type="submit"
                                                value="<fmt:message key="logoutButton"/>">
                                     </form>
@@ -62,7 +62,7 @@
             </c:if>
             <c:if test="${sessionScope.user == null}">
                 <fmt:message key="welcomeMessage2"/>! <fmt:message key="welcomeMessage2.1"/>.
-                <form action="loginPage" method="post">
+                <form action="loginPage" method="get">
                     <input class="buttonLogin" type="submit" value="<fmt:message key="loginButton"/>"/>
                 </form>
             </c:if>

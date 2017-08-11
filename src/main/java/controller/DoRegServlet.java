@@ -32,15 +32,15 @@ public class DoRegServlet extends HttpServlet {
         userService = UserServiceImpl.getInstance();
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
 
         // get all parameters from registration form
         getFormParameters(request);
 
         //check that fields aren't empty, if so show notification
-        log.info("doGet(request, response): Trying to register a user.");
+        log.info("doPost(request, response): Trying to register a user.");
         if (fieldEmpty()) {
             notifyEmptyField(request, response, err);
             return;
@@ -61,6 +61,12 @@ public class DoRegServlet extends HttpServlet {
         }
         //if hashes ok+ user is new, create user and notificate user
         createUser(request, response, err);
+
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
+        response.sendError(405);
     }
 
     private void encodePasswords() {
@@ -121,11 +127,5 @@ public class DoRegServlet extends HttpServlet {
         nonHashedPasswordFirstReq = request.getParameter("password1");
         nonHashedPasswordSecondReq = request.getParameter("password2");
         registrationDate = LocalDateTime.now();
-    }
-
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        doGet(request, response);
     }
 }

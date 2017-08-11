@@ -81,7 +81,7 @@ public class DoLoginServlet extends HttpServlet {
                 httpSession, user, passwordHashDB, passwordHashReq)) return;
 
         //if password hashes are not equal show notification
-        log.error("doGet(request, response): Log-in failed!");
+        log.error("doPost(request, response): Log-in failed!");
         request.setAttribute("loginFailed", err.getString("loginFailed"));
         request.setAttribute("email", email);
         request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
@@ -89,7 +89,7 @@ public class DoLoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
-        response.sendError(501);
+        response.sendError(405);
     }
 
     /**

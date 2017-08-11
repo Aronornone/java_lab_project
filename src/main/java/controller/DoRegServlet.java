@@ -29,6 +29,7 @@ public class DoRegServlet extends HttpServlet {
         log.info("init(): Initializing 'userService'.");
         userService = UserServiceImpl.getInstance();
     }
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());
         ResourceBundle err = (ResourceBundle) getServletContext().getAttribute("errors");
@@ -44,56 +45,56 @@ public class DoRegServlet extends HttpServlet {
 
         //check that fields aren't empty, if so show notification
         log.info("doGet(request, response): Trying to register a user.");
-        if (nonHashedPasswordFirstReq==null ||
-                nonHashedPasswordSecondReq==null ||
-                username==null ||
-                email ==null ||
+        if (nonHashedPasswordFirstReq == null ||
+                nonHashedPasswordSecondReq == null ||
+                username == null ||
+                email == null ||
                 nonHashedPasswordFirstReq.isEmpty() ||
                 nonHashedPasswordSecondReq.isEmpty() ||
                 username.isEmpty() ||
-               email.isEmpty()) {
+                email.isEmpty()) {
             log.error("doGet(request, response): Field is empty!");
             request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
             request.setAttribute("email", email);
             request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            return;
         }
         // check both hashes of passwords. If they aren't equal show notification
-        else {
-            password1HashReq = DigestUtils.md5Hex(nonHashedPasswordFirstReq);
-            password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
+        password1HashReq = DigestUtils.md5Hex(nonHashedPasswordFirstReq);
+        password2HashReq = DigestUtils.md5Hex(nonHashedPasswordSecondReq);
 
-            if (!password1HashReq.equals(password2HashReq)) {
-                log.error("doGet(request, response): Password mismatches!");
-                request.setAttribute("passMismatch", err.getString("passMismatch"));
-                request.setAttribute("email", email);
-                request.setAttribute("username", username);
-                request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
-            }
-            //if hashes are equal, check if user with that email is already exists, if so show notification
-            else {
-                Optional<User> userOptional = userService.get(email);
-                if (userOptional.isPresent()) {
-                    log.error("doGet(request, response): User already exists!");
-                    request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
-                    request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
-                } else {
-                    //if hashes ok+ user is new, create user and notificate user
-                    log.info("doGet(request, response): Registration is successful!");
-                    User user = new User(username, email, password1HashReq, registrationDate);
-                    userService.add(user);
-                    userLogger.info("doGet(request, response): --> A new user has been registered:\n +" +
-                            "username: " + username +
-                            "email: " + email +
-                            "password_hash: " + password1HashReq +
-                            "registration_date: " + registrationDate + "\n"
-                    );
-                    request.setAttribute("regSuccess", err.getString("regSuccess"));
-                    request.setAttribute("email", email);
-                    request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
-                }
-            }
+        if (!password1HashReq.equals(password2HashReq)) {
+            log.error("doGet(request, response): Password mismatches!");
+            request.setAttribute("passMismatch", err.getString("passMismatch"));
+            request.setAttribute("email", email);
+            request.setAttribute("username", username);
+            request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            return;
         }
+
+        //if hashes are equal, check if user with that email is already exists, if so show notification
+        Optional<User> userOptional = userService.get(email);
+        if (userOptional.isPresent()) {
+            log.error("doGet(request, response): User already exists!");
+            request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
+            request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
+            return;
+        }
+        //if hashes ok+ user is new, create user and notificate user
+        log.info("doGet(request, response): Registration is successful!");
+        User user = new User(username, email, password1HashReq, registrationDate);
+        userService.add(user);
+        userLogger.info("doGet(request, response): --> A new user has been registered:\n +" +
+                "username: " + username +
+                "email: " + email +
+                "password_hash: " + password1HashReq +
+                "registration_date: " + registrationDate + "\n"
+        );
+        request.setAttribute("regSuccess", err.getString("regSuccess"));
+        request.setAttribute("email", email);
+        request.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(request, response);
     }
+
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() + ", 'response' = " + response.getStatus());

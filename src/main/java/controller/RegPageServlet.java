@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet fot view of registration page for new user
+ */
 @WebServlet(urlPatterns = "/regPage")
 public class RegPageServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");

@@ -29,8 +29,8 @@
             <c:if test="${sessionScope.user != null}">
                 <fmt:message key="welcomeMessage1"/> ${sessionScope.user.name}!
                 <a href="bucket">
-                    <button class="buttonBucketMenu"><fmt:message key="cartButton"/>: <div id="ticketBucket">${ticketsInBucket}</div>
-                         <fmt:message key="cartTickets"/></button>
+                    <button class="buttonBucketMenu"><fmt:message key="cartButton"/>: &nbsp;<div id="ticketBucket">${ticketsInBucket}</div>
+                        &nbsp;<fmt:message key="cartTickets"/></button>
                 </a>
 
                 <ul class="menu">

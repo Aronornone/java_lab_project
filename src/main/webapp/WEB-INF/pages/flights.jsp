@@ -142,7 +142,7 @@
         <div id="popup_box_login">
             <p><fmt:message key="loginFirst"/>
             <a href="loginPage"><fmt:message key="loginButton"/></a></p>
-            <a id="popupBoxCloseLogin">Close</a>
+            <a id="popupBoxCloseLogin">x</a>
         </div>
 
         <div class="appendButton">

@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Servlet for setting language (from images in header)
+ */
 @WebServlet(urlPatterns = "/language")
 public class LanguageServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -30,7 +33,7 @@ public class LanguageServlet extends HttpServlet {
         getServletContext().setAttribute("errors", ResourceBundle.
                 getBundle("ErrorsBundle", (Locale) request.getSession().getAttribute("currentLocale")));
 
-//        send redirect
+        //send redirect to back page if exists
         log.info("doPost(request, response): Sending redirect.");
         String goBack=request.getParameter("backPage");
         if (goBack.equals("")) {

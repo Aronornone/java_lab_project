@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Servlet for list of tickets for user sorted by invoice
+ */
 @WebServlet(urlPatterns = {"/ticketsPrint"})
 public class TicketPrintServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
@@ -38,9 +41,11 @@ public class TicketPrintServlet extends HttpServlet {
         User user = (User) httpSession.getAttribute("user");
         httpSession.setAttribute("lastServletPath", request.getServletPath());
 
+        //get all payed invoice for user
         log.info("doGet(request, response): Creating a list of all payed invoices.");
         List<Invoice> allPayedInvoices = invoiceService.getAllInvoicesByUserAndStatus(user.getUserId(), Invoice.InvoiceStatus.PAYED);
         List<Invoice> invoicesSortedForPrint = new ArrayList<>();
+        //if invoices exists create sorted list for flights and tickets
         if (!allPayedInvoices.isEmpty()) {
             log.info("doGet(request, response): Creating all payed invoices.");
             List<Ticket> ticketsForPayedInvoice;
@@ -50,7 +55,9 @@ public class TicketPrintServlet extends HttpServlet {
                 invoicesSortedForPrint.add(invoice);
             }
             request.setAttribute("invoices", invoicesSortedForPrint);
-        } else {
+        }
+        //if user doesnt't have payed invoices show notification
+        else {
             log.info("doGet(request, response): No payed invoices!");
             request.setAttribute("noPayedInvoices", err.getString("noPayedInvoices"));
         }

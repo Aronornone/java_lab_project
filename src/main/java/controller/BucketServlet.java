@@ -46,7 +46,6 @@ public class BucketServlet extends HttpServlet {
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
 
-        // If invoice exists show it's tickets sorted by flights
         log.info("doGet(request, response): Counting total price.");
         Invoice invoice;
         List<Ticket> tickets;
@@ -55,7 +54,6 @@ public class BucketServlet extends HttpServlet {
             httpSession.setAttribute("invoiceId", invoice.getInvoiceId());
             tickets = ticketService.getTicketsByInvoice(invoice.getInvoiceId());
         } else {
-            // if invoice isn't exist show notification about empty cart
             log.info("doGet(request, response): Cart is empty!");
             request.setAttribute("cartEmpty", err.getString("cartEmpty"));
             request.getRequestDispatcher("/WEB-INF/pages/bucket.jsp").forward(request, response);

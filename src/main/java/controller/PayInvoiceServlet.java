@@ -24,6 +24,7 @@ public class PayInvoiceServlet extends HttpServlet {
     private static Logger log = Logger.getLogger("servletLogger");
     private static InvoiceService invoiceService;
     private static TicketService ticketService;
+    private String[] ticketsIds, passengerNames, passports, luggages;
 
     public void init() {
         log.info("init(): Initializing 'invoiceService' and 'ticketService'.");
@@ -47,36 +48,48 @@ public class PayInvoiceServlet extends HttpServlet {
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
         // get set fields from request by array parameters
-        String[] ticketsIds = request.getParameterValues("ticketId");
-        String[] passengerNames = request.getParameterValues("passengerName");
-        String[] passports = request.getParameterValues("passport");
-        String[] luggages = request.getParameterValues("lugBox");
+        getFieldsInfo(request);
 
         // check if ticket fields are all filled, and save in inner method this info to DB.
         // If not all fields filled show notification, and save info any way from filled
         if (ticketService.isEmptyWhilePayAndSave(ticketsIds, passengerNames, passports, luggages)) {
-            log.info("doGet(request, response): Ticket is empty.");
-            request.setAttribute("setFields", err.getString("setFields"));
-            request.setAttribute("changesSaved", err.getString("changesSaved"));
-            request.getRequestDispatcher("/bucket").forward(request, response);
+            notifyEmptyFields(request, response, err);
             return;
         }
         // if all fields are filled pay invoice, update it in DB and set new count of tickets in cart,
         // redirect to page with invoice
         if (invoiceOptional.isPresent()) {
-            log.info("doGet(request, response): Setting invoice status to PAYED.");
-            Invoice invoice = invoiceOptional.get();
-            invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
-            invoiceService.update(invoice);
-            int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
-            httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
-            httpSession.setAttribute("invoiceView", null);
-            request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);
+            performPayment(request, response, httpSession, user, invoiceOptional);
             return;
         }
         log.info("doGet(request, response): Executing request.getRequestDispatcher(...).");
         request.getRequestDispatcher("/bucket").forward(request, response);
 
+    }
+
+    private void getFieldsInfo(HttpServletRequest request) {
+        ticketsIds = request.getParameterValues("ticketId");
+        passengerNames = request.getParameterValues("passengerName");
+        passports = request.getParameterValues("passport");
+        luggages = request.getParameterValues("lugBox");
+    }
+
+    private void performPayment(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession, User user, Optional<Invoice> invoiceOptional) throws ServletException, IOException {
+        log.info("doGet(request, response): Setting invoice status to PAYED.");
+        Invoice invoice = invoiceOptional.get();
+        invoice.setInvoiceStatus(Invoice.InvoiceStatus.PAYED);
+        invoiceService.update(invoice);
+        int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
+        httpSession.setAttribute("ticketsInBucket", ticketsInBucket);
+        httpSession.setAttribute("invoiceView", null);
+        request.getRequestDispatcher("/WEB-INF/pages/invoiceSuccess.jsp").forward(request, response);
+    }
+
+    private void notifyEmptyFields(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
+        log.info("doGet(request, response): Ticket is empty.");
+        request.setAttribute("setFields", err.getString("setFields"));
+        request.setAttribute("changesSaved", err.getString("changesSaved"));
+        request.getRequestDispatcher("/bucket").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

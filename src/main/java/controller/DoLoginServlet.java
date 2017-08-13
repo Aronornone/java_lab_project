@@ -77,7 +77,7 @@ public class DoLoginServlet extends HttpServlet {
         // with userId for 1 week
         if (checkIfPasswordHashesEquals(request, response,
                 httpSession, user, passwordHashDB, passwordHashReq)) {
-            userLogger.error("doGet(request, response): User has logged in:" +
+            userLogger.info("doGet(request, response): User has logged in:" +
                     " email: " + email +
                     ", time: " + LocalDateTime.now()
             );

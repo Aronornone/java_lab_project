@@ -60,25 +60,25 @@ public final class TicketServiceImpl implements TicketService {
      * Then it saves ticket info, anyway.
      *
      * @param ticketsIds     array of Strings tickets ids
-     * @param passengerNames array of Strings passenger names
+     * @param passengersNames array of Strings passenger names
      * @param passports      array of Strings passports
      * @return true if some of fields are empty, false if all fields are fill right.
      */
     @Override
-    public boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengerNames,
-                                          String[] passports, String[] luggages) {
+    public boolean isEmptyWhilePayAndSave(String[] ticketsIds, String[] passengersNames,
+                                          String[] passports, String[] luggage) {
         log.info("isEmptyWhilePayAndSave(...): Getting an instance of TicketServiceImpl.");
         TicketService ticketService = TicketServiceImpl.getInstance();
         boolean empty = false;
         log.info("isEmptyWhilePayAndSave(...): Checking method arguments.");
-        if (ticketsIds != null && passengerNames != null && passports != null) {
-            for (String ticketsId : ticketsIds) {
-                if (ticketsId.isEmpty()) {
+        if (ticketsIds != null && passengersNames != null && passports != null) {
+            for (String ticketId : ticketsIds) {
+                if (ticketId.isEmpty()) {
                     empty = true;
                     break;
                 }
             }
-            for (String passengerName : passengerNames) {
+            for (String passengerName : passengersNames) {
                 if (passengerName.isEmpty()) {
                     empty = true;
                     break;
@@ -92,14 +92,14 @@ public final class TicketServiceImpl implements TicketService {
             }
             log.info("isEmptyWhilePayAndSave(...): Creating an array of luggages.");
 
-            boolean[] luggagesBoolean = new boolean[ticketsIds.length];
-            if (luggages != null) {
-                for (int i = 0; i < luggages.length; i++) {
-                    luggagesBoolean[i] = (luggages[i].equals("luggage"));
+            boolean[] luggageBoolean = new boolean[ticketsIds.length];
+            if (luggage != null) {
+                for (int i = 0; i < luggage.length; i++) {
+                    luggageBoolean[i] = (luggage[i].equals("luggage"));
                 }
             }
             log.info("isEmptyWhilePayAndSave(...): Updating a ticket information.");
-            ticketService.updateTicketWhilePay(ticketsIds, passengerNames, passports, luggagesBoolean);
+            ticketService.updateTicketWhilePay(ticketsIds, passengersNames, passports, luggageBoolean);
         } else {
             log.info("isEmptyWhilePayAndSave(...): 'empty' = false");
             empty = true;
@@ -113,19 +113,19 @@ public final class TicketServiceImpl implements TicketService {
      * Method for update information of ticket based on what client set in fields
      *
      * @param ticketsIds     array of Strings tickets ids
-     * @param passengerNames array of Strings passenger names
+     * @param passengersNames array of Strings passenger names
      * @param passports      array of Strings passports
      */
     @Override
-    public void updateTicketWhilePay(String[] ticketsIds, String[] passengerNames,
-                                     String[] passports, boolean[] luggages) {
+    public void updateTicketWhilePay(String[] ticketsIds, String[] passengersNames,
+                                     String[] passports, boolean[] luggage) {
         log.info("updateTicketWhilePay(...): Getting instances of TicketServiceImpl and updating them.");
         for (int i = 0; i < ticketsIds.length; i++) {
             TicketService ticketService = TicketServiceImpl.getInstance();
             Ticket ticketToUpdate = ticketService.get(Long.parseLong(ticketsIds[i])).orElse(null);
-            ticketToUpdate.setPassengerName(passengerNames[i]);
+            ticketToUpdate.setPassengerName(passengersNames[i]);
             ticketToUpdate.setPassport(passports[i]);
-            ticketToUpdate.setLuggage(luggages[i]);
+            ticketToUpdate.setLuggage(luggage[i]);
             ticketService.update(ticketToUpdate);
         }
     }

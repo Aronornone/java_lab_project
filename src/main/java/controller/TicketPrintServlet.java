@@ -56,7 +56,7 @@ public class TicketPrintServlet extends HttpServlet {
             }
             request.setAttribute("invoices", invoicesSortedForPrint);
         }
-        //if user doesnt't have payed invoices show notification
+        //if user doesn't have payed invoices show notification
         else {
             log.info("doGet(request, response): No payed invoices!");
             request.setAttribute("noPayedInvoices", err.getString("noPayedInvoices"));

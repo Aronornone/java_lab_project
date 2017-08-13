@@ -127,7 +127,7 @@ public class InvoiceServlet extends HttpServlet {
             int sittingPlace = flightPlaceService.getRandomSittingPlace(flight.getFlightId(), business);
             // if available place is 0 in random, create notification, it means here aren't available places
             if (sittingPlace == 0) {
-                log.info("doGet(request, response): Not enough places!");
+                log.info("doPost(request, response): Not enough places!");
                 request.setAttribute("notEnoughPlaces", err.getString("notEnoughPlaces"));
                 request.getRequestDispatcher(redirectBackString).forward(request, response);
                 return true;
@@ -136,7 +136,7 @@ public class InvoiceServlet extends HttpServlet {
             Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
                     false, business, (double) httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
             ticketService.add(ticket);
-            log.info("doGet(request, response): Adding a new ticket to DB: " + ticket);
+            log.info("doPost(request, response): Adding a new ticket to DB: " + ticket);
             httpSession.setAttribute("boughtFlightId", flight.getFlightId());
         }
         int ticketsInBucket = invoiceService.getNumberOfTicketsInInvoice(user);
@@ -157,7 +157,7 @@ public class InvoiceServlet extends HttpServlet {
      */
 
     private String getRedirectBackString(String dateFromString, String dateToString, String departure, String arrival, String numberTicketsFilterString, String[] checkBox) {
-        log.info("doGet(request, response): Initializing redirectBackStringBuilder.");
+        log.info("doPost(request, response): Initializing redirectBackStringBuilder.");
         StringBuilder redirectBackStringBuilder = new StringBuilder();
         redirectBackStringBuilder.append("/doSearch?dateFrom=").append(dateFromString).append("&dateTo=").
                 append(dateToString).append("&selectedDeparture=").append(departure).append("&selectedArrival=").
@@ -183,7 +183,7 @@ public class InvoiceServlet extends HttpServlet {
     private Invoice getInvoiceForUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err, User user,
                                       String redirectBackString, int numberTicketsFlight, int availableForClass)
             throws ServletException, IOException {
-        log.info("doGet(request, response): Received the following 'request' = " + request.getQueryString() +
+        log.info("doPost(request, response): Received the following 'request' = " + request.getQueryString() +
                 ", 'response' = " + response.getStatus() +
                 ", 'err' = " + err +
                 ", 'user' = " + user +
@@ -198,17 +198,17 @@ public class InvoiceServlet extends HttpServlet {
             return null;
         }
         //check if invoice already created in status Created for this user
-        log.info("doGet(request, response): Initializing 'invoiceOptional' by user ID.");
+        log.info("doPost(request, response): Initializing 'invoiceOptional' by user ID.");
         Optional<Invoice> invoiceOptional = invoiceService.getInvoiceByUser(user.getUserId(),
                 Invoice.InvoiceStatus.CREATED);
         if (!invoiceOptional.isPresent()) {
             //if invoice isn't created, add it
-            log.info("doGet(request, response): Adding new invoice.");
+            log.info("doPost(request, response): Adding new invoice.");
             invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
             invoiceService.add(invoice);
         }
 
-        log.info("doGet(request, response): Getting invoice by user and returning it.");
+        log.info("doPost(request, response): Getting invoice by user and returning it.");
         invoice = invoiceService.getInvoiceByUser(user.getUserId(), Invoice.InvoiceStatus.CREATED).orElse(null);
         return invoice;
     }

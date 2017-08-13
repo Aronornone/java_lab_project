@@ -121,6 +121,14 @@
                                        name="numberTicketsFlight">
                                 <input type="hidden" name="flightId" form="form2${flight.flightId}"
                                        value="${flight.flightId}">
+                                <c:if test="${sessionScope.business !=null}">
+                                <input type="hidden" name="flightAvailable" id="av${flight.flightId}"
+                                       value="${flight.availablePlacesBusiness}">
+                                </c:if>
+                                <c:if test="${sessionScope.business == null}">
+                                <input type="hidden" name="flightAvailable" id="av${flight.flightId}"
+                                       value="${flight.availablePlacesEconom}">
+                                </c:if>
                             </td>
                             <td>
                                 <button class="buttonBucket" form="form2${flight.flightId}"

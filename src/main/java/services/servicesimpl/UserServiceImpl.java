@@ -55,7 +55,6 @@ public final class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-
         return dao.getAll();
     }
 }

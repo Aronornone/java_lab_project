@@ -197,6 +197,8 @@ public final class FlightDAOImpl implements FlightDAO {
                             rs.getLong     ("id"),
                             rs.getString   ("flight_number"),
                             rs.getDouble   ("base_cost"),
+                            rs.getInt       ("available_places_econom"),
+                            rs.getInt       ("available_places_business"),
                             rs.getTimestamp("flight_datetime").toLocalDateTime(),
                             departure,
                             arrival

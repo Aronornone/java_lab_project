@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    changeDates();
     var buy;
     if (document.getElementById("buybut").value === 'en_US') {
         buy = "Buy";
@@ -32,6 +32,18 @@ $(document).ready(function () {
         );
     }
 
+    function stringAvailable(k, v) {
+        var stringAvailable;
+        if (document.getElementById("box").getAttribute("checked") === "checked") {
+            return stringAvailable = '<input type="hidden" name="flightAvailable" id="av' + v.flightId + '" '
+                + 'value="' + v.availablePlacesBusiness + '">';
+        }
+        else {
+            return stringAvailable = '<input type="hidden" name="flightAvailable" id="av' + v.flightId + '" '
+                + 'value="' + v.availablePlacesEconom + '">';
+        }
+    }
+
     function appendData(data) {
         $.each(data, function (k, v) {
             var toappend = '<tbody><form name="form2" id="form2' + v.flightId +
@@ -42,9 +54,15 @@ $(document).ready(function () {
                 + '<td>' + parseDate(v) + '</td>'
                 + '<td>' + v.flightNumber + '</td>'
                 + '<td>' + v.baseCost + '.0' + '</td>'
-                + '<td><input id="num' + v.flightId + '" class="fieldFilters" type="number" min="1"max=' + document.getElementById("numberTicketsFilter").value + ' step="1"value=' + document.getElementById("numberTicketsFilter").value + ' form="form2' + v.flightId + '"name="numberTicketsFlight"><input type="hidden" name="flightId" form="form2' + v.flightId + '"value="' + v.flightId + '"></td>'
+                + '<td><input id="num' + v.flightId + '" class="fieldFilters" type="number" min="1"max='
+                + document.getElementById("numberTicketsFilter").value + ' step="1"value='
+                + document.getElementById("numberTicketsFilter").value + ' form="form2'
+                + v.flightId + '" name="numberTicketsFlight"><input type="hidden" name="flightId" form="form2'
+                + v.flightId + '" value="' + v.flightId + '"></td>'
+                + stringAvailable(k, v)
                 + '<td><button class="buttonBucket" id="' + v.flightId + '" onclick="buy(this.id)" >'
-                + buy + '</button></td>'
+                + buy + '</button>'
+                + '</td>'
                 + '</tr> </form></tbody>';
             $('#appendFlights').append(toappend);
         });
@@ -77,7 +95,8 @@ $(document).ready(function () {
     if (document.readyState == 'complete' && ifPageFirst == 'true') {
         document.getElementById("appendButton").click();
     }
-    if (document.readyState == 'complete') {
+
+    function changeDates() {
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth() + 1; //January is 0!
@@ -110,7 +129,7 @@ function buy(flightId) {
             numberTicketsFlight: numberTicketsFlight,
             box: box
         },
-        success: function (data) {
+        success: function () {
             var ticketOld = $('#ticketBucket').text();
             var ticketOldInt;
             if (ticketOld == undefined || ticketOld === '') {
@@ -121,9 +140,14 @@ function buy(flightId) {
             var numberTicketInt = parseInt(numberTicketsFlight);
             var ticketNew = parseInt(ticketOldInt + numberTicketInt);
             document.getElementById("ticketBucket").textContent = ticketNew;
+
+            var newAvailablePlaces = parseInt(document.getElementById("av" + flightId).value) - numberTicketInt;
+            if (newAvailablePlaces < numberTicketInt) {
+                document.getElementById(flightId).setAttribute("disabled", "disabled");
+            }
             loadPopupBox();
         },
-        error: function (data) {
+        error: function () {
             loadPopupBoxLogin();
         }
     });

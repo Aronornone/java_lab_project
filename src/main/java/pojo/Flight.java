@@ -49,11 +49,14 @@ public class Flight {
         this.dateTime = dateTime;
     }
 
-    public Flight(long flightId, String flightNumber, Double baseCost, LocalDateTime dateTime, long departureAirportId, long arrivalAirportId) {
+    public Flight(long flightId, String flightNumber, Double baseCost, int availablePlacesEconom,
+                  int availablePlacesBusiness, LocalDateTime dateTime, long departureAirportId, long arrivalAirportId) {
         this.flightId = flightId;
         this.flightNumber = flightNumber;
         this.baseCost = baseCost;
         this.dateTime = dateTime;
+        this.availablePlacesEconom = availablePlacesEconom;
+        this.availablePlacesBusiness = availablePlacesBusiness;
         this.departureAirportId = departureAirportId;
         this.arrivalAirportId = arrivalAirportId;
     }

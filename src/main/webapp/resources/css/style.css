@@ -466,3 +466,8 @@ a {
     width: 400px;
     border: steelblue 2px solid;
 }
+
+button:disabled{
+    background-color: grey;
+
+}

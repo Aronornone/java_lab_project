@@ -75,7 +75,7 @@ public class DoRegServlet extends HttpServlet {
     }
 
     private void createUser(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
-        log.info("doGet(request, response): Registration is successful!");
+        log.info("doPost(request, response): Registration is successful!");
         User user = new User(username, email, password1HashReq, registrationDate);
         userService.add(user);
         userLogger.info("doGet(request, response): A new user has been registered:" +
@@ -90,13 +90,13 @@ public class DoRegServlet extends HttpServlet {
     }
 
     private void notifyUserExists(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
-        log.error("doGet(request, response): User already exists!");
+        log.error("doPost(request, response): User already exists!");
         request.setAttribute("userAlreadyExists", err.getString("userAlreadyExists"));
         request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);
     }
 
     private void notifyPassMismatch(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
-        log.error("doGet(request, response): Password mismatches!");
+        log.error("doPost(request, response): Password mismatches!");
         request.setAttribute("passMismatch", err.getString("passMismatch"));
         request.setAttribute("email", email);
         request.setAttribute("username", username);
@@ -104,7 +104,7 @@ public class DoRegServlet extends HttpServlet {
     }
 
     private void notifyEmptyField(HttpServletRequest request, HttpServletResponse response, ResourceBundle err) throws ServletException, IOException {
-        log.error("doGet(request, response): Field is empty!");
+        log.error("doPost(request, response): Field is empty!");
         request.setAttribute("fieldEmpty", err.getString("fieldEmpty"));
         request.setAttribute("email", email);
         request.getRequestDispatcher("/WEB-INF/pages/registration.jsp").forward(request, response);

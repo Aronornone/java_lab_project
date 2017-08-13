@@ -76,12 +76,12 @@ public final class FlightPlaceServiceImpl implements FlightPlaceService {
     @Override
     public void revertSittingPlaces(List<Ticket> tickets) {
         log.info("revertSittingPlaces(tickets): Starting to execute the method.");
-        Flight flight;
         log.info("revertSittingPlaces(tickets): Getting instances of FlightPlaceServiceImpl, FlightServiceImpl, TicketServiceImpl.");
         FlightPlaceService flightPlaceService = FlightPlaceServiceImpl.getInstance();
         FlightService flightService = FlightServiceImpl.getInstance();
         TicketService ticketService = TicketServiceImpl.getInstance();
         log.info("revertSittingPlaces(tickets): Starting to revert places.");
+        Flight flight;
         for (Ticket ticket : tickets) {
             long flightId = ticket.getFlight().getFlightId();
             FlightPlace flightPlace = flightPlaceService.getByFlightId((int) flightId).orElse(null);

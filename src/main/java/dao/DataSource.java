@@ -19,7 +19,7 @@ public class DataSource {
     private static final int MIN_IDLE_CONNECTIONS;
     private static final int MAX_IDLE_CONNECTIONS;
     private static final int MAX_OPENED_PREP_STMTS;
-    private static Logger log = Logger.getLogger("DBLog");
+    private static Logger log = Logger.getLogger("DBLogger");
 
     private static BasicDataSource dataSource;
     private static Connection connection;

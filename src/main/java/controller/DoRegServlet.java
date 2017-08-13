@@ -78,11 +78,11 @@ public class DoRegServlet extends HttpServlet {
         log.info("doGet(request, response): Registration is successful!");
         User user = new User(username, email, password1HashReq, registrationDate);
         userService.add(user);
-        userLogger.info("doGet(request, response): --> A new user has been registered:\n +" +
-                "username: " + username +
-                "email: " + email +
-                "password_hash: " + password1HashReq +
-                "registration_date: " + registrationDate + "\n"
+        userLogger.info("doGet(request, response): A new user has been registered:" +
+                " username: " + username +
+                ", email: " + email +
+                ", password_hash: " + password1HashReq +
+                ", registration_date: " + registrationDate + "\n"
         );
         request.setAttribute("regSuccess", err.getString("regSuccess"));
         request.setAttribute("email", email);

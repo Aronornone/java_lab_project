@@ -39,7 +39,6 @@ public class DoLoginServlet extends HttpServlet {
         //get all parameters from login form
         String email = request.getParameter("email");
         String nonHashedPasswordReq = request.getParameter("password");
-        LocalDateTime time;
 
         //check if all fields aren't empty, if so show notification
         log.info("doPost(request, response): Trying to login.");
@@ -63,11 +62,10 @@ public class DoLoginServlet extends HttpServlet {
         }
         //else notificate about non-existing user
         else {
-            time = LocalDateTime.now();
-            userLogger.error("doPost(request, response): --> Failed attempt to log-in:\n +" +
-                    "email: " + email +
-                    "password: " + nonHashedPasswordReq +
-                    "time: " + time + "\n"
+            userLogger.error("doPost(request, response): FAILED ATTEMPT TO LOG IN:" +
+                    " email: " + email +
+                    ", password: " + nonHashedPasswordReq +
+                    ", time: " + LocalDateTime.now()
             );
             request.setAttribute("nonexistentLogin", err.getString("nonexistentLogin"));
             request.setAttribute("email", email);
@@ -78,7 +76,13 @@ public class DoLoginServlet extends HttpServlet {
         //check that password hashes from DB and from request are equal and if so create cookie
         // with userId for 1 week
         if (checkIfPasswordHashesEquals(request, response,
-                httpSession, user, passwordHashDB, passwordHashReq)) return;
+                httpSession, user, passwordHashDB, passwordHashReq)) {
+            userLogger.error("doGet(request, response): User has logged in:" +
+                    " email: " + email +
+                    ", time: " + LocalDateTime.now()
+            );
+            return;
+        }
 
         //if password hashes are not equal show notification
         log.error("doPost(request, response): Log-in failed!");

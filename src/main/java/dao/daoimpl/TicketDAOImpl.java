@@ -51,14 +51,14 @@ public final class TicketDAOImpl implements TicketDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         log.info("add(ticket): Trying to create a connection to a data source and prepare a query.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("add(ticket): Putting parameters of specified types into their PreparedStatement positions.");
-            ps.setLong   (1, ticket.getInvoice().getInvoiceId());
-            ps.setLong   (2, ticket.getFlight().getFlightId());
-            ps.setString (3, ticket.getPassengerName());
-            ps.setString (4, ticket.getPassport());
-            ps.setInt    (5, ticket.getSittingPlace());
+            ps.setLong(1, ticket.getInvoice().getInvoiceId());
+            ps.setLong(2, ticket.getFlight().getFlightId());
+            ps.setString(3, ticket.getPassengerName());
+            ps.setString(4, ticket.getPassport());
+            ps.setInt(5, ticket.getSittingPlace());
             ps.setBoolean(6, ticket.isLuggage());
             ps.setBoolean(7, ticket.isBusinessClass());
             ps.setDouble(8, ticket.getPrice());
@@ -79,13 +79,13 @@ public final class TicketDAOImpl implements TicketDAO {
         log.info("get(id): Creating a null 'ticket' object");
         Ticket ticket = null;
         log.info("get(id): Trying to create a connection to a data source and prepare a query.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("get(id): Putting 'id' = " + id + " into its PreparedStatement position.");
             ps.setLong(1, id);
 
             log.info("get(id): Trying to execute the query and put result to ResultSet: " + ps);
-            try(ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     log.info("get(id): Creating a 'ticket' object from ResultSet.");
                     ticket = createNewTicket(rs);
@@ -109,13 +109,13 @@ public final class TicketDAOImpl implements TicketDAO {
         log.info("getTicketsByInvoice(invoiceId): Creating an empty list of tickets.");
         List<Ticket> tickets = new ArrayList<>();
         log.info("getTicketsByInvoice(invoiceId): Trying to create a connection to data source, prepare a query.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("getTicketsByInvoice(invoiceId): Putting 'invoice_id' = " + invoiceId + " into its PreparedStatement position.");
             ps.setLong(1, invoiceId);
 
             log.info("getTicketsByInvoice(invoiceId): Trying to execute the query and put result to ResultSet: " + ps);
-            try(ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 log.info("getTicketsByInvoice(invoiceId): Adding tickets from ResultSet to the list.");
                 while (rs.next()) {
                     tickets.add(createNewTicket(rs));
@@ -137,18 +137,18 @@ public final class TicketDAOImpl implements TicketDAO {
                 "luggage = ?, business_class = ?, price = ? WHERE id = ?";
 
         log.info("update(ticket): Trying to create a connection to data source and prepare a query.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("update(ticket): Putting parameters of specified types into their PreparedStatement positions.");
-            ps.setLong   (1, ticket.getInvoice().getInvoiceId());
-            ps.setLong   (2, ticket.getFlight().getFlightId());
-            ps.setString (3, ticket.getPassengerName());
-            ps.setString (4, ticket.getPassport());
-            ps.setInt    (5, ticket.getSittingPlace());
+            ps.setLong(1, ticket.getInvoice().getInvoiceId());
+            ps.setLong(2, ticket.getFlight().getFlightId());
+            ps.setString(3, ticket.getPassengerName());
+            ps.setString(4, ticket.getPassport());
+            ps.setInt(5, ticket.getSittingPlace());
             ps.setBoolean(6, ticket.isLuggage());
             ps.setBoolean(7, ticket.isBusinessClass());
-            ps.setDouble (8, ticket.getPrice());
-            ps.setLong   (9, ticket.getTicketId());
+            ps.setDouble(8, ticket.getPrice());
+            ps.setLong(9, ticket.getTicketId());
 
             log.info("update(ticket): Executing the query: " + ps);
             ps.executeUpdate();
@@ -164,8 +164,8 @@ public final class TicketDAOImpl implements TicketDAO {
         String sql = "DELETE FROM Ticket WHERE id = ?";
 
         log.info("delete(ticket): Trying to create a connection to data source and prepare a query.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             log.info("delete(ticket): Putting 'ticket_id' = " + ticket.getTicketId() + " into its PreparedStatement position.");
             ps.setLong(1, ticket.getTicketId());
 
@@ -182,9 +182,9 @@ public final class TicketDAOImpl implements TicketDAO {
         log.info("getAll(): Creating an empty list of tickets.");
         List<Ticket> invoices = new ArrayList<>();
         log.info("getAll(): Trying to create a connection to data source, prepare a query, execute it and put result into ResultSet.");
-        try(Connection connection = DataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_FLIGHT_DATETIME);
-            ResultSet rs = statement.executeQuery()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_ALL + ORDER_BY_FLIGHT_DATETIME);
+             ResultSet rs = statement.executeQuery()) {
             log.info("getAll(): Adding flight places from ResultSet to the list.");
             while (rs.next()) {
                 invoices.add(createNewTicket(rs));
@@ -213,36 +213,31 @@ public final class TicketDAOImpl implements TicketDAO {
                         Invoice.InvoiceStatus.valueOf(rs.getString("status")),
                         rs.getTimestamp("invoice_datetime").toLocalDateTime()
                 ),
-                new Flight(
-                        rs.getLong("flight_id"),
-                        new Airplane(
+                new Flight.FlightBuilder(rs.getLong("flight_id"), rs.getString("flight_number"))
+                        .airplane(new Airplane(
                                 rs.getLong("airplane_id"),
                                 rs.getString("ap.name"),
                                 rs.getInt("ap.capacity_econom"),
-                                rs.getInt("ap.capacity_business")
-                        ),
-                        rs.getString("flight_number"),
-                        new Airport(
+                                rs.getInt("ap.capacity_business")))
+                        .departureAirport(new Airport(
                                 rs.getLong("departure_airport_id"),
                                 rs.getString("dep.code"),
                                 rs.getString("dep.city"),
                                 rs.getString("dep.airport_name"),
                                 rs.getDouble("dep.latitude"),
-                                rs.getDouble("dep.longitude")
-                        ),
-                        new Airport(
+                                rs.getDouble("dep.longitude")))
+                        .arrivalAirport(new Airport(
                                 rs.getLong("arrival_airport_id"),
                                 rs.getString("arr.code"),
                                 rs.getString("arr.city"),
                                 rs.getString("arr.airport_name"),
                                 rs.getDouble("arr.latitude"),
-                                rs.getDouble("arr.longitude")
-                        ),
-                        rs.getDouble("base_cost"),
-                        rs.getInt("available_places_econom"),
-                        rs.getInt("available_places_business"),
-                        rs.getTimestamp("flight_datetime").toLocalDateTime()
-                ),
+                                rs.getDouble("arr.longitude")))
+                        .baseCost(rs.getDouble("base_cost"))
+                        .availableEconom(rs.getInt("available_places_econom"))
+                        .availableBusiness(rs.getInt("available_places_business"))
+                        .dateTime(rs.getTimestamp("flight_datetime").toLocalDateTime())
+                        .createFlight(),
                 rs.getString("passenger_name"),
                 rs.getString("passport"),
                 rs.getInt("place"),

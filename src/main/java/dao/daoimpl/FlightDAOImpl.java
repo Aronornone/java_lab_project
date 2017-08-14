@@ -193,16 +193,17 @@ public final class FlightDAOImpl implements FlightDAO {
             try(ResultSet rs = ps.executeQuery()) {
                 log.info("getFlights(...): Adding flights from ResultSet to the list.");
                 while (rs.next()) {
-                    flights.add(new Flight(
+                    flights.add(new Flight.FlightBuilder(
                             rs.getLong     ("id"),
-                            rs.getString   ("flight_number"),
-                            rs.getDouble   ("base_cost"),
-                            rs.getInt       ("available_places_econom"),
-                            rs.getInt       ("available_places_business"),
-                            rs.getTimestamp("flight_datetime").toLocalDateTime(),
-                            departure,
-                            arrival
-                    ));
+                            rs.getString   ("flight_number"))
+                            .baseCost(rs.getDouble   ("base_cost"))
+                            .availableEconom(rs.getInt("available_places_econom"))
+                            .availableBusiness(rs.getInt ("available_places_business"))
+                            .dateTime(rs.getTimestamp("flight_datetime").toLocalDateTime())
+                            .departureAirportId(departure)
+                            .arrivalAirportId(arrival)
+                            .createFlight()
+                    );
                 }
             }
         } catch (SQLException e) {
@@ -257,35 +258,30 @@ public final class FlightDAOImpl implements FlightDAO {
 
     @SneakyThrows
     private Flight createNewFlight(ResultSet rs) {
-        return new Flight(
-                rs.getLong("id"),
-                new Airplane(
+        return new Flight.FlightBuilder(rs.getLong("id"),rs.getString("flight_number"))
+                .airplane(new Airplane(
                         rs.getLong  ("airplane_id"),
                         rs.getString("p.name"),
                         rs.getInt   ("p.capacity_econom"),
-                        rs.getInt   ("p.capacity_business")
-                ),
-                rs.getString("flight_number"),
-                new Airport(
+                        rs.getInt   ("p.capacity_business")))
+                .departureAirport(new Airport(
                         rs.getLong  ("departure_airport_id"),
                         rs.getString("d.code"),
                         rs.getString("d.city"),
                         rs.getString("d.airport_name"),
                         rs.getDouble("d.latitude"),
-                        rs.getDouble("d.longitude")
-                ),
-                new Airport(
+                        rs.getDouble("d.longitude")))
+                .arrivalAirport(new Airport(
                         rs.getLong  ("arrival_airport_id"),
                         rs.getString("a.code"),
                         rs.getString("a.city"),
                         rs.getString("a.airport_name"),
                         rs.getDouble("a.latitude"),
-                        rs.getDouble("a.longitude")
-                ),
-                rs.getDouble   ("base_cost"),
-                rs.getInt      ("available_places_econom"),
-                rs.getInt      ("available_places_business"),
-                rs.getTimestamp("flight_datetime").toLocalDateTime()
-        );
+                        rs.getDouble("a.longitude")))
+                .baseCost(rs.getDouble   ("base_cost"))
+                .availableEconom(rs.getInt      ("available_places_econom"))
+                .availableBusiness(rs.getInt      ("available_places_business"))
+                .dateTime(rs.getTimestamp("flight_datetime").toLocalDateTime())
+                .createFlight();
     }
 }

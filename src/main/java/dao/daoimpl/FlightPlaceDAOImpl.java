@@ -187,36 +187,31 @@ public final class FlightPlaceDAOImpl implements FlightPlaceDAO {
     private FlightPlace createNewFlightPlace(ResultSet rs) {
         return new FlightPlace(
                 rs.getLong("id"),
-                new Flight(
-                        rs.getLong("flight_id"),
-                        new Airplane(
+                new Flight.FlightBuilder(rs.getLong("flight_id"),rs.getString("flight_number"))
+                        .airplane(new Airplane(
                                 rs.getLong  ("airplane_id"),
                                 rs.getString("p.name"),
                                 rs.getInt   ("p.capacity_econom"),
-                                rs.getInt   ("p.capacity_business")
-                        ),
-                        rs.getString("flight_number"),
-                        new Airport(
+                                rs.getInt   ("p.capacity_business")))
+                        .departureAirport(new Airport(
                                 rs.getLong  ("departure_airport_id"),
                                 rs.getString("d.code"),
                                 rs.getString("d.city"),
                                 rs.getString("d.airport_name"),
                                 rs.getDouble("d.latitude"),
-                                rs.getDouble("d.longitude")
-                        ),
-                        new Airport(
+                                rs.getDouble("d.longitude")))
+                        .arrivalAirport(new Airport(
                                 rs.getLong  ("arrival_airport_id"),
                                 rs.getString("a.code"),
                                 rs.getString("a.city"),
                                 rs.getString("a.airport_name"),
                                 rs.getDouble("a.latitude"),
-                                rs.getDouble("a.longitude")
-                        ),
-                        rs.getDouble   ("base_cost"),
-                        rs.getInt      ("available_places_econom"),
-                        rs.getInt      ("available_places_business"),
-                        rs.getTimestamp("flight_datetime").toLocalDateTime()
-                ),
+                                rs.getDouble("a.longitude")))
+                        .baseCost(rs.getDouble   ("base_cost"))
+                        .availableEconom(rs.getInt      ("available_places_econom"))
+                        .availableBusiness(rs.getInt      ("available_places_business"))
+                        .dateTime(rs.getTimestamp("flight_datetime").toLocalDateTime())
+                .createFlight(),
                 ServletUtils.bitSetConversionFromString(rs.getString("places_econom")),
                 ServletUtils.bitSetConversionFromString(rs.getString("places_business"))
         );

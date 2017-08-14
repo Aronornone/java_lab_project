@@ -18,8 +18,12 @@ public class TicketTest {
         Flight flight = new Flight.FlightBuilder(1, "12-D").airplane(airplane).departureAirport(SPB)
                 .arrivalAirport(MSK).baseCost(10052.30).availableEconom(202).availableBusiness(23)
                 .dateTime(LocalDateTime.of(2017, 7, 10, 23, 59)).createFlight();
-        Ticket ticket1 = new Ticket(1, invoice, flight, "Passenger 1", "321103422", 10, true, false, 1005.30);
-        Ticket ticket2 = new Ticket(2, invoice, flight, "Passenger 2", "321103422", 11, true, false, 1005.30);
+        Ticket ticket1 = new Ticket.TicketBuilder(invoice, flight).ticketId(1).passengerName("Passenger 1")
+                .passport("321103422").sittingPlace(10).business(true).luggage(false).price(1005.30)
+                .createTicket();
+        Ticket ticket2 = new Ticket.TicketBuilder(invoice, flight).ticketId(2).passengerName("Passenger 2")
+                .passport("321103422").sittingPlace(11).business(true).luggage(false).price(1005.30)
+                .createTicket();
 
         assertFalse(ticket1.equals(ticket2));
         System.out.println(ticket1);

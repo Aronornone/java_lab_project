@@ -199,8 +199,7 @@ public final class TicketDAOImpl implements TicketDAO {
 
     @SneakyThrows
     private Ticket createNewTicket(ResultSet rs) {
-        return new Ticket(
-                rs.getLong("id"),
+        return new Ticket.TicketBuilder(
                 new Invoice.InvoiceBuilder(new User(
                         rs.getLong("account_id"),
                         rs.getString("a.name"),
@@ -235,13 +234,14 @@ public final class TicketDAOImpl implements TicketDAO {
                         .availableEconom(rs.getInt("available_places_econom"))
                         .availableBusiness(rs.getInt("available_places_business"))
                         .dateTime(rs.getTimestamp("flight_datetime").toLocalDateTime())
-                        .createFlight(),
-                rs.getString("passenger_name"),
-                rs.getString("passport"),
-                rs.getInt("place"),
-                rs.getBoolean("luggage"),
-                rs.getBoolean("business_class"),
-                rs.getDouble("price")
-        );
+                        .createFlight())
+                .ticketId(rs.getLong("id"))
+                .passengerName(rs.getString("passenger_name"))
+                .passport(rs.getString("passport"))
+                .sittingPlace(rs.getInt("place"))
+                .luggage(rs.getBoolean("luggage"))
+                .business(rs.getBoolean("business_class"))
+                .price(rs.getDouble("price"))
+                .createTicket();
     }
 }

@@ -133,8 +133,9 @@ public class InvoiceServlet extends HttpServlet {
                 return true;
             }
             // if sitting place is reserved in flight, create new Ticket in DB with parameters set by user in filters
-            Ticket ticket = new Ticket(invoice, flight, "", "", sittingPlace,
-                    false, business, (double) httpSession.getAttribute("ticketCost"));//price not from getBaseCost)() but from attribute
+            Ticket ticket = new Ticket.TicketBuilder(invoice, flight).passengerName("")
+                    .passport("").sittingPlace(sittingPlace).luggage(false)
+            .business(business).price((double) httpSession.getAttribute("ticketCost")).createTicket();//price not from getBaseCost)() but from attribute
             ticketService.add(ticket);
             log.info("doPost(request, response): Adding a new ticket to DB: " + ticket);
             httpSession.setAttribute("boughtFlightId", flight.getFlightId());

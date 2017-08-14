@@ -1,13 +1,11 @@
 package pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor
 public class Flight {
     private long flightId;
     private Airplane airplane;
@@ -22,6 +20,22 @@ public class Flight {
 
     private long departureAirportId;
     private long arrivalAirportId;
+
+    @java.beans.ConstructorProperties({"flightId", "airplane", "flightNumber", "departureAirport", "arrivalAirport", "baseCost", "availablePlacesEconom", "availablePlacesBusiness", "dateTime", "tickets", "departureAirportId", "arrivalAirportId"})
+    private Flight(long flightId, Airplane airplane, String flightNumber, Airport departureAirport, Airport arrivalAirport, Double baseCost, int availablePlacesEconom, int availablePlacesBusiness, LocalDateTime dateTime, Set<Ticket> tickets, long departureAirportId, long arrivalAirportId) {
+        this.flightId = flightId;
+        this.airplane = airplane;
+        this.flightNumber = flightNumber;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.baseCost = baseCost;
+        this.availablePlacesEconom = availablePlacesEconom;
+        this.availablePlacesBusiness = availablePlacesBusiness;
+        this.dateTime = dateTime;
+        this.tickets = tickets;
+        this.departureAirportId = departureAirportId;
+        this.arrivalAirportId = arrivalAirportId;
+    }
 
     public static class FlightBuilder {
         private long nestedFlightId;

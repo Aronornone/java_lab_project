@@ -23,20 +23,6 @@ public class Flight {
     private long departureAirportId;
     private long arrivalAirportId;
 
-    public Flight(long id, Airplane airplane, String flightNumber, Airport departureAirport,
-                  Airport arrivalAirport, Double baseCost, int availablePlacesEconom,
-                  int availablePlacesBusiness, LocalDateTime dateTime) {
-        this.flightId = id;
-        this.airplane = airplane;
-        this.flightNumber = flightNumber;
-        this.departureAirport = departureAirport;
-        this.arrivalAirport = arrivalAirport;
-        this.baseCost = baseCost;
-        this.availablePlacesEconom = availablePlacesEconom;
-        this.availablePlacesBusiness = availablePlacesBusiness;
-        this.dateTime = dateTime;
-    }
-
     public static class FlightBuilder {
         private long nestedFlightId;
         private Airplane nestedAirplane;

@@ -204,7 +204,8 @@ public class InvoiceServlet extends HttpServlet {
         if (!invoiceOptional.isPresent()) {
             //if invoice isn't created, add it
             log.info("doPost(request, response): Adding new invoice.");
-            invoice = new Invoice(user, Invoice.InvoiceStatus.CREATED, LocalDateTime.now());
+            invoice = new Invoice.InvoiceBuilder(user).invoiceStatus(Invoice.InvoiceStatus.CREATED)
+                    .timestamp(LocalDateTime.now()).createInvoice();
             invoiceService.add(invoice);
         }
 

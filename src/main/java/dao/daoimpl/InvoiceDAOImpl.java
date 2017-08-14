@@ -207,17 +207,15 @@ public final class InvoiceDAOImpl implements InvoiceDAO {
 
     @SneakyThrows
     private Invoice createNewInvoce(ResultSet rs) {
-        return new Invoice(
-                rs.getLong("id"),
-                new User(
-                        rs.getLong     ("account_id"),
-                        rs.getString   ("a.name"),
-                        rs.getString   ("a.email"),
-                        rs.getString   ("a.password_hash"),
-                        rs.getTimestamp("a.registration_date").toLocalDateTime()
-                ),
-                Invoice.InvoiceStatus.valueOf(rs.getString("status")),
-                rs.getTimestamp("invoice_datetime").toLocalDateTime()
-        );
+        return new Invoice.InvoiceBuilder(new User(
+                rs.getLong     ("account_id"),
+                rs.getString   ("a.name"),
+                rs.getString   ("a.email"),
+                rs.getString   ("a.password_hash"),
+                rs.getTimestamp("a.registration_date").toLocalDateTime()))
+                .invoiceId(rs.getLong("id"))
+                .invoiceStatus(Invoice.InvoiceStatus.valueOf(rs.getString("status")))
+                .timestamp(rs.getTimestamp("invoice_datetime").toLocalDateTime())
+                .createInvoice();
     }
 }

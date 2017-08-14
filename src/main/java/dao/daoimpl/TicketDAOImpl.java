@@ -201,18 +201,16 @@ public final class TicketDAOImpl implements TicketDAO {
     private Ticket createNewTicket(ResultSet rs) {
         return new Ticket(
                 rs.getLong("id"),
-                new Invoice(
-                        rs.getLong("invoice_id"),
-                        new User(
-                                rs.getLong("account_id"),
-                                rs.getString("a.name"),
-                                rs.getString("a.email"),
-                                rs.getString("a.password_hash"),
-                                rs.getTimestamp("registration_date").toLocalDateTime()
-                        ),
-                        Invoice.InvoiceStatus.valueOf(rs.getString("status")),
-                        rs.getTimestamp("invoice_datetime").toLocalDateTime()
-                ),
+                new Invoice.InvoiceBuilder(new User(
+                        rs.getLong("account_id"),
+                        rs.getString("a.name"),
+                        rs.getString("a.email"),
+                        rs.getString("a.password_hash"),
+                        rs.getTimestamp("registration_date").toLocalDateTime()))
+                        .invoiceId(rs.getLong("invoice_id"))
+                        .invoiceStatus(Invoice.InvoiceStatus.valueOf(rs.getString("status")))
+                        .timestamp(rs.getTimestamp("invoice_datetime").toLocalDateTime())
+                        .createInvoice(),
                 new Flight.FlightBuilder(rs.getLong("flight_id"), rs.getString("flight_number"))
                         .airplane(new Airplane(
                                 rs.getLong("airplane_id"),
